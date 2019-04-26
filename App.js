@@ -16,11 +16,6 @@ import Config from 'react-native-config'
 import firebase from 'firebase';
 
 import HomeScreen from './src/screens/homeScreen';
-import StaffLogin from './src/screens/staffLoginScreen';
-import StaffWelcome from './src/screens/staffWelcomeScreen';
-import GeneratePatientAccessCode from './src/screens/generatePatientAcessCode';
-import LookupPatientAccessCode from './src/screens/lookupPatientAccessCode';
-import ShowStaffAccessCode from './src/screens/showStaffAcessCode';
 import ShowPatientAccessCode from './src/screens/showPatientAccessCode';
 import PatientLogin from './src/screens/patientLogin';
 import PatientWelcome from './src/screens/patientWelcome';
@@ -30,13 +25,8 @@ import PatientSignUp from './src/screens/patientSignUp';
 const AppNavigator = createSwitchNavigator(
   {
     HomeScreen,
-    StaffLogin,
     PatientLogin,
-    StaffWelcome,
     PatientWelcome,
-    GeneratePatientAccessCode,
-    LookupPatientAccessCode,
-    ShowStaffAccessCode,
     ShowMap,
     PatientSignUp,
     ShowPatientAccessCode
