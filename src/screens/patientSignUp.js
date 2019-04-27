@@ -5,41 +5,85 @@ import firebase from 'firebase';
 export default class PatientSignUp extends Component {
     constructor(props) {
         super(props);
-        this.state = { email: '', password: '', error: '', loading: '' };
+        this.state = { patientPhoneNumber: '', error: '', loading: '' };
     }
 
     activateAccount() {
-        const { email } = this.state;
+        const { patientPhoneNumber } = this.state;
+
         // prevent this.props loses values
         let this_props = this.props;
+        let this_var = this;
 
-        this.setState({ error: '', loading: true });
+        this.setState({ loading: true });
+
         firebase.database().ref('PatientAccounts/')
-            .orderByChild('email').equalTo(email)
+            .orderByChild('patientPhoneNumber').equalTo(patientPhoneNumber)
             .once("value", function (snapshot) {
                 if (snapshot.exists()) {
-                    let fullName = "";
-                    let password = "";
-                    snapshot.forEach(function (data) {
-                        fullName = data.val().fullName;
-                        password = data.val().password;
+                    let email = patientPhoneNumber + "@email.com";
+                    let patientPin = '';
+                    snapshot.forEach((data) => {
+                        patientPin = data.val().patientPin;
                     });
+                    console.log("email=" + email);
+                    console.log("pin=" + patientPin);
 
-                    this_props.navigation.navigate('ShowPatientAccessCode', {
-                        none: 'false',
-                        fullName: fullName,
-                        email: email,
-                        password: password,
-                    });
+                    firebase.auth().createUserWithEmailAndPassword(email, patientPin)
+                    .then( () => {
+                        console.log("success in SIGN UP")
+                        // sign in if creating a new account succesfully
+                        firebase.auth().signInWithEmailAndPassword(email, patientPin)
+                        .then( (user) => {
+                            console.log("success in SIGN IN");
+                            console.log(user)
+                            this_var.setState({
+                                loading: false
+                            });
+                            this_props.navigation.navigate('PatientWelcome');
+                        })
+                        .catch( (error) => {
+                            console.log("failure in SIGN IN");
+
+                            let errorCode = error.code;
+                            let errorMessage = error.message;
+                    
+                            console.log("errorCode = " + errorCode);
+                            console.log("errorMessage = " + errorMessage);
+                    
+                            this_var.setState({ error: errorMessage, loading: false });
+                        })
+                    })
+                    .catch( (errorParam) => {
+                        console.log("failure in SIGN UP")
+                        console.log(errorParam);
+
+                        // errorParam is an object, but errorParam.message is a string. error only accepts string
+                        this_var.setState({ error: errorParam.message, loading: false });
+
+                        Alert.alert(
+                            'Error',
+                            'Your phone number cannot be activated. Please contact the staff.',
+                            [
+                                {text: 'Return to Login Page', onPress: () => this_props.navigation.navigate('PatientLogin') }
+                            ]
+                        )
+                    })
                 }
                 else {
-                    console.log("There is no account associated with '" + email + "'.")
-                    this_props.navigation.navigate('ShowPatientAccessCode', { none: 'true' });
+                    console.log("There is no account associated with '" + patientPhoneNumber + "'.")
+                    Alert.alert(
+                        'Error',
+                        'Your phone number cannot be found in our database. Please contact the staff.',
+                        [
+                            {text: 'Return to Login Page', onPress: () => this_props.navigation.navigate('PatientLogin') }
+                        ]
+                    )
                 }
             }, function (error) {
-                console.log("error = " + error);
+                console.log("firebase.database().ref('PatientAccounts/').orderByChild('patientPhoneNumber').equalTo(patientPhoneNumber).once(\"value\", function (snapshot) {....} FAILED")
+                console.log(error);
             });
-
     }
 
     renderButton() {
@@ -63,15 +107,17 @@ export default class PatientSignUp extends Component {
 
         return (
             <View style={styles.container}>
-                <Text style={styles.text}>Patient Email</Text>
+                <Text style={styles.text}>Please enter your phone number</Text>
                 <TextInput
                     style={styles.input}
                     secureTextEntry={false}
                     autoCapitalize="none"
-                    onChangeText={email => this.setState({ email })}
-                    value={this.state.email} />
-                <Text>Please enter email given to you by the staff</Text>
+                    onChangeText={patientPhoneNumber => this.setState({ patientPhoneNumber })}
+                    value={this.state.patientPhoneNumber} />
                 {this.renderButton()}
+                <Text style={styles.errorTextStyle}>
+                    {this.state.error}
+                </Text>
             </View>
         );
     }
@@ -107,5 +153,10 @@ const styles = StyleSheet.create({
         color: "#FFF",
         textAlign: "center",
         height: 20
-    }
+    },
+    errorTextStyle: {
+        fontSize: 16,
+        textAlign: 'center',
+        color: 'red'
+    },
 });

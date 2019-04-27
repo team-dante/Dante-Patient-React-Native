@@ -1,26 +1,63 @@
-import React, {Component} from 'react';
-import {View, Text, TextInput, TouchableOpacity, Alert, Button, StyleSheet, StatusBar} from 'react-native';
+import React, { Component } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Alert, Button, StyleSheet, ActivityIndicator } from 'react-native';
 import TouchID from 'react-native-touch-id';
 import firebase from 'firebase';
 
 export default class PatientLogin extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { email: '', password: '', error: '', loading: ''};
+        // email = phoneNumber + @emai.com
+        // password = 6-digit PIN
+        this.state = { email: '', password: '', error: '', loading: '' };
     }
 
+    componentWillMount() {
+        console.log("im in componentWillMount");
+
+        let firstTrigger = true;
+
+        // this will check if the user is logged in or not
+        firebase.auth().onAuthStateChanged((user) => {
+            console.log("firebase.auth().onAuthStateChanged is called...");
+            if (user && firstTrigger) {
+                const optionalConfigObject = {
+                    fallbackLabel: 'Show Passcode',
+                    unifiedErrors: false,
+                    passcodeFallback: false,
+                };
+                console.log("user is logged in")
+                console.log("starting authentication");
+                TouchID.authenticate('to demo this react-native component', optionalConfigObject)
+                    .then(success => {
+                        console.log('Authenticated Successfully');
+                        console.log("success = " + success);
+                        this.props.navigation.navigate('PatientWelcome');
+                    })
+                    .catch(error => {
+                        console.log('Authentication Failed');
+                        console.log("error = " + error);
+                    });
+            }
+            else {
+                firstTrigger = false;
+                console.log("firstTrigger=" + firstTrigger);
+                console.log("user is not logged in");
+            }
+        });
+    }
 
     onButtonPress() {
         this.setState({ error: '', loading: true })
-        const { email, password } = this.state;
-        console.log('email = ' + this.state.email);
-        console.log('password = ' + this.state.password);
+        let { email, password } = this.state;
+        
+        email += "@email.com";
+
+        console.log('email = ' + email);
+        console.log('password = ' + password);
 
         firebase.auth().signInWithEmailAndPassword(email, password)
-            .then((user) => { this.onLoginSuccess.bind(this)(user); })
-            .catch((error) => {
-                this.onLoginFailure.bind(this)(error);
-            });
+            .then((user) => {this.onLoginSuccess.bind(this)(user); })
+            .catch((error) => {this.onLoginFailure.bind(this)(error);});
     }
     onLoginSuccess(user) {
         console.log("SUCCESS");
@@ -63,14 +100,14 @@ export default class PatientLogin extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.text}>Patient Email</Text>
+                <Text style={styles.text}>Patient's Phone Number</Text>
                 <TextInput
                     style={styles.input}
                     secureTextEntry={false}
                     autoCapitalize="none"
                     onChangeText={email => this.setState({ email })}
                     value={this.state.email} />
-                <Text style={styles.text}>Patient Password</Text>
+                <Text style={styles.text}>6-digit PIN</Text>
                 <TextInput
                     style={styles.input}
                     secureTextEntry={true}
@@ -79,11 +116,20 @@ export default class PatientLogin extends React.Component {
                     value={this.state.password} />
                 <Text>Future sign in will use Touch/Face ID</Text>
                 {this.renderButton()}
-                <Text>New User?</Text>
-                <TouchableOpacity style={styles.buttonContainer}
-                    onPress={this.props.navigation.navigate('PatientSignUp')}>
-                    <Text style={styles.buttonText}>Activate my account</Text>
-                </TouchableOpacity>
+
+                <View style={styles.footer}>
+                    <Text>New User?</Text>
+                    <TouchableOpacity style={[styles.buttonContainer, styles.moveToBottomScreen]}
+                        // onPress will auto trigger if not including { () => { .... } }
+                        onPress={() => { this.props.navigation.navigate('PatientSignUp') }}>
+                        <Text style={styles.buttonText}>Click here to activate your account</Text>
+                    </TouchableOpacity>
+                </View>
+
+                <Text style={styles.errorTextStyle}>
+                    {this.state.error}
+                </Text>
+
             </View>
         );
     }
@@ -92,22 +138,28 @@ export default class PatientLogin extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#F5FCFF',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F5FCFF',
+    },
+    footer: {
+        position: 'absolute', //Here is the trick 
+        bottom: 100, //Here is the trick
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     text: {
         alignSelf: 'flex-start',
         paddingLeft: 60
     },
-    input:{
+    input: {
         width: 300,
         height: 40,
         borderColor: "#BEBEBE",
         borderBottomWidth: StyleSheet.hairlineWidth,
         marginBottom: 20
     },
-    buttonContainer : {
+    buttonContainer: {
         backgroundColor: "#428AF8",
         paddingVertical: 12,
         width: 300,
@@ -118,6 +170,11 @@ const styles = StyleSheet.create({
     buttonText: {
         color: "#FFF",
         textAlign: "center",
-        height: 20
-    }
+        height: 20,
+    },
+    errorTextStyle: {
+        fontSize: 16,
+        textAlign: 'center',
+        color: 'red'
+    },
 });

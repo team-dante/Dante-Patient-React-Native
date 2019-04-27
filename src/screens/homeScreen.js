@@ -6,7 +6,7 @@ export default class HomeScreen extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.bigText}>Welcome to Dante App!</Text>
+                <Text style={styles.bigText}>Welcome to Dante Patient!</Text>
                 <TouchableOpacity style={styles.buttonContainer} onPress={() => this.props.navigation.navigate('PatientLogin')}>
                     <Text style={styles.buttonText}>Click here to get started</Text>
                 </TouchableOpacity>

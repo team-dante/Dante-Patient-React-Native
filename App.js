@@ -16,7 +16,6 @@ import Config from 'react-native-config'
 import firebase from 'firebase';
 
 import HomeScreen from './src/screens/homeScreen';
-import ShowPatientAccessCode from './src/screens/showPatientAccessCode';
 import PatientLogin from './src/screens/patientLogin';
 import PatientWelcome from './src/screens/patientWelcome';
 import ShowMap from './src/screens/showMap';
@@ -29,7 +28,6 @@ const AppNavigator = createSwitchNavigator(
     PatientWelcome,
     ShowMap,
     PatientSignUp,
-    ShowPatientAccessCode
   },
   {
     initialRouteName: 'HomeScreen'
