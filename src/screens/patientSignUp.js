@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, Button, StyleSheet, StatusBar, ActivityIndicator } from 'react-native';
+import { Dimensions, View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, ActivityIndicator } from 'react-native';
 import firebase from 'firebase';
+import { Actions } from 'react-native-router-flux';
 
-export default class PatientSignUp extends Component {
+class PatientSignUp extends Component {
     constructor(props) {
         super(props);
         this.state = { patientPhoneNumber: '', error: '', loading: '' };
@@ -17,7 +18,7 @@ export default class PatientSignUp extends Component {
 
         this.setState({ loading: true });
 
-        firebase.database().ref('PatientAccounts/')
+        firebase.database().ref(`/Patients`)
             .orderByChild('patientPhoneNumber').equalTo(patientPhoneNumber)
             .once("value", function (snapshot) {
                 if (snapshot.exists()) {
@@ -40,7 +41,7 @@ export default class PatientSignUp extends Component {
                             this_var.setState({
                                 loading: false
                             });
-                            this_props.navigation.navigate('PatientWelcome');
+                            Actions.map();
                         })
                         .catch( (error) => {
                             console.log("failure in SIGN IN");
@@ -51,7 +52,13 @@ export default class PatientSignUp extends Component {
                             console.log("errorCode = " + errorCode);
                             console.log("errorMessage = " + errorMessage);
                     
-                            this_var.setState({ error: errorMessage, loading: false });
+                            Alert.alert(
+                                'Error',
+                                'We cannot sign you in. Please contact our staff.',
+                                [
+                                    {text: 'Return to Login Page', onPress: () => Actions.login() }
+                                ]
+                            )
                         })
                     })
                     .catch( (errorParam) => {
@@ -65,7 +72,7 @@ export default class PatientSignUp extends Component {
                             'Error',
                             'Your phone number cannot be activated. Please contact the staff.',
                             [
-                                {text: 'Return to Login Page', onPress: () => this_props.navigation.navigate('PatientLogin') }
+                                {text: 'Return to Login Page', onPress: () => Actions.login() }
                             ]
                         )
                     })
@@ -76,12 +83,12 @@ export default class PatientSignUp extends Component {
                         'Error',
                         'Your phone number cannot be found in our database. Please contact the staff.',
                         [
-                            {text: 'Return to Login Page', onPress: () => this_props.navigation.navigate('PatientLogin') }
+                            {text: 'Return to Login Page', onPress: () => Actions.login() }
                         ]
                     )
                 }
             }, function (error) {
-                console.log("firebase.database().ref('PatientAccounts/').orderByChild('patientPhoneNumber').equalTo(patientPhoneNumber).once(\"value\", function (snapshot) {....} FAILED")
+                console.log("firebase.database().ref('Patient/').orderByChild('patientPhoneNumber').equalTo(patientPhoneNumber).once(\"value\", function (snapshot) {....} FAILED")
                 console.log(error);
             });
     }
@@ -104,7 +111,6 @@ export default class PatientSignUp extends Component {
     }
 
     render() {
-
         return (
             <View style={styles.container}>
                 <Text style={styles.text}>Please enter your phone number</Text>
@@ -115,9 +121,6 @@ export default class PatientSignUp extends Component {
                     onChangeText={patientPhoneNumber => this.setState({ patientPhoneNumber })}
                     value={this.state.patientPhoneNumber} />
                 {this.renderButton()}
-                <Text style={styles.errorTextStyle}>
-                    {this.state.error}
-                </Text>
             </View>
         );
     }
@@ -126,37 +129,42 @@ export default class PatientSignUp extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F5FCFF',
+        justifyContent: 'center',
+        backgroundColor: '#ffffff',
     },
     text: {
         alignSelf: 'flex-start',
-        paddingLeft: 60
+        paddingLeft: 40,
+        paddingRight: 40,
+        color: '#96A0AF',
+        fontSize: 16,
+        textShadowColor: '#c4c4c4',
+        textShadowOffset: { width: 0.5, height: 0 },
+        textShadowRadius: 1,
     },
     input: {
-        width: 300,
-        height: 40,
-        borderColor: "#BEBEBE",
+        width: Dimensions.get('window').width - 80,
+        height: 46,
+        borderColor: "#96A0AF",
         borderBottomWidth: StyleSheet.hairlineWidth,
-        marginBottom: 20
+        marginBottom: 20,
+        fontSize: 18
     },
-    buttonContainer: {
+    buttonContainer : {
         backgroundColor: "#428AF8",
         paddingVertical: 12,
-        width: 300,
-        borderRadius: 4,
+        width: Dimensions.get('window').width - 80,
+        borderRadius: 8,
         borderColor: "rgba(255,255,255,0.7)",
         margin: 10,
     },
     buttonText: {
         color: "#FFF",
         textAlign: "center",
-        height: 20
-    },
-    errorTextStyle: {
-        fontSize: 16,
-        textAlign: 'center',
-        color: 'red'
-    },
+        height: 20,
+        fontWeight: 'bold'
+    }
 });
+
+export default PatientSignUp;

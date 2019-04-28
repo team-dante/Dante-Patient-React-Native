@@ -2,8 +2,9 @@
 import React, { Component } from 'react';
 import {StyleSheet, View, Text, TouchableOpacity, Alert} from 'react-native';
 import firebase from 'firebase';
+import { Actions } from 'react-native-router-flux';
 
-export default class PatientWelcome extends React.Component {
+class PatientProfile extends Component {
     logOut() {
         Alert.alert(
             'Warning',
@@ -15,7 +16,7 @@ export default class PatientWelcome extends React.Component {
                     .catch( (error) => {
                         console.log(error);
                     })
-                    this.props.navigation.navigate('HomeScreen');
+                    Actions.auth();
                 } },
                 {text: "Don't sign me out", onDismiss: () => {} }
             ]
@@ -25,16 +26,16 @@ export default class PatientWelcome extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.bigText}>Hi, Patient XYZ</Text>
+                <Text style={styles.bigText}>Patient XYZ's profile</Text>
                 <Text style={styles.smallText}>What would you like to do?</Text>
-                <TouchableOpacity style={styles.buttonContainer} 
+                {/* <TouchableOpacity style={styles.buttonContainer} 
                      onPress={() => {this.props.navigation.navigate('ShowMap')}}>
                     <Text style={styles.buttonText}>See Staff's Location in Real Time</Text>
                 </TouchableOpacity>  
                 <TouchableOpacity style={styles.buttonContainer} 
                      onPress={() => {}}>
                     <Text style={styles.buttonText}>Give Feedback</Text>
-                </TouchableOpacity> 
+                </TouchableOpacity>  */}
                 <TouchableOpacity style={styles.buttonContainer} 
                      onPress={ this.logOut.bind(this) }>
                     <Text style={styles.buttonText}>Log out</Text>
@@ -76,3 +77,5 @@ const styles = StyleSheet.create({
         height: 20
     }
 });
+
+export default PatientProfile;

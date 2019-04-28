@@ -7,38 +7,13 @@
  */
 
 import React, { Component } from 'react';
-import {
-  createSwitchNavigator,
-  createAppContainer,
-  NavigationActions,
-} from 'react-navigation';
 import Config from 'react-native-config'
 import firebase from 'firebase';
+import Router from './Router';
 
-import HomeScreen from './src/screens/homeScreen';
-import PatientLogin from './src/screens/patientLogin';
-import PatientWelcome from './src/screens/patientWelcome';
-import ShowMap from './src/screens/showMap';
-import PatientSignUp from './src/screens/patientSignUp';
+class App extends Component {
 
-const AppNavigator = createSwitchNavigator(
-  {
-    HomeScreen,
-    PatientLogin,
-    PatientWelcome,
-    ShowMap,
-    PatientSignUp,
-  },
-  {
-    initialRouteName: 'HomeScreen'
-  }
-);
-
-const AppContainer = createAppContainer(AppNavigator);
-
-export default class App extends Component {
-
-  componentDidMount() {
+  componentWillMount() {
     let config = {
       apiKey: Config.API_KEY,
       authDomain: Config.AUTH_DOMAIN,
@@ -54,6 +29,10 @@ export default class App extends Component {
   }
 
   render() {
-    return <AppContainer />;
+    return (
+      <Router />
+    );
   }
 }
+
+export default App;

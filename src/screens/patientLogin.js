@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, Button, StyleSheet, ActivityIndicator } from 'react-native';
+import { Alert, Image, Dimensions, View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import TouchID from 'react-native-touch-id';
 import firebase from 'firebase';
+import { Actions } from 'react-native-router-flux';
 
-export default class PatientLogin extends React.Component {
+class PatientLogin extends React.Component {
     constructor(props) {
         super(props);
         // email = phoneNumber + @emai.com
@@ -31,7 +32,7 @@ export default class PatientLogin extends React.Component {
                     .then(success => {
                         console.log('Authenticated Successfully');
                         console.log("success = " + success);
-                        this.props.navigation.navigate('PatientWelcome');
+                        Actions.map();
                     })
                     .catch(error => {
                         console.log('Authentication Failed');
@@ -59,13 +60,14 @@ export default class PatientLogin extends React.Component {
             .then((user) => {this.onLoginSuccess.bind(this)(user); })
             .catch((error) => {this.onLoginFailure.bind(this)(error);});
     }
+
     onLoginSuccess(user) {
         console.log("SUCCESS");
-        console.log(user)
+        console.log(user);
         this.setState({
             email: '', password: '', error: '', loading: false
         });
-        this.props.navigation.navigate('PatientWelcome');
+        Actions.map();
     }
 
     onLoginFailure(errorParam) {
@@ -77,7 +79,14 @@ export default class PatientLogin extends React.Component {
         console.log("errorCode = " + errorCode);
         console.log("errorMessage = " + errorMessage);
 
-        this.setState({ error: errorMessage, loading: false });
+        this.setState({ error: errorMessage, loading: false, email:'', password:'' });
+        Alert.alert(
+            'Error',
+            'This is no user record associated with this identifier. The user may have been deleted.',
+            [
+                {text: 'Close' }
+            ]
+        )
     }
 
     renderButton() {
@@ -100,64 +109,77 @@ export default class PatientLogin extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.text}>Patient's Phone Number</Text>
+                <Image 
+                    style={{width: 110, height: 110, borderRadius: 20}} 
+                    source={require('../../appIcon/dante-patient.png')} />
+                <Text style={styles.header}>Sign In</Text>
+                <Text style={styles.text}>Your Phone Number</Text>
                 <TextInput
                     style={styles.input}
                     secureTextEntry={false}
                     autoCapitalize="none"
-                    onChangeText={email => this.setState({ email })}
+                    onChangeText={email => {this.setState({ email })}}
                     value={this.state.email} />
-                <Text style={styles.text}>6-digit PIN</Text>
+                <Text style={styles.text}>PIN</Text>
                 <TextInput
                     style={styles.input}
                     secureTextEntry={true}
                     autoCapitalize="none"
                     onChangeText={password => this.setState({ password })}
                     value={this.state.password} />
-                <Text>Future sign in will use Touch/Face ID</Text>
                 {this.renderButton()}
-
+                <Text 
+                    style={[styles.text, {fontSize: 14, alignItems: 'center'}]}>
+                    FaceID/TouchID will be auto-triggered once you have signed in
+                </Text>
                 <View style={styles.footer}>
-                    <Text>New User?</Text>
-                    <TouchableOpacity style={[styles.buttonContainer, styles.moveToBottomScreen]}
+                    <Text style={[styles.text, {alignSelf: 'center'}]}>New User?</Text>
+                    <TouchableOpacity style={styles.buttonContainer}
                         // onPress will auto trigger if not including { () => { .... } }
-                        onPress={() => { this.props.navigation.navigate('PatientSignUp') }}>
-                        <Text style={styles.buttonText}>Click here to activate your account</Text>
+                        onPress={() => { Actions.signUp() }}>
+                        <Text style={styles.buttonText}>Activate Your Account</Text>
                     </TouchableOpacity>
                 </View>
-
-                <Text style={styles.errorTextStyle}>
-                    {this.state.error}
-                </Text>
-
             </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
+    header: {
+        alignSelf: 'flex-start',
+        paddingVertical: 40,
+        paddingLeft: 40,
+        fontSize: 30,
+        fontFamily: 'Futura',
+        fontWeight: 'bold',
+        textShadowColor: '#c4c4c4',
+        textShadowOffset: { width: 1, height: 0 },
+        textShadowRadius: 2
+    },
     container: {
         flex: 1,
-        backgroundColor: '#F5FCFF',
-        justifyContent: 'center',
         alignItems: 'center',
-    },
-    footer: {
-        position: 'absolute', //Here is the trick 
-        bottom: 100, //Here is the trick
-        justifyContent: 'center',
-        alignItems: 'center',
+        paddingTop: 80,
+        backgroundColor: '#ffffff',
     },
     text: {
         alignSelf: 'flex-start',
-        paddingLeft: 60
+        paddingLeft: 40,
+        paddingRight: 40,
+        color: '#96A0AF',
+        fontSize: 16,
+        textShadowColor: '#c4c4c4',
+        textShadowOffset: { width: 0.5, height: 0 },
+        textShadowRadius: 1,
     },
     input: {
-        width: 300,
-        height: 40,
-        borderColor: "#BEBEBE",
+        width: Dimensions.get('window').width - 80,
+        height: 46,
+        borderColor: "#96A0AF",
         borderBottomWidth: StyleSheet.hairlineWidth,
-        marginBottom: 20
+        marginBottom: 20,
+        fontSize: 18
     },
     buttonContainer: {
         backgroundColor: "#428AF8",
@@ -170,11 +192,17 @@ const styles = StyleSheet.create({
     buttonText: {
         color: "#FFF",
         textAlign: "center",
-        height: 20,
+        fontWeight: 'bold',
+        fontSize: 18
     },
-    errorTextStyle: {
-        fontSize: 16,
-        textAlign: 'center',
-        color: 'red'
-    },
+    footer:  {
+        height: 120,
+        paddingTop: 10,
+        position: 'absolute',
+        bottom: 0,
+        borderTopWidth: 1,
+        borderColor: '#96A0AF'
+    }
 });
+
+export default PatientLogin;
