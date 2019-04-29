@@ -18,7 +18,7 @@ class PatientSignUp extends Component {
 
         this.setState({ loading: true });
 
-        firebase.database().ref(`/Patients`)
+        firebase.database().ref('Patients/')
             .orderByChild('patientPhoneNumber').equalTo(patientPhoneNumber)
             .once("value", function (snapshot) {
                 if (snapshot.exists()) {
@@ -52,13 +52,7 @@ class PatientSignUp extends Component {
                             console.log("errorCode = " + errorCode);
                             console.log("errorMessage = " + errorMessage);
                     
-                            Alert.alert(
-                                'Error',
-                                'We cannot sign you in. Please contact our staff.',
-                                [
-                                    {text: 'Return to Login Page', onPress: () => Actions.login() }
-                                ]
-                            )
+                            this_var.setState({ error: errorMessage, loading: false });
                         })
                     })
                     .catch( (errorParam) => {
@@ -72,7 +66,7 @@ class PatientSignUp extends Component {
                             'Error',
                             'Your phone number cannot be activated. Please contact the staff.',
                             [
-                                {text: 'Return to Login Page', onPress: () => Actions.login() }
+                                {text: 'Return to Login Page', onPress: () => Actions.auth() }
                             ]
                         )
                     })
@@ -83,15 +77,16 @@ class PatientSignUp extends Component {
                         'Error',
                         'Your phone number cannot be found in our database. Please contact the staff.',
                         [
-                            {text: 'Return to Login Page', onPress: () => Actions.login() }
+                            {text: 'Return to Login Page', onPress: () => Actions.auth() }
                         ]
                     )
                 }
             }, function (error) {
-                console.log("firebase.database().ref('Patient/').orderByChild('patientPhoneNumber').equalTo(patientPhoneNumber).once(\"value\", function (snapshot) {....} FAILED")
+                console.log("firebase.database().ref('PatientAccounts/').orderByChild('patientPhoneNumber').equalTo(patientPhoneNumber).once(\"value\", function (snapshot) {....} FAILED")
                 console.log(error);
             });
     }
+
 
     renderButton() {
         if (this.state.loading) {

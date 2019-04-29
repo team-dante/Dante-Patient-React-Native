@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Text } from 'react-native-router-flux';
-import { Scene, Router, Actions } from 'react-native-router-flux';
+import { Scene, Router, ActionConst } from 'react-native-router-flux';
 import PatientLogin from './src/screens/patientLogin';
 import PatientSignUp from './src/screens/patientSignUp';
 import PatientProfile from './src/screens/patientProfile';
@@ -16,13 +16,15 @@ const RouterComponent = () => {
     return (
         <Router>
             <Scene key="root" hideNavBar>
-                <Scene key="auth">
-                    <Scene hideNavBar key="login" component={PatientLogin} title="Please Login" initial/>
-                    <Scene key="signUp" component={PatientSignUp} title="Sign Up" />
+                <Scene key="auth" type={ActionConst.RESET}>
+                    <Scene hideNavBar key="login" component={PatientLogin} 
+                        title="Please Login" initial/>
+                    <Scene key="signUp" component={PatientSignUp} title="Sign Up"/>
                 </Scene>
-                <Scene key="tabbar" tabs tabBarStyle={{backgroundColor: '#ffffff'}}>
+                <Scene key="tabbar" tabs tabBarStyle={{backgroundColor: '#ffffff'}} 
+                        type={ActionConst.RESET}>
                     <Scene key="map" component={ShowMap} 
-                        title="Oncology Map"
+                        title="Oncology Map" 
                     />
                     <Scene key="PatientProfile" component={PatientProfile} 
                         title="Profile" 
