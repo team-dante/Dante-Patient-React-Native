@@ -52,6 +52,7 @@ class PatientLogin extends React.Component {
         let { email, password } = this.state;
         
         email += "@email.com";
+        password += "ABCDEFG";
 
         console.log('email = ' + email);
         console.log('password = ' + password);
@@ -112,7 +113,7 @@ class PatientLogin extends React.Component {
                 <Image 
                     style={{width: 110, height: 110, borderRadius: 20}} 
                     source={require('../../appIcon/dante-patient.png')} />
-                <Text style={styles.header}>Sign In</Text>
+                <Text style={styles.header}>Dante Patient</Text>
                 <Text style={styles.text}>Your Phone Number</Text>
                 <TextInput
                     style={styles.input}
@@ -130,7 +131,7 @@ class PatientLogin extends React.Component {
                 {this.renderButton()}
                 <Text 
                     style={[styles.text, {fontSize: 14, alignItems: 'center'}]}>
-                    FaceID/TouchID will be auto-triggered once you have signed in
+                    Face ID/Touch ID will be auto-triggered once you have signed in
                 </Text>
                 <View style={styles.footer}>
                     <Text style={[styles.text, {alignSelf: 'center'}]}>New User?</Text>
@@ -147,9 +148,7 @@ class PatientLogin extends React.Component {
 
 const styles = StyleSheet.create({
     header: {
-        alignSelf: 'flex-start',
         paddingVertical: 40,
-        paddingLeft: 40,
         fontSize: 30,
         fontFamily: 'Futura',
         fontWeight: 'bold',
@@ -167,7 +166,6 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         paddingLeft: 40,
         paddingRight: 40,
-        color: '#96A0AF',
         fontSize: 16,
         textShadowColor: '#c4c4c4',
         textShadowOffset: { width: 0.5, height: 0 },
@@ -197,10 +195,8 @@ const styles = StyleSheet.create({
     },
     footer:  {
         height: 120,
-        paddingTop: 10,
         position: 'absolute',
-        bottom: 0,
-        borderTopWidth: 1,
+        bottom: 20,
         borderColor: '#96A0AF'
     }
 });

@@ -30,6 +30,8 @@ class PatientSignUp extends Component {
                     console.log("email=" + email);
                     console.log("pin=" + patientPin);
 
+                    // PatientPin = 4 digit PIN + "ABCDEFG"
+                    patientPin += "ABCDEFG"
                     firebase.auth().createUserWithEmailAndPassword(email, patientPin)
                     .then( () => {
                         console.log("success in SIGN UP")
@@ -132,7 +134,6 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         paddingLeft: 40,
         paddingRight: 40,
-        color: '#96A0AF',
         fontSize: 16,
         textShadowColor: '#c4c4c4',
         textShadowOffset: { width: 0.5, height: 0 },
