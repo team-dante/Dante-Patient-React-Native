@@ -24,7 +24,7 @@ const RouterComponent = () => {
                     <Scene key="signUp" component={PatientSignUp} title="Sign Up" />
                 </Scene>
                 <Scene key="tabbar" tabs tabBarStyle={{ fontSize: 100, backgroundColor: '#ffffff' }}
-                    type={ActionConst.RESET}>
+                    type={ActionConst.RESET} >
                     <Scene key="map" component={ShowMap}
                         title="Oncology Map"
                     />

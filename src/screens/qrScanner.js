@@ -17,6 +17,9 @@ class QrScanner extends Component {
 
 
     componentWillMount(){
+
+        console.log("im in componentWillmount");
+
         var self = this;
         user = firebase.auth().currentUser;
         console.log(user);
@@ -73,7 +76,7 @@ class QrScanner extends Component {
                     'Confirm',
                     'Successfully scanned QR code.',
                     [
-                        {text: 'Return to Onocology Map', onPress: () => { self.scanner.reactivate(); Actions.map(); }}
+                        {text: 'Close', onPress: () => { self.scanner.reactivate(); }}
                     ]
                 )
             })
@@ -100,7 +103,7 @@ class QrScanner extends Component {
                     'Confirm',
                     'You spent ' + (self.timeVisited / 1000) + ' seconds',
                     [
-                        {text: 'Return to Onocology Map', onPress: () => {self.scanner.reactivate(); Actions.map()} }
+                        {text: 'Close', onPress: () => { self.scanner.reactivate(); } }
                     ]
                 )
             })
@@ -108,6 +111,11 @@ class QrScanner extends Component {
         else {
             console.log("unrecognized qr code");
         }
+    }
+
+    componentDidMount() {
+        console.log("ENTERING componentDidMount")
+        
     }
 
     render() {
