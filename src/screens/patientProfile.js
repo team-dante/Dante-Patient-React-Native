@@ -18,7 +18,7 @@ class PatientProfile extends Component {
         var self = this;
 
         // search for the staff obj that has the same phoneNum as currentUser has
-        firebase.database().ref(`/staffs/`).orderByChild("phoneNum").equalTo(phoneNum)
+        firebase.database().ref(`/Patients/`).orderByChild("phoneNum").equalTo(phoneNum)
             .once('value', function(snapshot) {
                 let firstName = '';
                 snapshot.forEach(function (data) {

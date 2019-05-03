@@ -2,6 +2,20 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+  <key>NSLocationWhenInUseUsageDescription</key>
+  <string>Press OK to allow.</string>
+  <key>NSLocationAlwaysUsageDescription</key>
+  <string>Press OK to allow.</string>
+  <key>NSSpeechRecognitionUsageDescription</key>
+  <string>Press OK to allow.</string>
+  <key>NSMotionUsageDescription</key>
+  <string>Press OK to allow.</string>
+  <key>NSAppleMusicUsageDescription</key>
+  <string>Press OK to allow.</string>
+  <key>NSBluetoothPeripheralUsageDescription</key>
+  <string>Press OK to allow.</string>
+  <key>NSCalendarsUsageDescription</key>
+  <string>Press OK to allow.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -19,7 +33,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>5</string>
+	<string>6</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
