@@ -18,13 +18,15 @@ class PatientProfile extends Component {
         var self = this;
 
         // search for the staff obj that has the same phoneNum as currentUser has
-        firebase.database().ref(`/staffs/`).orderByChild("phoneNum").equalTo(phoneNum)
+        firebase.database().ref(`/Patients`).orderByChild("patientPhoneNumber").equalTo(phoneNum)
             .once('value', function(snapshot) {
-                let firstName = '';
+                let firstNameVal = '';
                 snapshot.forEach(function (data) {
-                    firstName = data.val().firstName;
+                    firstNameVal = data.val().firstName;
                 });
-                self.setState({patientName: firstName});
+                console.log("line 27=" + firstNameVal)
+                self.setState( { patientName : firstNameVal } );
+                // running console.log(patientName) here would cause crash
             });
     }
 
@@ -47,7 +49,7 @@ class PatientProfile extends Component {
     }
 
     render() {
-        const {patientName} = this.state;
+        const { patientName } = this.state;
         return (
             <View style={styles.container}>
                 <Text style={styles.topText}>Greetings, Patient {patientName}</Text>
@@ -57,7 +59,7 @@ class PatientProfile extends Component {
                     <Text style={styles.buttonText}>See Staff's Location in Real Time</Text>
                 </TouchableOpacity>   */}
                 <TouchableOpacity style={styles.buttonContainer} 
-                     onPress={() => {}}>
+                     onPress={() => { Actions.feedback() }}>
                     <Text style={styles.buttonText}>Give Feedback</Text>
                 </TouchableOpacity> 
                 <TouchableOpacity style={styles.buttonContainer} 
@@ -74,7 +76,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#fcfcfc'
     },
     topText: {
         fontSize: 18,

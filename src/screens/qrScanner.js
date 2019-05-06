@@ -103,7 +103,7 @@ class QrScanner extends Component {
                     'Confirm',
                     'You spent ' + (self.timeVisited / 1000) + ' seconds',
                     [
-                        {text: 'Close', onPress: () => { self.scanner.reactivate(); } }
+                        {text: 'Go to Feedback', onPress: () => { self.scanner.reactivate(); Actions.feedback(); } }
                     ]
                 )
             })
