@@ -6,7 +6,6 @@ import PatientSignUp from './src/screens/patientSignUp';
 import PatientProfile from './src/screens/patientProfile';
 import ShowMap from './src/screens/showMap';
 import QrScanner from './src/screens/qrScanner';
-import Feedback from './src/screens/survey';
 
 
 const TabIcon = ({ selected, title }) => {
@@ -36,9 +35,6 @@ const RouterComponent = () => {
                         title="Profile"
                     />
                 </Scene>
-                <Scene key="feedback" component={Feedback}
-                    title="Survey"
-                />
             </Scene>
         </Router>
     );

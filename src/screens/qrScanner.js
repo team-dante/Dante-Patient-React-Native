@@ -101,9 +101,9 @@ class QrScanner extends Component {
     
                 Alert.alert(
                     'Confirm',
-                    'You spent ' + (self.timeVisited / 1000) + ' seconds.',
+                    'You spent ' + (self.timeVisited / 1000) + ' seconds',
                     [
-                        {text: 'Close', onPress: () => { Actions.feedback()} }
+                        {text: 'Close', onPress: () => { self.scanner.reactivate(); } }
                     ]
                 )
             })

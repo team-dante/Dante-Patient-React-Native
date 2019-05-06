@@ -32,8 +32,7 @@ class PatientLogin extends React.Component {
                     .then(success => {
                         console.log('Authenticated Successfully');
                         console.log("success = " + success);
-                        // Actions.map();
-                        Actions.feedback();
+                        Actions.map();
                     })
                     .catch(error => {
                         console.log('Authentication Failed');
