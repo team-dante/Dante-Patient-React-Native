@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: "#ffffff",
     },
     topText: {
         fontSize: 18,
@@ -75,16 +74,16 @@ const styles = StyleSheet.create({
     textarea: {
         height: 150,
         width: 250,
-        borderWidth: 0.5,
+        borderWidth: 1,
         borderRadius: 4,
-        backgroundColor: "#f1f1f1",
+        backgroundColor: "#ffffff",
         marginVertical: 10,
     },
     ratingInput: {
         width: 250,
-        borderWidth: 0.5,
+        borderWidth: 1,
         borderRadius: 4,
-        backgroundColor: "#f1f1f1",
+        backgroundColor: "#ffffff",
         marginVertical: 10,
     },
 }); 
