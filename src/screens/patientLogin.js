@@ -32,7 +32,7 @@ class PatientLogin extends React.Component {
                     .then(success => {
                         console.log('Authenticated Successfully');
                         console.log("success = " + success);
-                        Actions.map();
+                        this.props.navigation.navigate('showMap');
                     })
                     .catch(error => {
                         console.log('Authentication Failed');
@@ -50,7 +50,7 @@ class PatientLogin extends React.Component {
     onButtonPress() {
         this.setState({ error: '', loading: true })
         let { email, password } = this.state;
-        
+
         email += "@email.com";
         password += "ABCDEFG";
 
@@ -58,8 +58,8 @@ class PatientLogin extends React.Component {
         console.log('password = ' + password);
 
         firebase.auth().signInWithEmailAndPassword(email, password)
-            .then((user) => {this.onLoginSuccess.bind(this)(user); })
-            .catch((error) => {this.onLoginFailure.bind(this)(error);});
+            .then((user) => { this.onLoginSuccess.bind(this)(user); })
+            .catch((error) => { this.onLoginFailure.bind(this)(error); });
     }
 
     onLoginSuccess(user) {
@@ -68,7 +68,7 @@ class PatientLogin extends React.Component {
         this.setState({
             email: '', password: '', error: '', loading: false
         });
-        Actions.map();
+        this.props.navigation.navigate('showMap');
     }
 
     onLoginFailure(errorParam) {
@@ -80,12 +80,12 @@ class PatientLogin extends React.Component {
         console.log("errorCode = " + errorCode);
         console.log("errorMessage = " + errorMessage);
 
-        this.setState({ error: errorMessage, loading: false, email:'', password:'' });
+        this.setState({ error: errorMessage, loading: false, email: '', password: '' });
         Alert.alert(
             'Error',
             'This is no user record associated with this identifier. The user may have been deleted.',
             [
-                {text: 'Close' }
+                { text: 'Close' }
             ]
         )
     }
@@ -110,8 +110,8 @@ class PatientLogin extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <Image 
-                    style={{width: 110, height: 110, borderRadius: 20}} 
+                <Image
+                    style={{ width: 110, height: 110, borderRadius: 20 }}
                     source={require('../../appIcon/dante-patient.png')} />
                 <Text style={styles.header}>Dante Patient</Text>
                 <Text style={styles.text}>Your Phone Number</Text>
@@ -119,7 +119,7 @@ class PatientLogin extends React.Component {
                     style={styles.input}
                     secureTextEntry={false}
                     autoCapitalize="none"
-                    onChangeText={email => {this.setState({ email })}}
+                    onChangeText={email => { this.setState({ email }) }}
                     value={this.state.email} />
                 <Text style={styles.text}>PIN</Text>
                 <TextInput
@@ -129,15 +129,15 @@ class PatientLogin extends React.Component {
                     onChangeText={password => this.setState({ password })}
                     value={this.state.password} />
                 {this.renderButton()}
-                <Text 
-                    style={[styles.text, {fontSize: 14, alignItems: 'center'}]}>
+                <Text
+                    style={[styles.text, { fontSize: 14, alignItems: 'center' }]}>
                     Face ID/Touch ID will be auto-triggered once you have signed in
                 </Text>
                 <View style={styles.footer}>
-                    <Text style={[styles.text, {alignSelf: 'center'}]}>New User?</Text>
+                    <Text style={[styles.text, { alignSelf: 'center' }]}>New User?</Text>
                     <TouchableOpacity style={styles.buttonContainer}
                         // onPress will auto trigger if not including { () => { .... } }
-                        onPress={() => { Actions.signUp() }}>
+                        onPress={() => { this.props.navigation.navigate('signup') }}>
                         <Text style={styles.buttonText}>Activate Your Account</Text>
                     </TouchableOpacity>
                 </View>
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 18
     },
-    footer:  {
+    footer: {
         height: 120,
         position: 'absolute',
         bottom: 20,

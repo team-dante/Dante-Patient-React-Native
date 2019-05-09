@@ -41,7 +41,7 @@ class PatientProfile extends Component {
                     .catch( (error) => {
                         console.log(error);
                     })
-                    Actions.auth();
+                    this.props.navigation.navigate('login')
                 } },
                 {text: "Don't sign me out", onDismiss: () => {} }
             ]
