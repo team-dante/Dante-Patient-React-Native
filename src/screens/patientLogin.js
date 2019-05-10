@@ -32,7 +32,7 @@ class PatientLogin extends React.Component {
                     .then(success => {
                         console.log('Authenticated Successfully');
                         console.log("success = " + success);
-                        this.props.navigation.navigate('showMap');
+                        Actions.map()
                     })
                     .catch(error => {
                         console.log('Authentication Failed');
@@ -68,7 +68,7 @@ class PatientLogin extends React.Component {
         this.setState({
             email: '', password: '', error: '', loading: false
         });
-        this.props.navigation.navigate('showMap');
+        Actions.map();
     }
 
     onLoginFailure(errorParam) {
@@ -137,7 +137,7 @@ class PatientLogin extends React.Component {
                     <Text style={[styles.text, { alignSelf: 'center' }]}>New User?</Text>
                     <TouchableOpacity style={styles.buttonContainer}
                         // onPress will auto trigger if not including { () => { .... } }
-                        onPress={() => { this.props.navigation.navigate('signup') }}>
+                        onPress={() => { Actions.signUp(); }}>
                         <Text style={styles.buttonText}>Activate Your Account</Text>
                     </TouchableOpacity>
                 </View>
