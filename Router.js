@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text } from 'react-native-router-flux';
+import { Text, Actions } from 'react-native-router-flux';
 import { Scene, Router, ActionConst } from 'react-native-router-flux';
 import PatientLogin from './src/screens/patientLogin';
 import PatientSignUp from './src/screens/patientSignUp';
@@ -18,27 +18,32 @@ const RouterComponent = () => {
     return (
         <Router>
             <Scene key="root" hideNavBar>
-                {/* ActionConst.RESET disables moving back feature */}
+                {/* ActionConst.RESET disables the back arrow */}
                 <Scene key="auth" type={ActionConst.RESET}>
                     <Scene hideNavBar key="login" component={PatientLogin}
                         title="Please Login" initial />
                     <Scene key="signUp" component={PatientSignUp} title="Sign Up" />
                 </Scene>
-                <Scene key="tabbar" tabs tabBarStyle={{ fontSize: 100, backgroundColor: '#ffffff' }}
-                    type={ActionConst.RESET} >
+                {/* ActionConst.RESET disables the back arrow */}
+                <Scene key="tabbar" tabs type={ActionConst.RESET} >
                     <Scene key="map" component={ShowMap}
                         title="Oncology Map"
-                    />
-                    <Scene key="qrScanner" component={QrScanner}
-                        title="QR Scanner"
+                        onRight={() => { Actions.qrScanner() }}
+                        rightTitle={'Scan QR code'}
                     />
                     <Scene key="PatientProfile" component={PatientProfile}
                         title="Profile"
+                        onRight={() => { Actions.qrScanner() }}
+                        rightTitle={'Scan QR code'}
                     />
                 </Scene>
-                <Scene key="feedback" component={Feedback}
-                    title="Feedback"
-                />
+                <Scene key="feedback" type={ActionConst.RESET} >
+                    <Scene key="feedback" component={Feedback}
+                        title="Feedback" back={true} backTitle={'Back'}/>
+                </Scene>
+                <Scene key="qrScanner" >
+                        <Scene key="qrScanner" component={QrScanner} title="QR Scanner" back={true} backTitle={'Back'}/>
+                </Scene>
             </Scene>
         </Router>
     );
