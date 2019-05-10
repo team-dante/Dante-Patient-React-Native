@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, TextInput, TouchableOpacity, Keyboard } from 'react-native'
+import { Alert, View, Text, StyleSheet, Dimensions, TextInput, TouchableOpacity, Keyboard } from 'react-native'
 import firebase from 'firebase'
 import { Actions } from 'react-native-router-flux';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
@@ -37,7 +37,15 @@ export default class Feedback extends Component {
                         />
                     </View>
                 </TouchableWithoutFeedback>
-                <TouchableOpacity style={styles.buttonContainer} onPress={() => { Actions.map() }}>
+                <TouchableOpacity style={styles.buttonContainer} onPress={() => {
+                    Alert.alert(
+                        'Confirm',
+                        'Thank you for your feedback.',
+                        [
+                            { text: 'Close', onPress: () => { Actions.map(); } }
+                        ]
+                    )
+                }}>
                     <Text style={styles.buttonText} >Submit</Text>
                 </TouchableOpacity>
             </View>
@@ -75,14 +83,16 @@ const styles = StyleSheet.create({
     textarea: {
         height: 150,
         width: 250,
-        borderWidth: 0.5,
         borderRadius: 4,
         backgroundColor: "#f1f1f1",
         marginVertical: 10,
+        borderWidth: 0.2,
+        paddingVertical: 10,
     },
     ratingInput: {
         width: 250,
-        borderWidth: 0.5,
+        borderWidth: 0.2,
+        paddingVertical: 10,
         borderRadius: 4,
         backgroundColor: "#f1f1f1",
         marginVertical: 10,

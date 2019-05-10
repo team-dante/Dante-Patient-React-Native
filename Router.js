@@ -39,7 +39,7 @@ const RouterComponent = () => {
                 </Scene>
                 <Scene key="feedback" type={ActionConst.RESET} >
                     <Scene key="feedback" component={Feedback}
-                        title="Feedback" back={true} backTitle={'Back'}/>
+                        title="Feedback"/>
                 </Scene>
                 <Scene key="qrScanner" >
                         <Scene key="qrScanner" component={QrScanner} title="QR Scanner" back={true} backTitle={'Back'}/>

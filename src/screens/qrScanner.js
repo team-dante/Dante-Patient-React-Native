@@ -6,21 +6,16 @@ import { Actions } from 'react-native-router-flux';
 
 class QrScanner extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.user = '';
-        this.phoneNumber = '';
-        this.start = 0;
-        this.end = 0;
-        this.timeVisited = 0;
     }
 
 
-    componentWillMount(){
+    componentWillMount() {
 
         console.log("im in componentWillmount");
 
-        var self = this;
+        let phoneNumber = 0;
         user = firebase.auth().currentUser;
         console.log(user);
         phoneNumber = user.email.split('@')[0];
@@ -28,25 +23,43 @@ class QrScanner extends Component {
         console.log("im in componentWillMount");
         console.log("phoneNumber = " + phoneNumber);
 
-        firebase.database().ref('/Durations/').orderByChild('phoneNum').equalTo(phoneNumber)
-        .once('value', function(snapshot){
-            if (snapshot.exists())
-            {
-                console.log("Patient's duration is found in duration table. No need to push another duration for this patient");
+        let recordFound = false;
+        firebase.database().ref('/PatientVisits/').once('value', function (snapshot) {
+            if (snapshot.exists()) {
+                snapshot.forEach((data) => {
+                    if (data.key == phoneNumber)
+                        recordFound = true;
+                });
+
+            }
+
+            if (recordFound) {
+                console.log('Patient\'s phone number IS found in PatientVisits table');
             }
             else {
-                console.log("Patient's duration is NOT FOUND in duration table.");
-                firebase.database().ref(`/Durations`).push({
-                    phoneNum: phoneNumber,
+                console.log('Patient\'s phone number IS NOT found in PatientVisits table');
+
+                firebase.database().ref('/PatientVisits/').child(phoneNumber).child('OverallDuration').set({
                     startTime: '',
                     endTime: '',
                 }).then((data) => {
-                    console.log("Pushing a new duration for this patient")
+                    console.log("Pushing a new overall duration for this patient")
                     console.log("data = " + data);
                 }).catch((error) => {
-                    console.log("error pushing new duration to the server = " + error);
+                    console.log("error pushing new overall duration to the server = " + error);
+                })
+
+                firebase.database().ref('/PatientVisits/').child(phoneNumber).child('RoomA').set({
+                    startTime: '',
+                    endTime: '',
+                }).then((data) => {
+                    console.log("Pushing a new roomA for this patient")
+                    console.log("data = " + data);
+                }).catch((error) => {
+                    console.log("error pushing new roomA to the server = " + error);
                 })
             }
+
         })
     }
 
@@ -57,65 +70,85 @@ class QrScanner extends Component {
         console.log(e);
         console.log("phoneNumber = " + phoneNumber);
 
-        let durationObjectId = '';
+        let phoneNumber = 0;
+        user = firebase.auth().currentUser;
+        console.log(user);
+        phoneNumber = user.email.split('@')[0];
 
-        if (e.data == 'start') {
+        if (e.data == 'overall-start') {
 
-            firebase.database().ref('/Durations/').orderByChild('phoneNum').equalTo(phoneNumber)
-            .once('value', function(snapshot){
-                snapshot.forEach((data) => {
-                    durationObjectId = data.key
-                })
-                // self.start data is only shown in firebase function
-                self.start = Date.now();
-                firebase.database().ref().child('/Durations/' + durationObjectId)
-                .update({
-                    startTime : self.start
-                })
+            firebase.database().ref('/PatientVisits/' + phoneNumber).child('/OverallDuration').update({
+                startTime: Date.now()
+            }).then((data) => {
+                console.log("Successfully updating overallDuration for patient " + phoneNumber)
+
                 Alert.alert(
                     'Confirm',
                     'Successfully scanned QR code.',
                     [
-                        {text: 'Close', onPress: () => { self.scanner.reactivate(); }}
+                        { text: 'Close', onPress: () => { Actions.map(); } }
                     ]
                 )
+            }).catch((error) => {
+                console.log("error updating overallDuration for patient " + phoneNumber);
+                console.log("error = " + error);
             })
         }
-        else if (e.data == 'end') {
+        else if (e.data == 'overall-end') {
 
-            firebase.database().ref('/Durations/').orderByChild('phoneNum').equalTo(phoneNumber)
-            .once('value', function(snapshot){
-                snapshot.forEach((data) => {
-                    durationObjectId = data.key
+            firebase.database().ref('/PatientVisits/' + phoneNumber).child('/OverallDuration').update({
+                endTime: Date.now()
+            }).then((data) => {
+                console.log("Successfully updating overallDuration for patient " + phoneNumber)
+
+                firebase.database().ref('PatientVisits').child(phoneNumber).child('OverallDuration').once('value', function (data) {
+                    if (data.exists()) {
+                        let startTimeLocal = 0;
+                        let endTimeLocal = 0;
+
+                        startTimeLocal = data.val().startTime;
+                        endTimeLocal = data.val().endTime;
+
+                        let durationEpoch = endTimeLocal - startTimeLocal;
+                        let d = new Date(endTimeLocal);
+
+                        let seconds = Math.floor((durationEpoch / 1000) % 60),
+                            minutes = Math.floor((durationEpoch / (1000 * 60)) % 60),
+                            hours = Math.floor((durationEpoch / (1000 * 60 * 60)) % 24);
+
+                        hours = (hours < 10) ? "0" + hours : hours;
+                        minutes = (minutes < 10) ? "0" + minutes : minutes;
+                        seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+                        Alert.alert(
+                            'Confirm',
+                            'On ' + d.toDateString() + ', you spent ' + hours + " hours, " + minutes + " minutes, " + seconds + " seconds" +' at the clinic.',
+                            [
+                                { text: 'Close', onPress: () => { Actions.feedback(); } }
+                            ]
+                        )
+                    }
                 })
-                // self.end data is only shown in firebase function
-                self.end = Date.now();
-                firebase.database().ref().child('/Durations/' + durationObjectId)
-                .update({
-                    endTime : self.end
-                })
-                console.log("start = " + self.start);
-                console.log("end = " + self.end);
-                self.timeVisited = self.end - self.start;
-                console.log("timeVisited = " + self.timeVisited);
-    
-                Alert.alert(
-                    'Confirm',
-                    'You spent ' + (self.timeVisited / 1000) + ' seconds',
-                    [
-                        {text: 'Go to Feedback', onPress: () => { self.scanner.reactivate(); Actions.feedback(); } }
-                    ]
-                )
             })
+                .catch((error) => {
+                    console.log("error updating overallDuration for patient " + phoneNumber);
+                    console.log("error = " + error);
+                })
         }
         else {
-            console.log("unrecognized qr code");
+            Alert.alert(
+                'Error',
+                'Unrecognized QR code',
+                [
+                    { text: 'Close', onPress: () => { Actions.map(); } }
+                ]
+            )
         }
     }
-
+    Í
     componentDidMount() {
         console.log("ENTERING componentDidMount")
-        
+
     }
 
     render() {
