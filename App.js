@@ -9,7 +9,7 @@
 import React, { Component } from 'react';
 import Config from 'react-native-config'
 import firebase from 'firebase';
-import Router from './Router';
+import AppNavigator from './Navigator';
 
 class App extends Component {
 
@@ -30,7 +30,7 @@ class App extends Component {
 
   render() {
     return (
-      <Router />
+      <AppNavigator/>
     );
   }
 }
