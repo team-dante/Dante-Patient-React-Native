@@ -72,13 +72,21 @@ class QrScanner extends Component {
 
         let phoneNumber = 0;
         user = firebase.auth().currentUser;
-        console.log(user);
         phoneNumber = user.email.split('@')[0];
 
         if (e.data == 'overall-start') {
-            // firebase.database.ref('/WaitingQueue/').update({
-                
-            // })
+            // ADD users' phoneNumber to the WaitingQueue
+            firebase.database().ref('/WaitingQueue').once('value', function(snapshot){
+                let queueNumber = snapshot.numChildren();
+                let duplicatedFound = false;
+                snapshot.forEach((child) => {
+                    if (child.key == phoneNumber.toString())
+                        duplicatedFound = true;
+                })
+                if (!duplicatedFound)
+                    firebase.database().ref('/WaitingQueue').child(phoneNumber).set(queueNumber + 1);
+            })
+            console.log("ADD users' phoneNumber to the WaitingQueue");
 
             firebase.database().ref('/PatientVisits/' + phoneNumber).child('/OverallDuration').update({
                 startTime: Date.now()
@@ -98,6 +106,16 @@ class QrScanner extends Component {
             })
         }
         else if (e.data == 'overall-end') {
+            // REMOVE users' phoneNumber to the WaitingQueue
+            firebase.database().ref('/WaitingQueue').child(phoneNumber).remove();
+            firebase.database().ref('/WaitingQueue').once('value', function(snapshot){
+                snapshot.forEach( (child) => {
+                    console.log(child.key + ', ' + child.val())
+                    //child().update() won't work
+                    firebase.database().ref('/WaitingQueue').child(child.key).set(child.val() - 1);
+                })
+            })
+            console.log("REMOVE users' phoneNumber to the WaitingQueue")
 
             firebase.database().ref('/PatientVisits/' + phoneNumber).child('/OverallDuration').update({
                 endTime: Date.now()
@@ -122,7 +140,7 @@ class QrScanner extends Component {
                         hours = (hours < 10) ? "0" + hours : hours;
                         minutes = (minutes < 10) ? "0" + minutes : minutes;
                         seconds = (seconds < 10) ? "0" + seconds : seconds;
-
+                        
                         Alert.alert(
                             'Confirm',
                             'On ' + d.toDateString() + ', you spent ' + hours + " hours, " + minutes + " minutes, " + seconds + " seconds" +' at the clinic.',

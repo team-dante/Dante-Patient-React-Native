@@ -7,18 +7,25 @@ export default class ShowMap extends Component {
     constructor(props) {
         super(props);
         // email = phoneNumber + @email.com
-        this.state = { patientName: '', queueNum: ''};
+        this.state = { patientName: '', queueNum: '', queueNotFound: true };
     }
-    componentDidMount() {
+    componentWillMount() {
         // locate current user's phone num
         let user = firebase.auth().currentUser;
         let phoneNum = user.email.split("@")[0];
         // this keyword would not work under callback fxn
         var self = this;
 
-        // firebase.ref('/WaitingQueue').update({
-            
-        // })
+        
+        firebase.database().ref('/WaitingQueue').on("value", function(snapshot){
+            snapshot.forEach( (data) => {
+                if (data.key == phoneNum.toString()){
+                    console.log(data.key + ': ' + data.val())
+                    self.setState({ queueNum: data.val(), queueNotFound: false })
+                }
+            })
+        })
+
 
         // search for the staff obj that has the same phoneNum as currentUser has
         firebase.database().ref(`/Patients`).orderByChild("patientPhoneNumber").equalTo(phoneNum)
@@ -32,11 +39,24 @@ export default class ShowMap extends Component {
                 // running console.log(patientName) here would cause crash
             });
     }
+    renderPositionText(){
+        const { queueNum } = this.state;
+
+        if (this.state.queueNotFound) {
+            return (
+                <Text style={styles.topText}>You are not registered in the waiting list.</Text>
+            )
+        }
+        else {
+            return (
+                    <Text style={styles.topText}>You are positioned #{queueNum} in the list.</Text>
+            )
+        }
+    }
     render() {
-        const { patientName, queueNum } = this.state;
         return (
             <ScrollView minimumZoomScale={1} maximumZoomScale={3} contentContainerStyle={styles.container}>
-                <Text style={styles.topText}>You are in line for queue #{queueNum}</Text>
+                { this.renderPositionText() }
                 <Image source={require("../assets/radOncMap.png")} 
                 style={styles.image}
                 resizeMode="contain">
@@ -58,10 +78,14 @@ const styles = StyleSheet.create({
         width: undefined
     },
     topText: {
+        color: '#ffffff',
         textAlign: 'center',
-        position: 'absolute',
-        paddingLeft: 80,
-        fontSize: 18,
-        margin: 5,
+        margin: 20,
+        fontSize: 30,
+        borderWidth: 1,
+        borderRadius: 10,
+        backgroundColor: '#428AF8',
+        borderColor: '#ffffff',
+        overflow: 'hidden'
     },
 });
