@@ -84,7 +84,7 @@ class QrScanner extends Component {
                         duplicatedFound = true;
                 })
                 if (!duplicatedFound)
-                    firebase.database().ref('/WaitingQueue').child(phoneNumber).set(queueNumber + 1);
+                    firebase.database().ref('/WaitingQueue').child(phoneNumber).set(queueNumber);
             })
             console.log("ADD users' phoneNumber to the WaitingQueue");
 
@@ -107,14 +107,20 @@ class QrScanner extends Component {
         }
         else if (e.data == 'overall-end') {
             // REMOVE users' phoneNumber to the WaitingQueue
-            firebase.database().ref('/WaitingQueue').child(phoneNumber).remove();
             firebase.database().ref('/WaitingQueue').once('value', function(snapshot){
+                let updateValFromHere = false;
                 snapshot.forEach( (child) => {
                     console.log(child.key + ', ' + child.val())
+                    
+                    if (child.key == phoneNumber.toString())
+                        updateValFromHere = true
+
                     //child().update() won't work
-                    firebase.database().ref('/WaitingQueue').child(child.key).set(child.val() - 1);
+                    if (updateValFromHere && child.val() != 0)
+                        firebase.database().ref('/WaitingQueue').child(child.key).set(child.val() - 1);
                 })
             })
+            firebase.database().ref('/WaitingQueue').child(phoneNumber).remove();
             console.log("REMOVE users' phoneNumber to the WaitingQueue")
 
             firebase.database().ref('/PatientVisits/' + phoneNumber).child('/OverallDuration').update({
