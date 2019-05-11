@@ -22,6 +22,8 @@ export default class ShowMap extends Component {
                 if (data.key == phoneNum.toString()){
                     console.log(data.key + ': ' + data.val())
                     self.setState({ queueNum: data.val(), queueNotFound: false })
+                    if (data.val() == -1)
+                        self.setState({ queueNotFound: true })
                 }
             })
         })

@@ -121,7 +121,7 @@ class QrScanner extends Component {
                 })
             })
             // one way to trick the system. update value to -1, firebase triggers when child.key updates to -1, call setState when -1 is found
-            firebase.database().ref('/WaitingQueue').child(phoneNumber).set(0);
+            firebase.database().ref('/WaitingQueue').child(phoneNumber).set(-1);
             firebase.database().ref('/WaitingQueue').child(phoneNumber).remove();
             console.log("REMOVE users' phoneNumber to the WaitingQueue")
 
