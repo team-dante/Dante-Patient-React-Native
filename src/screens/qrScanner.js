@@ -15,52 +15,52 @@ class QrScanner extends Component {
 
         console.log("im in componentWillmount");
 
-        let phoneNumber = 0;
-        user = firebase.auth().currentUser;
-        console.log(user);
-        phoneNumber = user.email.split('@')[0];
+        // let phoneNumber = 0;
+        // user = firebase.auth().currentUser;
+        // console.log(user);
+        // phoneNumber = user.email.split('@')[0];
 
-        console.log("im in componentWillMount");
-        console.log("phoneNumber = " + phoneNumber);
+        // console.log("im in componentWillMount");
+        // console.log("phoneNumber = " + phoneNumber);
 
-        let recordFound = false;
-        firebase.database().ref('/PatientVisits/').once('value', function (snapshot) {
-            if (snapshot.exists()) {
-                snapshot.forEach((data) => {
-                    if (data.key == phoneNumber)
-                        recordFound = true;
-                });
+        // let recordFound = false;
+        // firebase.database().ref('/PatientVisits/').once('value', function (snapshot) {
+        //     if (snapshot.exists()) {
+        //         snapshot.forEach((data) => {
+        //             if (data.key == phoneNumber)
+        //                 recordFound = true;
+        //         });
 
-            }
+        //     }
 
-            if (recordFound) {
-                console.log('Patient\'s phone number IS found in PatientVisits table');
-            }
-            else {
-                console.log('Patient\'s phone number IS NOT found in PatientVisits table');
+        //     if (recordFound) {
+        //         console.log('Patient\'s phone number IS found in PatientVisits table');
+        //     }
+        //     else {
+        //         console.log('Patient\'s phone number IS NOT found in PatientVisits table');
 
-                firebase.database().ref('/PatientVisits/').child(phoneNumber).child('OverallDuration').set({
-                    startTime: '',
-                    endTime: '',
-                }).then((data) => {
-                    console.log("Pushing a new overall duration for this patient")
-                    console.log("data = " + data);
-                }).catch((error) => {
-                    console.log("error pushing new overall duration to the server = " + error);
-                })
+        //         firebase.database().ref('/PatientVisits/').child(phoneNumber).child('OverallDuration').set({
+        //             startTime: '',
+        //             endTime: '',
+        //         }).then((data) => {
+        //             console.log("Pushing a new overall duration for this patient")
+        //             console.log("data = " + data);
+        //         }).catch((error) => {
+        //             console.log("error pushing new overall duration to the server = " + error);
+        //         })
 
-                firebase.database().ref('/PatientVisits/').child(phoneNumber).child('RoomA').set({
-                    startTime: '',
-                    endTime: '',
-                }).then((data) => {
-                    console.log("Pushing a new roomA for this patient")
-                    console.log("data = " + data);
-                }).catch((error) => {
-                    console.log("error pushing new roomA to the server = " + error);
-                })
-            }
+        //         firebase.database().ref('/PatientVisits/').child(phoneNumber).child('RoomA').set({
+        //             startTime: '',
+        //             endTime: '',
+        //         }).then((data) => {
+        //             console.log("Pushing a new roomA for this patient")
+        //             console.log("data = " + data);
+        //         }).catch((error) => {
+        //             console.log("error pushing new roomA to the server = " + error);
+        //         })
+        //     }
 
-        })
+        // })
     }
 
     onSuccess(e) {
@@ -76,6 +76,9 @@ class QrScanner extends Component {
         phoneNumber = user.email.split('@')[0];
 
         if (e.data == 'overall-start') {
+            // firebase.database.ref('/WaitingQueue/').update({
+                
+            // })
 
             firebase.database().ref('/PatientVisits/' + phoneNumber).child('/OverallDuration').update({
                 startTime: Date.now()

@@ -53,7 +53,7 @@ class PatientProfile extends Component {
         return (
             <View style={styles.container}>
                 <Text style={styles.topText}>Greetings, Patient {patientName}</Text>
-                <Text style={styles.header}>What would you like to do?</Text>
+                {/* <Text style={styles.header}>What would you like to do?</Text> */}
                 {/* <TouchableOpacity style={styles.buttonContainer} 
                      onPress={() => {this.props.navigation.navigate('ShowMap')}}>
                     <Text style={styles.buttonText}>See Staff's Location in Real Time</Text>

@@ -7,6 +7,7 @@ import PatientProfile from './src/screens/patientProfile';
 import ShowMap from './src/screens/showMap';
 import QrScanner from './src/screens/qrScanner';
 import Feedback from './src/screens/feedback';
+import Queue from './src/screens/queue';
 
 
 const TabIcon = ({ selected, title }) => {
@@ -31,6 +32,10 @@ const RouterComponent = () => {
                         onRight={() => { Actions.qrScanner() }}
                         rightTitle={'Scan QR code'}
                     />
+                    {/* <Scene key="queue" component={Queue}
+                    title="Queuing Number"
+                    onRight={() => { Actions.qrScanner() }}
+                    rightTitle={'Scan QR code'}/> */}
                     <Scene key="PatientProfile" component={PatientProfile}
                         title="Profile"
                         onRight={() => { Actions.qrScanner() }}
