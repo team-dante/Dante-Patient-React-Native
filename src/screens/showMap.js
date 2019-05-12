@@ -51,7 +51,7 @@ export default class ShowMap extends Component {
         }
         else {
             return (
-                    <Text style={styles.topText}>You are positioned #{queueNum} in the list.</Text>
+                    <Text style={styles.topText}>There are #{queueNum} people ahead of you.</Text>
             )
         }
     }

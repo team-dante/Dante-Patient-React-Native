@@ -21,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>10</string>
+	<string>14</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -37,15 +37,11 @@
 			</dict>
 		</dict>
 	</dict>
-  <key>NSLocationWhenInUseUsageDescription  </key>
-  <string>Press OK to allow.</string>
-  <key>NSBluetoothPeripheralUsageDescription </key>
-  <string>Press OK to allow.</string>
-  <key>NSCalendarsUsageDescription</key>
-  <string>Press OK to allow.</string>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>Press OK to allow.</string>
-	<key>NSBluetoothPeripheralUsageDescription </key>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Press OK to allow.</string>
+	<key>NSCalendarsUsageDescription</key>
 	<string>Press OK to allow.</string>
 	<key>NSCalendarsUsageDescription </key>
 	<string>Press OK to allow.</string>
@@ -57,6 +53,8 @@
 	<string>Press OK to allow.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Press OK to allow.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>Press OK to allow.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
