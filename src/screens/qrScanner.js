@@ -12,55 +12,119 @@ class QrScanner extends Component {
 
 
     componentWillMount() {
-
         console.log("im in componentWillmount");
+    }
 
-        // let phoneNumber = 0;
-        // user = firebase.auth().currentUser;
-        // console.log(user);
-        // phoneNumber = user.email.split('@')[0];
+    updateStartTime(keyMonthDateYear, phoneNumber, location, message) {
+        // ADD users' phoneNumber to the WaitingQueue
+        firebase.database().ref('/WaitingQueue').once('value', function (snapshot) {
+            let queueNumber = snapshot.numChildren();
+            let duplicatedFound = false;
+            snapshot.forEach((child) => {
+                if (child.key == phoneNumber.toString())
+                    duplicatedFound = true;
+            })
+            if (!duplicatedFound)
+                firebase.database().ref('/WaitingQueue').child(phoneNumber).set(queueNumber);
+        })
+        console.log("ADD users' phoneNumber to the WaitingQueue");
 
-        // console.log("im in componentWillMount");
-        // console.log("phoneNumber = " + phoneNumber);
+        // updating patient startTime for multiple visits (assuming no users visit each room once)
+        firebase.database().ref('/PatientVisits/' + phoneNumber).child(location).once('value', function (snapshot) {
+            snapshot.ref.child('startTime').update({
+                [keyMonthDateYear]: Date.now()
+            })
+        }).then((data) => {
+            console.log("Successfully updating " + location + "/startTime for patient " + phoneNumber)
 
-        // let recordFound = false;
-        // firebase.database().ref('/PatientVisits/').once('value', function (snapshot) {
-        //     if (snapshot.exists()) {
-        //         snapshot.forEach((data) => {
-        //             if (data.key == phoneNumber)
-        //                 recordFound = true;
-        //         });
+            Alert.alert(
+                'Confirm',
+                message,
+                [
+                    { text: 'Close', onPress: () => { Actions.map(); } }
+                ]
+            )
+        }).catch((error) => {
+            console.log("error updating " + location + "/startTime for patient " + phoneNumber);
+            console.log("error = " + error);
+        })
+    }
 
-        //     }
+    updateEndTimeAndDiffTime(keyMonthDateYear, phoneNumber, location, message) {
+        // REMOVE users' phoneNumber to the WaitingQueue
+        firebase.database().ref('/WaitingQueue').once('value', function (snapshot) {
+            let updateValFromHere = false;
+            snapshot.forEach((child) => {
+                console.log(child.key + ', ' + child.val())
 
-        //     if (recordFound) {
-        //         console.log('Patient\'s phone number IS found in PatientVisits table');
-        //     }
-        //     else {
-        //         console.log('Patient\'s phone number IS NOT found in PatientVisits table');
+                if (child.key == phoneNumber.toString())
+                    updateValFromHere = true
 
-        //         firebase.database().ref('/PatientVisits/').child(phoneNumber).child('OverallDuration').set({
-        //             startTime: '',
-        //             endTime: '',
-        //         }).then((data) => {
-        //             console.log("Pushing a new overall duration for this patient")
-        //             console.log("data = " + data);
-        //         }).catch((error) => {
-        //             console.log("error pushing new overall duration to the server = " + error);
-        //         })
+                //child().update() won't work
+                if (updateValFromHere && child.val() != 0)
+                    firebase.database().ref('/WaitingQueue').child(child.key).set(child.val() - 1);
+            })
+        })
+        // one way to trick the system. update value to -1, firebase triggers when child.key updates to -1, which calls setState when -1 is updated
+        firebase.database().ref('/WaitingQueue').child(phoneNumber).set(-1);
+        firebase.database().ref('/WaitingQueue').child(phoneNumber).remove();
+        console.log("REMOVE users' phoneNumber to the WaitingQueue")
 
-        //         firebase.database().ref('/PatientVisits/').child(phoneNumber).child('RoomA').set({
-        //             startTime: '',
-        //             endTime: '',
-        //         }).then((data) => {
-        //             console.log("Pushing a new roomA for this patient")
-        //             console.log("data = " + data);
-        //         }).catch((error) => {
-        //             console.log("error pushing new roomA to the server = " + error);
-        //         })
-        //     }
 
-        // })
+        // updating patient endTime for multiple visits (assuming no users visit each room once)
+        firebase.database().ref('/PatientVisits/' + phoneNumber).child(location).once('value', function (snapshot) {
+
+            // snapshot.ref is needed for update and set
+            snapshot.ref.child('endTime').update({
+                [keyMonthDateYear]: Date.now()
+            })
+        }).then((data) => {
+            console.log("Successfully updating " + location + "/endTime for patient " + phoneNumber)
+
+            firebase.database().ref('PatientVisits').child(phoneNumber).child(location).once('value', function (snapshot) {
+
+                let startTimeLocal = 0;
+                let endTimeLocal = 0;
+
+                // snapshot.ref.child('/startTime/' + keyMonthDateYear).val(); doesn't work
+                // snapshot.child('startTime').child(keyMonthDateYear).val(); doesn't work
+                // ref is not needed for val(), but ref() is needed for update and set
+                startTimeLocal = snapshot.child('/startTime/' + keyMonthDateYear).val();
+                endTimeLocal = snapshot.child('/endTime/' + keyMonthDateYear).val();
+
+                let durationEpoch = endTimeLocal - startTimeLocal;
+
+                snapshot.ref.child('diffTime').update({
+                    [keyMonthDateYear]: durationEpoch
+                }).then((data => {
+                    console.log("Successfully updating " + location + "/diffTime for patient " + phoneNumber)
+                })).catch((error) => {
+                    console.log("error updating " + location + "/diffTime for patient " + phoneNumber);
+                    console.log("error = " + error);
+                })
+
+                let d = new Date(endTimeLocal);
+
+                let seconds = Math.floor((durationEpoch / 1000) % 60),
+                    minutes = Math.floor((durationEpoch / (1000 * 60)) % 60),
+                    hours = Math.floor((durationEpoch / (1000 * 60 * 60)) % 24);
+
+                hours = (hours < 10) ? "0" + hours : hours;
+                minutes = (minutes < 10) ? "0" + minutes : minutes;
+                seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+                Alert.alert(
+                    message,
+                    'On ' + d.toDateString() + ', you spent ' + hours + " hours, " + minutes + " minutes, " + seconds + " seconds",
+                    [
+                        { text: 'Close', onPress: () => { Actions.feedback(); } }
+                    ]
+                )
+            })
+        }).catch((error) => {
+            console.log("error updating overallDuration for patient " + phoneNumber);
+            console.log("error = " + error);
+        })
     }
 
     onSuccess(e) {
@@ -74,95 +138,20 @@ class QrScanner extends Component {
         user = firebase.auth().currentUser;
         phoneNumber = user.email.split('@')[0];
 
+        let keyDate = new Date();
+        let keyMonthDateYear = (keyDate.getMonth() + 1) + '-' + keyDate.getDate() + '-' + keyDate.getFullYear()
+
         if (e.data == 'overall-start') {
-            // ADD users' phoneNumber to the WaitingQueue
-            firebase.database().ref('/WaitingQueue').once('value', function(snapshot){
-                let queueNumber = snapshot.numChildren();
-                let duplicatedFound = false;
-                snapshot.forEach((child) => {
-                    if (child.key == phoneNumber.toString())
-                        duplicatedFound = true;
-                })
-                if (!duplicatedFound)
-                    firebase.database().ref('/WaitingQueue').child(phoneNumber).set(queueNumber);
-            })
-            console.log("ADD users' phoneNumber to the WaitingQueue");
-
-            firebase.database().ref('/PatientVisits/' + phoneNumber).child('/OverallDuration').update({
-                startTime: Date.now()
-            }).then((data) => {
-                console.log("Successfully updating overallDuration for patient " + phoneNumber)
-
-                Alert.alert(
-                    'Confirm',
-                    'Successfully scanned QR code.',
-                    [
-                        { text: 'Close', onPress: () => { Actions.map(); } }
-                    ]
-                )
-            }).catch((error) => {
-                console.log("error updating overallDuration for patient " + phoneNumber);
-                console.log("error = " + error);
-            })
+            this.updateStartTime(keyMonthDateYear, phoneNumber, "OverallDuration", "You are checked in at the front door!")
         }
         else if (e.data == 'overall-end') {
-            // REMOVE users' phoneNumber to the WaitingQueue
-            firebase.database().ref('/WaitingQueue').once('value', function(snapshot){
-                let updateValFromHere = false;
-                snapshot.forEach( (child) => {
-                    console.log(child.key + ', ' + child.val())
-                    
-                    if (child.key == phoneNumber.toString())
-                        updateValFromHere = true
-
-                    //child().update() won't work
-                    if (updateValFromHere && child.val() != 0)
-                        firebase.database().ref('/WaitingQueue').child(child.key).set(child.val() - 1);
-                })
-            })
-            // one way to trick the system. update value to -1, firebase triggers when child.key updates to -1, call setState when -1 is found
-            firebase.database().ref('/WaitingQueue').child(phoneNumber).set(-1);
-            firebase.database().ref('/WaitingQueue').child(phoneNumber).remove();
-            console.log("REMOVE users' phoneNumber to the WaitingQueue")
-
-            firebase.database().ref('/PatientVisits/' + phoneNumber).child('/OverallDuration').update({
-                endTime: Date.now()
-            }).then((data) => {
-                console.log("Successfully updating overallDuration for patient " + phoneNumber)
-
-                firebase.database().ref('PatientVisits').child(phoneNumber).child('OverallDuration').once('value', function (data) {
-                    if (data.exists()) {
-                        let startTimeLocal = 0;
-                        let endTimeLocal = 0;
-
-                        startTimeLocal = data.val().startTime;
-                        endTimeLocal = data.val().endTime;
-
-                        let durationEpoch = endTimeLocal - startTimeLocal;
-                        let d = new Date(endTimeLocal);
-
-                        let seconds = Math.floor((durationEpoch / 1000) % 60),
-                            minutes = Math.floor((durationEpoch / (1000 * 60)) % 60),
-                            hours = Math.floor((durationEpoch / (1000 * 60 * 60)) % 24);
-
-                        hours = (hours < 10) ? "0" + hours : hours;
-                        minutes = (minutes < 10) ? "0" + minutes : minutes;
-                        seconds = (seconds < 10) ? "0" + seconds : seconds;
-                        
-                        Alert.alert(
-                            'Confirm',
-                            'On ' + d.toDateString() + ', you spent ' + hours + " hours, " + minutes + " minutes, " + seconds + " seconds" +' at the clinic.',
-                            [
-                                { text: 'Close', onPress: () => { Actions.feedback(); } }
-                            ]
-                        )
-                    }
-                })
-            })
-                .catch((error) => {
-                    console.log("error updating overallDuration for patient " + phoneNumber);
-                    console.log("error = " + error);
-                })
+            this.updateEndTimeAndDiffTime(keyMonthDateYear, phoneNumber, "OverallDuration", "You are checked out at the front door!")
+        }
+        else if (e.data == 'roomA-start'){
+            this.updateStartTime(keyMonthDateYear, phoneNumber, "RoomA", "You are checked in at Room A!")
+        }
+        else if (e.data == 'roomA-end'){
+            this.updateEndTimeAndDiffTime(keyMonthDateYear, phoneNumber, "RoomA", "You are checked out at Room B!")
         }
         else {
             Alert.alert(
@@ -174,11 +163,7 @@ class QrScanner extends Component {
             )
         }
     }
-    Í
-    componentDidMount() {
-        console.log("ENTERING componentDidMount")
 
-    }
 
     render() {
         return (
