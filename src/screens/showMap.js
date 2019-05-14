@@ -51,7 +51,7 @@ export default class ShowMap extends Component {
         }
         else {
             return (
-                    <Text style={styles.topText}>There are #{queueNum} people ahead of you.</Text>
+                <Text style={styles.topText}>There are #{queueNum} people ahead of you.</Text>
             )
         }
     }
@@ -62,7 +62,6 @@ export default class ShowMap extends Component {
                 <Image source={require("../assets/radOncMap.png")} 
                 style={styles.image}
                 resizeMode="contain">
-
                 </Image>
             </ScrollView>
         );

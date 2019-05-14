@@ -1,20 +1,30 @@
 import React, { Component } from 'react';
-import { Text, Actions } from 'react-native-router-flux';
+import { Actions } from 'react-native-router-flux';
+import { StyleSheet,PixelRatio, View } from 'react-native';
 import { Scene, Router, ActionConst } from 'react-native-router-flux';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import PatientLogin from './src/screens/patientLogin';
 import PatientSignUp from './src/screens/patientSignUp';
 import PatientProfile from './src/screens/patientProfile';
 import ShowMap from './src/screens/showMap';
 import QrScanner from './src/screens/qrScanner';
 import Feedback from './src/screens/feedback';
+import Notice from './src/screens/notice';
 import VisitHistory from './src/screens/visitHistory';
 
+//Create a dedicated class that will manage the tabBar icon
+class TabIcon extends Component {
+    render() {
+      var color = this.props.focused ? '#007aff' : '#aaaaaa';
+  
+      return (
+        <View style={{flex:1, flexDirection:'column', alignItems:'center', alignSelf:'center', justifyContent: 'center'}}>
+          <Icon style={{color: color}} name={this.props.iconName || "circle"} size={24}/>
+        </View>
+      );
+    }
+}
 
-const TabIcon = ({ selected, title }) => {
-    return (
-        <Text style={{ color: selected ? 'red' : 'black' }}>{title}</Text>
-    );
-};
 const RouterComponent = () => {
     return (
         <Router>
@@ -26,21 +36,27 @@ const RouterComponent = () => {
                     <Scene key="signUp" component={PatientSignUp} title="Sign Up" />
                 </Scene>
                 {/* ActionConst.RESET disables the back arrow */}
-                <Scene key="tabbar" tabs type={ActionConst.RESET} >
+                <Scene key="tabbar" tabs tabBarStyle={styles.tabBar} type={ActionConst.RESET} >
                     <Scene key="map" component={ShowMap}
                         title="Oncology Map"
+                        iconName="map-marker-alt"
+                        icon={TabIcon}
                         onRight={() => { Actions.qrScanner() }}
-                        rightTitle={'Scan QR code'}
+                        rightTitle={'Scan QR'}
                     />
-                    <Scene key="visitHistory" component={VisitHistory}
-                    title="Your Visit History"
-                    onRight={() => { Actions.qrScanner() }}
-                    rightTitle={'Scan QR code'}
+                    <Scene key="history" component={VisitHistory}
+                        title="Visits History"
+                        iconName="history"
+                        icon={TabIcon}
+                        onRight={() => { Actions.qrScanner() }}
+                        rightTitle={'Scan QR'}
                     />
                     <Scene key="PatientProfile" component={PatientProfile}
                         title="Profile"
+                        iconName="user-cog"
+                        icon={TabIcon}
                         onRight={() => { Actions.qrScanner() }}
-                        rightTitle={'Scan QR code'}
+                        rightTitle={'Scan QR'}
                     />
                 </Scene>
                 <Scene key="feedback" type={ActionConst.RESET} >
@@ -48,11 +64,23 @@ const RouterComponent = () => {
                         title="Feedback"/>
                 </Scene>
                 <Scene key="qrScanner" >
-                        <Scene key="qrScanner" component={QrScanner} title="QR Scanner" back={true} backTitle={'Back'}/>
+                    <Scene key="qrScanner" component={QrScanner} title="QR Scanner" back={true} backTitle={'Back'}/>
+                </Scene>
+                <Scene key="notice" type={ActionConst.RESET}>
+                    <Scene hideNavBar key="notice" component={Notice} title="QR Scanner" panHandlers={null}/>
                 </Scene>
             </Scene>
         </Router>
     );
 };
+
+const styles = StyleSheet.create({
+    tabBar: {
+      borderTopColor: 'darkgrey',
+      borderTopWidth: 1 / PixelRatio.get(),
+      backgroundColor: 'ghostwhite',
+      opacity: 0.98
+    }
+});
 
 export default RouterComponent;

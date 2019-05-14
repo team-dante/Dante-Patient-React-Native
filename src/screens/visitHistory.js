@@ -1,92 +1,87 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, View } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import firebase from 'firebase';
 
-export default class VisitHistory extends Component {
+class VisitHistory extends Component {
     constructor(props) {
         super(props);
-        // email = phoneNumber + @email.com
-        this.state = { patientName: '' };
+        this.state = { records: [], dateToday: '' };
     }
+
     componentDidMount() {
-        // locate current user's phone num
+        console.log("im in componentWillmount");
         let user = firebase.auth().currentUser;
-        let phoneNum = user.email.split("@")[0];
-        // this keyword would not work under callback fxn
+        console.log(user);
+
+        let phoneNumber = user.email.split('@')[0];
+        console.log("phoneNumber = " + phoneNumber);
+
         var self = this;
+        let now = new Date();
+        let today = this.formattedDate(now);
+        this.setState({dateToday: today});
 
-        // search for the staff obj that has the same phoneNum as currentUser has
-        firebase.database().ref(`/Patients`).orderByChild("patientPhoneNumber").equalTo(phoneNum)
-            .once('value', function (snapshot) {
-                let firstNameVal = '';
-                snapshot.forEach(function (data) {
-                    firstNameVal = data.val().firstName;
-                });
-                console.log("line 27=" + firstNameVal)
-                self.setState({ patientName: firstNameVal });
-                // running console.log(patientName) here would cause crash
-            });
-            console.log("im in componenDidMount")
+        firebase.database().ref('/PatientVisits/' + phoneNumber).on(
+            'value', function(snapshot) {
+                self.setState({records: snapshot.val()})
+        });
     }
-    loadingHistory() {
-        let phoneNumber = 0;
-        user = firebase.auth().currentUser;
-        phoneNumber = user.email.split('@')[0];
 
-        console.log("hi");
+    formattedDate(now) {
+        var month = now.getMonth() + 1;
+        var formattedMonth = month < 10 ? '0' + month : month;
+        var date = now.getDate();
+        var formattedDate = date < 10 ? '0' + date : date;
+        // outputs "2019-05-10"
+        return now.getFullYear() + '-' + formattedMonth + '-' + formattedDate;
+    }
 
-        firebase.database().ref('/Patients').child(phoneNumber).child('OverallDuration').child('diffTime')
-        .on('value', function (snapshot) {
-            console.log("hi2")
+    getKeyValues(time) {
+        time_lst = []
+        for (let i in time) {
+            time_lst.push(
+                <Text key={i}>{i}: {time[i]}</Text>
+            );
+        }
+        return time_lst;
+    }
 
-            let todayDate;
-            let durationEpoch;
-            snapshot.forEach( (data) => {
-                console.log("data.key=" + data.key)
-                console.log("data.val()=" + data.val())
-                todayDate = data.key;
-                durationEpoch = data.val();
-            })
+    getTime(record) {
+        var dates = []
+        for (let i in record) {
+            dates.push(
+                <View>
+                    <Text key={i}>{i}</Text>
+                    {this.getKeyValues(record[i])}
+                </View>
+            );
+        }
+        return dates;
+    }
 
-            console.log("todayDate=" + todayDate);
-            console.log("durationEpoch=" + durationEpoch);
-
-            let seconds = Math.floor((durationEpoch / 1000) % 60),
-                minutes = Math.floor((durationEpoch / (1000 * 60)) % 60),
-                hours = Math.floor((durationEpoch / (1000 * 60 * 60)) % 24);
-
-            hours = (hours < 10) ? "0" + hours : hours;
-            minutes = (minutes < 10) ? "0" + minutes : minutes;
-            seconds = (seconds < 10) ? "0" + seconds : seconds;
-
-            // return (
-            //     <Text>
-            //         On {todayDate}, you spent {hours} hours {minutes} minutes {seconds} seconds
-            //                 </Text>
-            // );
-        })
+    getCategories(records) {
+        var cateogories = []
+        for (let cat in records) {
+            cateogories.push(
+                <View>
+                    <Text key={cat}>{cat}</Text>
+                    {this.getTime(records[cat])}
+                </View>
+            );
+        }
+        return cateogories;
     }
 
     render() {
-        const { patientName } = this.state;
         return (
-            <View style={styles.container}>
-                {/* <Text style={styles.topText}>Hi {patientName}, you are in line for queue #2</Text> */}
-                {this.loadingHistory()}
+            <View>
+                {this.getCategories(this.state.records)}
             </View>
         );
     }
 }
-
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#ffffff',
-    },
-    topText: {
-        fontSize: 18,
-        margin: 5,
-    },
+
 });
+
+export default VisitHistory;

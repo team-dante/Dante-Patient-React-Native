@@ -11,10 +11,8 @@ export default class Feedback extends Component {
         this.state = { rating: '', comments: '' };
     }
 
-
     render() {
         return (
-
             <View style={styles.container}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
                     <View style={styles.container}>
