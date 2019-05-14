@@ -8,4 +8,6 @@
 6. Run the project with `react-native run-ios`, or `npm run iphone` (for Windows users, type `react-native run-android`)
 
 ### Wireframes & Data Schema Design
-<img src="https://i.imgur.com/Sge6K5Y.png" width="800"/>
+<img src="https://i.imgur.com/Sge6K5Y.png" width="650"/>
+<br>
+<img src="https://i.imgur.com/J3IuhLb.png" width="650"/>
