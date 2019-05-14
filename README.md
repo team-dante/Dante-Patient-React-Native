@@ -11,3 +11,5 @@
 <img src="https://i.imgur.com/Sge6K5Y.png" width="700"/>
 <br>
 <img src="https://i.imgur.com/J3IuhLb.png" width="700"/>
+
+*Wireframes & Data Schema Design Created by Xinhao Liang*
