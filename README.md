@@ -7,3 +7,6 @@ Make sure your computer has the newest version of Java JDK, Node.js, Android Stu
 type "npm install" <br/> 
 To run the project <br/> 
 type "npm run iphone" <br/>
+
+### Wireframes & Data Schema Design
+<img src="https://i.imgur.com/Sge6K5Y.png" />
