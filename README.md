@@ -1,12 +1,11 @@
-Instructions on how to run the project: <br/>
+### Instructions on how to run the project
 
-Open the terminal <br/>
-type "git clone https://github.com/team-dante/dante-patient-master-branch.git" <br/>
-Navigate to project folder <br/>
-Make sure your computer has the newest version of Java JDK, Node.js, Android Studio, Android Emulator installed. <br/> 
-type "npm install" <br/> 
-To run the project <br/> 
-type "npm run iphone" <br/>
+1. Open the terminal, go to the directory where you would like to store this project.
+2. Type "git clone https://github.com/team-dante/dante-patient-master-branch.git"
+3. Navigate to project folder (`cd dante-patient-master-branch`)
+4. Make sure your computer has the newest version of Java JDK, Node.js, Android Studio, Android Emulator, or Xcode installed. (Android for Windows users, Xcode for MacOS).
+5. Type "npm install".
+6. Run the project with `react-native run-ios`, or `npm run iphone`.
 
 ### Wireframes & Data Schema Design
-<img src="https://i.imgur.com/Sge6K5Y.png" />
+<img src="https://i.imgur.com/Sge6K5Y.png" width="800"/>
