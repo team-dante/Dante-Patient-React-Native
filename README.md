@@ -17,5 +17,5 @@
 ### Waiting List Demo
 <div>
 <img src="https://i.imgur.com/zM7fI0a.gif" width="500"/>
-<img src="https://i.imgur.com/jrtAO3w.gif" width="500" />
+<img src="https://i.imgur.com/9E4R9Vi.gif" width="500" />
 </div>
