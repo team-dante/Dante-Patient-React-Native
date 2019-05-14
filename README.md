@@ -13,3 +13,9 @@
 <img src="https://i.imgur.com/J3IuhLb.png" width="700"/>
 
 *Wireframes & Data Schema Design Created by Xinhao Liang*
+
+### Waiting List Demo
+<div>
+<img src="https://i.imgur.com/SfgzvNF.gif" width=50%/>
+<img src="https://i.imgur.com/etBjhZm.gif" width=50% />
+</div>
