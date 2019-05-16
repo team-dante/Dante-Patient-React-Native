@@ -14,7 +14,7 @@ class Notice extends Component {
                 <TouchableOpacity style={styles.buttonContainer} onPress={() => {
                     Actions.map();
                 }}>
-                    <Text style={styles.buttonText} >Back to Map</Text>
+                    <Text style={styles.buttonText}>Back to Map</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -26,10 +26,12 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',
-        alignItems: 'stretch'
+        alignItems: 'center',
+        backgroundColor: "#FFF",
     },
     text: {
-        textAlign: 'center'
+        textAlign: 'center',
+        fontSize: 20,
     },
     buttonContainer: {
         backgroundColor: "#428AF8",

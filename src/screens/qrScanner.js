@@ -116,7 +116,7 @@ class QrScanner extends Component {
                     seconds = (seconds < 10) ? "0" + seconds : seconds;
 
                     Actions.notice({text: "You spent " + hours + " hours, " + minutes 
-                        + " minutes, " + seconds + " seconds " + message})
+                        + " minutes, " + seconds + " seconds." + "\n" + message})
 
                 })).catch((error) => {
                     console.log("error updating " + location + "/diffTime for patient " + phoneNumber);

@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import firebase from 'firebase';
 
 class VisitHistory extends Component {
     constructor(props) {
         super(props);
-        this.state = { records: [], dateToday: '' };
+        this.state = {
+            data: [],
+        };
     }
 
     componentDidMount() {
@@ -19,12 +21,38 @@ class VisitHistory extends Component {
         var self = this;
         let now = new Date();
         let today = this.formattedDate(now);
-        this.setState({dateToday: today});
+        this.setState({ dateToday: today });
 
         firebase.database().ref('/PatientVisits/' + phoneNumber).on(
-            'value', function(snapshot) {
-                self.setState({records: snapshot.val()})
-        });
+            'value', function (snapshot) {
+                // console.dir(snapshot.val())
+                let dataArr = new Array();
+                let innerDataJson = {}
+                let innerTimeCatJson = {}
+                let innerTimeKeyTimeValJson = {}
+                snapshot.forEach((roomCat) => {
+                    innerDataJson["roomCat"] = roomCat.key
+                    innerDataJson["innerTimeCatJson"] = innerTimeCatJson
+
+                    snapshot.ref.child(roomCat.key).on('value', function (timeCatSnapshot) {
+                        timeCatSnapshot.forEach( (timeCat) => {
+                            innerTimeCatJson["timeCat"] = timeCat.key
+                            innerTimeCatJson["innerTimeKeyTimeValJson"] = innerTimeKeyTimeValJson
+
+                            timeCatSnapshot.ref.child(timeCat.key).on('value', function (dataSnapshot) {
+                                dataSnapshot.forEach( (data) => {
+                                    innerTimeKeyTimeValJson["timeKey"] = data.key
+                                    innerTimeKeyTimeValJson["timeVal"] = data.val()
+                                })
+                            })
+                        })
+                    })
+                    console.log(innerDataJson)
+                });
+                
+                self.setState({data : dataArr})
+            })
+
     }
 
     formattedDate(now) {
@@ -36,52 +64,44 @@ class VisitHistory extends Component {
         return now.getFullYear() + '-' + formattedMonth + '-' + formattedDate;
     }
 
-    getKeyValues(time) {
-        time_lst = []
-        for (let i in time) {
-            time_lst.push(
-                <Text key={i}>{i}: {time[i]}</Text>
-            );
-        }
-        return time_lst;
-    }
-
-    getTime(record) {
-        var dates = []
-        for (let i in record) {
-            dates.push(
-                <View>
-                    <Text key={i}>{i}</Text>
-                    {this.getKeyValues(record[i])}
-                </View>
-            );
-        }
-        return dates;
-    }
-
-    getCategories(records) {
-        var cateogories = []
-        for (let cat in records) {
-            cateogories.push(
-                <View>
-                    <Text key={cat}>{cat}</Text>
-                    {this.getTime(records[cat])}
-                </View>
-            );
-        }
-        return cateogories;
-    }
-
     render() {
+        console.log(this.state.data)
         return (
-            <View>
-                {this.getCategories(this.state.records)}
+            <View style={styles.container}>
+                <FlatList
+                    data={this.state.data}
+                    renderItem={({ item }) =>
+                        <View style={styles.flatview}>
+                            <Text style={styles.text}>{item.roomCat}</Text>
+                            <Text style={styles.text}>{item.timeCat}</Text>
+                            <Text style={styles.text}>{item.timeKey}</Text>
+                            <Text style={styles.text}>{item.timeVal}</Text>
+                        </View>
+                    }
+                />
             </View>
         );
     }
 }
 const styles = StyleSheet.create({
-
+    container: {
+        flex: 1,
+        backgroundColor: '#FFF',
+    },
+    flatview: {
+        justifyContent: 'center',
+        paddingVertical: 20,
+        paddingHorizontal: 20,
+        borderWidth: 1,
+        borderRadius: 10,
+        backgroundColor: '#428AF8',
+        borderColor: '#ffffff',
+        margin: 10
+    },
+    text: {
+        color: 'white',
+        fontSize: 15
+    }
 });
 
 export default VisitHistory;

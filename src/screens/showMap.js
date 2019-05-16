@@ -51,7 +51,7 @@ export default class ShowMap extends Component {
         }
         else {
             return (
-                <Text style={styles.topText}>There are #{queueNum} people ahead of you.</Text>
+                <Text style={styles.topText}>Number of people ahead of you: {queueNum}</Text>
             )
         }
     }
@@ -82,7 +82,9 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         textAlign: 'center',
         margin: 20,
-        fontSize: 30,
+        paddingVertical: 20,
+        paddingHorizontal: 5,
+        fontSize: 23,
         borderWidth: 1,
         borderRadius: 10,
         backgroundColor: '#428AF8',
