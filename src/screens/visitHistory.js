@@ -1,7 +1,39 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, SectionList } from 'react-native';
 import firebase from 'firebase';
 
+class SectionListItem extends Component {
+
+    dateToStr(durationEpoch) {
+        let seconds = Math.floor((durationEpoch / 1000) % 60),
+        minutes = Math.floor((durationEpoch / (1000 * 60)) % 60),
+        hours = Math.floor((durationEpoch / (1000 * 60 * 60)) % 24);
+
+        hours = (hours < 10) ? "0" + hours : hours;
+        minutes = (minutes < 10) ? "0" + minutes : minutes;
+        seconds = (seconds < 10) ? "0" + seconds : seconds;
+        return hours + " hours, " + minutes + " minutes, " + seconds + " seconds";
+    }
+    render() {
+        return (
+            <View style={{flex:1, flexDirection:'column',backgroundColor:'#fcfcfc'}}>
+                <Text style={styles.textHeader}>{this.props.item.location}</Text>
+                <Text style={styles.textBody}>Time Spent: {this.dateToStr(this.props.item.diffTime)}</Text>
+                <Text style={styles.textBody}>Start Time: {this.props.item.startTime}</Text>
+                <Text style={styles.textBody}>End Time: {this.props.item.endTime}</Text>
+            </View>
+        );
+    };
+}
+class SectionHeader extends Component {
+    render() {
+        return (
+            <View style={{flex:1, backgroundColor: '#3D95CE'}}>                                
+                <Text style={styles.sectionHeader}>{this.props.section.date}</Text>
+            </View>
+        );
+    }
+}
 class VisitHistory extends Component {
     constructor(props) {
         super(props);
@@ -23,36 +55,29 @@ class VisitHistory extends Component {
         let today = this.formattedDate(now);
         this.setState({ dateToday: today });
 
-        firebase.database().ref('/PatientVisits/' + phoneNumber).on(
+        firebase.database().ref('/PatientVisitsByDates/' + phoneNumber).on(
             'value', function (snapshot) {
-                // console.dir(snapshot.val())
-                let dataArr = new Array();
-                let innerDataJson = {}
-                let innerTimeCatJson = {}
-                let innerTimeKeyTimeValJson = {}
-                snapshot.forEach((roomCat) => {
-                    innerDataJson["roomCat"] = roomCat.key
-                    innerDataJson["innerTimeCatJson"] = innerTimeCatJson
-
-                    snapshot.ref.child(roomCat.key).on('value', function (timeCatSnapshot) {
-                        timeCatSnapshot.forEach( (timeCat) => {
-                            innerTimeCatJson["timeCat"] = timeCat.key
-                            innerTimeCatJson["innerTimeKeyTimeValJson"] = innerTimeKeyTimeValJson
-
-                            timeCatSnapshot.ref.child(timeCat.key).on('value', function (dataSnapshot) {
-                                dataSnapshot.forEach( (data) => {
-                                    innerTimeKeyTimeValJson["timeKey"] = data.key
-                                    innerTimeKeyTimeValJson["timeVal"] = data.val()
-                                })
-                            })
-                        })
-                    })
-                    console.log(innerDataJson)
-                });
-                
-                self.setState({data : dataArr})
-            })
-
+            self.setState({data: self.convertToSectionList(snapshot.val())})
+        })
+    }
+    // [{data: [{...},{...}], date: <some Date>}, {data: [{...},{...}], date: <some Date>}]
+    convertToSectionList(data) {
+        sectionList = []
+        for (let i in data) {
+            obj_lst = []
+            for (let j in data[i]) {
+                let inner_dict = {
+                    location: j,
+                    diffTime: data[i][j]["diffTime"],
+                    startTime: data[i][j]["startTime"],
+                    endTime: data[i][j]["endTime"]
+                }
+                obj_lst.push(inner_dict)
+            }
+            let outer_dict = {data: obj_lst, date: i}
+            sectionList.push(outer_dict)
+        }
+        return sectionList
     }
 
     formattedDate(now) {
@@ -68,17 +93,22 @@ class VisitHistory extends Component {
         console.log(this.state.data)
         return (
             <View style={styles.container}>
-                <FlatList
-                    data={this.state.data}
-                    renderItem={({ item }) =>
-                        <View style={styles.flatview}>
-                            <Text style={styles.text}>{item.roomCat}</Text>
-                            <Text style={styles.text}>{item.timeCat}</Text>
-                            <Text style={styles.text}>{item.timeKey}</Text>
-                            <Text style={styles.text}>{item.timeVal}</Text>
-                        </View>
-                    }
-                />
+                <SectionList
+                    renderItem={({item, index})=>{
+                        return  (
+                            <SectionListItem item={item} index={index} >
+                            </SectionListItem>
+                        );
+                    }}
+                    renderSectionHeader={({section}) => {
+                        return (
+                            <SectionHeader section={section} />
+                        );
+                    }}
+                    sections={this.state.data}
+                    keyExtractor={(item, index) => {item.startTime}}
+                >
+                </SectionList>
             </View>
         );
     }
@@ -88,19 +118,25 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#FFF',
     },
-    flatview: {
-        justifyContent: 'center',
-        paddingVertical: 20,
-        paddingHorizontal: 20,
-        borderWidth: 1,
-        borderRadius: 10,
-        backgroundColor: '#428AF8',
-        borderColor: '#ffffff',
-        margin: 10
+    textHeader: {
+        fontSize: 17,
+        fontWeight: 'bold',
+        marginLeft: 20,
+        marginRight: 10,
+        marginTop: 20,
+        paddingBottom: 5
     },
-    text: {
+    textBody: {
+        fontSize: 16,
+        marginLeft: 20,
+        marginRight: 10,
+        marginBottom: 7
+    },
+    sectionHeader: {
+        fontSize: 16,
+        fontWeight: 'bold',
         color: 'white',
-        fontSize: 15
+        margin: 20
     }
 });
 

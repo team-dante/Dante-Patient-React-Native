@@ -38,9 +38,8 @@ class QrScanner extends Component {
         console.log("ADD users' phoneNumber to the WaitingQueue");
 
         // updating patient startTime for multiple visits (assuming no users visit each room once)
-        firebase.database().ref('/PatientVisits/' + phoneNumber + '/' + location)
-            .child('/startTime').update({
-                [keyMonthDateYear]: Date.now()
+        firebase.database().ref('/PatientVisitsByDates/' + phoneNumber + '/' + keyMonthDateYear + '/' + location).update({
+            startTime: Date.now()
         }).then(() => {
             console.log("Successfully updating" + location + "for patient " + phoneNumber)
             Actions.notice({text: message})
@@ -51,7 +50,7 @@ class QrScanner extends Component {
     }
 
     updateEndTimeAndDiffTime(keyMonthDateYear, phoneNumber, location, message) {
-        // REMOVE users' phoneNumber to the WaitingQueue
+        // REMOVE users' phoneNumber from WaitingQueue if they finish the overall visit
         if (location == 'OverallDuration') {
             firebase.database().ref('/WaitingQueue').once('value', function (snapshot) {
                 let updateValFromHere = false;
@@ -73,39 +72,24 @@ class QrScanner extends Component {
         }
 
         // updating patient endTime for multiple visits (assuming no users visit each room once)
-        firebase.database().ref('/PatientVisits/' + phoneNumber).child(location).once('value', function (snapshot) {
-
-            // snapshot.ref is needed for update and set
-            snapshot.ref.child('endTime').update({
-                [keyMonthDateYear]: Date.now()
-            })
+        firebase.database().ref('/PatientVisitsByDates/' + phoneNumber + '/' + keyMonthDateYear + '/' + location).update({
+            endTime: Date.now()
         }).then((data) => {
             console.log("Successfully updating " + location + "/endTime for patient " + phoneNumber)
 
-            firebase.database().ref('PatientVisits').child(phoneNumber).child(location).once('value', function (snapshot) {
+            firebase.database().ref('/PatientVisitsByDates/' + phoneNumber + '/' + keyMonthDateYear + '/' + location).once('value', function (snapshot) {
 
                 let startTimeLocal = 0;
                 let endTimeLocal = 0;
 
-                // snapshot.ref.child('/startTime/' + keyMonthDateYear).val(); doesn't work
-                // snapshot.child('startTime').child(keyMonthDateYear).val(); doesn't work
-                // ref is not needed for val(), but ref() is needed for update and set
-                startTimeLocal = snapshot.child('/startTime/' + keyMonthDateYear).val();
-                endTimeLocal = snapshot.child('/endTime/' + keyMonthDateYear).val();
+                startTimeLocal = snapshot.val().startTime;
+                endTimeLocal = snapshot.val().endTime;
 
                 let durationEpoch = endTimeLocal - startTimeLocal;
 
-                snapshot.ref.child('diffTime').update({
-                    [keyMonthDateYear]: durationEpoch
+                snapshot.ref.update({
+                    diffTime: durationEpoch
                 }).then((data => {
-                    // provide an alternative data structure
-                    firebase.database().ref('/PatientVisitsByDates/'+ phoneNumber + '/' + keyMonthDateYear).child(location).update({
-                        startTime: startTimeLocal,
-                        endTime: endTimeLocal,
-                        diffTime: durationEpoch
-                    }).catch((error) => {
-                        console.log("error updating" + location + "for patient " + phoneNumber);
-                    });
 
                     let seconds = Math.floor((durationEpoch / 1000) % 60),
                     minutes = Math.floor((durationEpoch / (1000 * 60)) % 60),
@@ -146,7 +130,7 @@ class QrScanner extends Component {
         let phoneNumber = user.email.split('@')[0];
 
         // get today's date
-        let now = new Date();
+        let now = (new Date()).addDays(1);
         let keyMonthDateYear = this.formattedDate(now);
 
         if (e.data == 'overall-start') {
