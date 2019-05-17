@@ -34,11 +34,10 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
     buttonContainer: {
-        backgroundColor: "#428AF8",
+        backgroundColor: "#0074D9",
         paddingVertical: 12,
         width: 300,
         borderRadius: 4,
-        borderColor: "rgba(255,255,255,0.7)",
         margin: 10,
         position: "absolute",
         top: 570

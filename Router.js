@@ -15,7 +15,7 @@ import VisitHistory from './src/screens/visitHistory';
 //Create a dedicated class that will manage the tabBar icon
 class TabIcon extends Component {
     render() {
-      var color = this.props.focused ? '#007aff' : '#aaaaaa';
+      var color = this.props.focused ? '#0074D9' : '#aaaaaa';
   
       return (
         <View style={{flex:1, flexDirection:'column', alignItems:'center', alignSelf:'center', justifyContent: 'center'}}>
