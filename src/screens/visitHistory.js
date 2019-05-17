@@ -8,66 +8,75 @@ class SectionListItem extends Component {
         let seconds = Math.floor((durationEpoch / 1000) % 60),
             minutes = Math.floor((durationEpoch / (1000 * 60)) % 60),
             hours = Math.floor((durationEpoch / (1000 * 60 * 60)) % 24);
-
         hours = (hours < 10) ? "0" + hours : hours;
         minutes = (minutes < 10) ? "0" + minutes : minutes;
         seconds = (seconds < 10) ? "0" + seconds : seconds;
-        return hours + " hours, " + minutes + " minutes, " + seconds + " seconds";
+        return hours + " hrs, " + minutes + " mins, " + seconds + " secs";
     }
-    dateBeautify(epochTime) {
-        let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-        let date = new Date(epochTime)
-        let day = days[date.getDay()];
-        let suffix = hours >= 12 ? "PM" : "AM";
-        let hours = ((date.getHours() + 11) % 12 + 1);
-        return day + " " + hours + ":" + date.getMinutes() + " " + suffix
-    }
-
-    getTimeSpent(data) {
-        if (data.includes("NaN"))
-            return (
-                <Text style={styles.textBody}>Time Spent: None</Text>
-            );
+    locBeautify(location) {
+        if (location == 'OverallDuration')
+            return <Text style={styles.textHeader}>Overall Visit</Text>
+        else if (location == 'RoomA')
+            return <Text style={styles.textHeader}>Room A</Text>
+        else if (location == 'RoomB')
+            return <Text style={styles.textHeader}>Room B</Text>
         else {
-            return (
-                <Text style={styles.textBody}>Time Spent: {data}</Text>
-            );
+            return <Text style={styles.textHeader}>{location}</Text>
         }
     }
-
+    dateBeautify(epochTime) {
+        // let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        let date = new Date(epochTime)
+        // let day = days[date.getDay()];
+        let suffix = hours >= 12 ? "PM" : "AM";
+        let hours = ((date.getHours() + 11) % 12 + 1);
+        return hours + ":" + date.getMinutes() + " " + suffix
+    }
+    getTimeSpent(data) {
+        if (data.includes("NaN"))
+            return <Text style={styles.cardContents}>Time Spent: None</Text>
+        else {
+            return <Text style={styles.cardContents}>Time Spent: {data}</Text>
+        }
+    }
     getEndTime(data) {
         if (data.includes("NaN"))
-            return (
-                <Text style={styles.textBody}>End Time: None</Text>
-            );
+            return <Text style={styles.textSubtitle}>End: None</Text>
         else {
-            return (
-                <Text style={styles.textBody}>End Time: {data}</Text>
-            );
+            return <Text style={styles.textSubtitle}>End: {data}</Text>
         }
     }
 
     render() {
         return (
             <View style={styles.sectionListItemView}>
-                <Text style={styles.textHeader}>{this.props.item.location}</Text>
-                <Text style={styles.textBody}>Start Time: {this.dateBeautify(this.props.item.startTime)}</Text>
-                {this.getEndTime(this.dateBeautify(this.props.item.endTime))}
-                {this.getTimeSpent(this.dateToStr(this.props.item.diffTime))}
+                <View style={styles.cardHeader}>
+                    <View style={styles.textHeaderWrapper}>
+                        {this.locBeautify(this.props.item.location)}
+                    </View>
+                    <View style={styles.cardSubtitles}>
+                        <Text style={styles.textSubtitle}>Start: {this.dateBeautify(this.props.item.startTime)}</Text>
+                        {this.getEndTime(this.dateBeautify(this.props.item.endTime))}  
+                    </View>                  
+                </View>
+                <View style={styles.content}>
+                    {this.getTimeSpent(this.dateToStr(this.props.item.diffTime))}
+                </View>
             </View>
         );
     };
 }
+
 class SectionHeader extends Component {
     render() {
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, backgroundColor: 'white' }}>
                 <Text style={styles.sectionHeader}>{this.props.section.date}</Text>
             </View>
         );
     }
 }
+
 class VisitHistory extends Component {
     constructor(props) {
         super(props);
@@ -94,6 +103,7 @@ class VisitHistory extends Component {
                 self.setState({ data: self.convertToSectionList(snapshot.val()) })
             })
     }
+
     // [{data: [{...},{...}], date: <some Date>}, {data: [{...},{...}], date: <some Date>}]
     convertToSectionList(data) {
         sectionList = []
@@ -124,7 +134,6 @@ class VisitHistory extends Component {
     }
 
     render() {
-        console.log(this.state.data)
         return (
             <View style={styles.container}>
                 <SectionList
@@ -147,17 +156,38 @@ class VisitHistory extends Component {
         );
     }
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#FFF',
+    },
+    cardHeader: {
+        flex:1,
+        paddingTop: 5,
+        backgroundColor: '#3D95CE',
+        justifyContent: 'flex-start',
+        flexDirection: 'row',
+        borderColor: '#ddd',
+        borderTopLeftRadius: 10,
+	    borderTopRightRadius: 10,
+        flexWrap: 'wrap'
+    },
+    textHeaderWrapper: {
+        flex: 1
+    },  
+    cardSubtitles: {
+        flexDirection: 'column',
+        flex: 1,
+        justifyContent: 'flex-end',
+        marginRight: 10
     },
     sectionListItemView: {
         flex: 1,
         flexDirection: 'column',
         backgroundColor: 'white',
         borderRadius: 10,
-        margin: 7,
+        margin: 10,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -165,7 +195,6 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.36,
         shadowRadius: 6.68,
-
         elevation: 11,
     },
     textHeader: {
@@ -173,22 +202,30 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginLeft: 20,
         marginRight: 10,
-        marginTop: 20,
+        marginTop: 13,
         paddingBottom: 5,
-        color: 'hsla(197, 100%, 20%, 1.0)'
+        color: 'white'
     },
-    textBody: {
-        color: 'hsla(197, 100%, 20%, 1.0)',
+    textSubtitle: {
         fontSize: 16,
         marginLeft: 20,
         marginRight: 10,
-        marginBottom: 7
+        marginBottom: 7,
+        textAlign: 'right',
+        color: 'white'
+    },
+    content: {
+        padding: 25
+    },
+    cardContents: {
+        fontSize: 18
     },
     sectionHeader: {
         fontSize: 16,
         fontWeight: 'bold',
         color: '#ADADAD',
-        margin: 20
+        margin: 20,
+        marginBottom: 10
     }
 });
 
