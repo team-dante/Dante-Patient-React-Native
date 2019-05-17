@@ -27,7 +27,7 @@ class TabIcon extends Component {
 
 const RouterComponent = () => {
     return (
-        <Router>
+        <Router navigationBarStyle={styles.navBar} titleStyle={styles.navTitle}>
             <Scene key="root" hideNavBar>
                 {/* ActionConst.RESET disables the back arrow */}
                 <Scene key="auth" type={ActionConst.RESET}>
@@ -43,6 +43,8 @@ const RouterComponent = () => {
                         icon={TabIcon}
                         onRight={() => { Actions.qrScanner() }}
                         rightTitle={'Scan QR'}
+                        rightButtonTextStyle={{color: 'white'}}
+
                     />
                     <Scene key="history" component={VisitHistory}
                         title="Visits History"
@@ -50,6 +52,7 @@ const RouterComponent = () => {
                         icon={TabIcon}
                         onRight={() => { Actions.qrScanner() }}
                         rightTitle={'Scan QR'}
+                        rightButtonTextStyle={{color: 'white'}}
                     />
                     <Scene key="PatientProfile" component={PatientProfile}
                         title="Profile"
@@ -57,14 +60,17 @@ const RouterComponent = () => {
                         icon={TabIcon}
                         onRight={() => { Actions.qrScanner() }}
                         rightTitle={'Scan QR'}
+                        rightButtonTextStyle={{color: 'white'}}
                     />
                 </Scene>
                 <Scene key="feedback" type={ActionConst.RESET} >
-                    <Scene key="feedback" component={Feedback} back={true} backTitle={'Back'}
-                        title="Feedback"/>
+                    <Scene key="feedback" component={Feedback} back={true} backTitle={'Back'} 
+                        backButtonTextStyle={{color: 'white'}} backButtonTintColor='white' title="Feedback"/>
                 </Scene>
                 <Scene key="qrScanner" >
-                    <Scene key="qrScanner" component={QrScanner} title="QR Scanner" back={true} backTitle={'Back'}/>
+                    <Scene key="qrScanner" component={QrScanner} title="QR Scanner" back={true} backTitle={'Back'} 
+                        backButtonTextStyle={{color: 'white'}} backButtonTintColor='white'
+                    />
                 </Scene>
                 <Scene key="notice" type={ActionConst.RESET}>
                     <Scene hideNavBar key="notice" component={Notice} title="QR Scanner" panHandlers={null}/>
@@ -80,7 +86,13 @@ const styles = StyleSheet.create({
       borderTopWidth: 1 / PixelRatio.get(),
       backgroundColor: 'ghostwhite',
       opacity: 0.98
-    }
+    },
+    navBar: {
+        backgroundColor: '#3D95CE', // changing navbar color
+    },
+    navTitle: {
+        color: 'white', // changing navbar title color
+    },
 });
 
 export default RouterComponent;

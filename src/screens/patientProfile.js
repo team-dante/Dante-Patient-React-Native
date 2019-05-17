@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
         textShadowRadius: 2
     },
     buttonContainer : {
-        backgroundColor: "#0074D9",
+        backgroundColor: "#3DCEBF",
         paddingVertical: 12,
         width: Dimensions.get('window').width - 80,
         borderRadius: 8,

@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
         fontSize: 23,
         borderWidth: 1,
         borderRadius: 10,
-        backgroundColor: "#0074D9",
+        backgroundColor: "#3DCEBF",
         borderColor: '#ffffff',
         overflow: 'hidden'
     },

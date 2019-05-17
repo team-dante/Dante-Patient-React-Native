@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     cardHeader: {
         flex:1,
         paddingTop: 5,
-        backgroundColor: '#3D95CE',
+        backgroundColor: '#3DCEBF',
         justifyContent: 'flex-start',
         flexDirection: 'row',
         borderColor: '#ddd',
