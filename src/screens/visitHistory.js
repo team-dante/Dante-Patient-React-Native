@@ -28,8 +28,8 @@ class SectionListItem extends Component {
         // let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         let date = new Date(epochTime)
         // let day = days[date.getDay()];
-        let suffix = hours >= 12 ? "PM" : "AM";
         let hours = ((date.getHours() + 11) % 12 + 1);
+        let suffix = date.getHours() > 12 ? "PM" : "AM";
         return hours + ":" + date.getMinutes() + " " + suffix
     }
     getTimeSpent(data) {
