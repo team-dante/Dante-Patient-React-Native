@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, StyleSheet, Dimensions } from 'react-native'
+import { Alert, Dimensions } from 'react-native'
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import firebase from 'firebase'
 import { Actions } from 'react-native-router-flux';
@@ -10,10 +10,7 @@ class QrScanner extends Component {
         super(props);
     }
 
-    componentWillMount() {
-        console.log("im in componentWillmount");
-    }
-
+    // return YYYY-MM-DD format
     formattedDate(now) {
         var month = now.getMonth() + 1;
         var formattedMonth = month < 10 ? '0' + month : month;
@@ -22,7 +19,7 @@ class QrScanner extends Component {
         // outputs "2019-05-10"
         return now.getFullYear() + '-' + formattedMonth + '-' + formattedDate;
     }
-
+    // Update start time when patient scans in
     updateStartTime(keyMonthDateYear, phoneNumber, location, message) {
         // ADD users' phoneNumber to the WaitingQueue
         firebase.database().ref('/WaitingQueue').once('value', function (snapshot) {
@@ -38,8 +35,11 @@ class QrScanner extends Component {
         console.log("ADD users' phoneNumber to the WaitingQueue");
 
         // updating patient startTime for multiple visits (assuming no users visit each room once)
-        firebase.database().ref('/PatientVisitsByDates/' + phoneNumber + '/' + keyMonthDateYear + '/' + location).update({
-            startTime: Date.now()
+        // in session, clock ticking
+        let path = '/PatientVisitsByDates/' + phoneNumber + '/' + keyMonthDateYear + '/' + location;
+        firebase.database().ref(path).update({
+            startTime: Date.now(),
+            inSession: true
         }).then(() => {
             console.log("Successfully updating" + location + "for patient " + phoneNumber)
             Actions.notice({text: message})
@@ -48,7 +48,8 @@ class QrScanner extends Component {
             console.log("error = " + error);
         })
     }
-
+    // Update end time and time spent in a particular room (or for overall visit) when patient scans out
+    // out of session, clock stops
     updateEndTimeAndDiffTime(keyMonthDateYear, phoneNumber, location, message) {
         // REMOVE users' phoneNumber from WaitingQueue if they finish the overall visit
         if (location == 'OverallDuration') {
@@ -73,44 +74,46 @@ class QrScanner extends Component {
 
         // updating patient endTime for multiple visits (assuming no users visit each room once)
         firebase.database().ref('/PatientVisitsByDates/' + phoneNumber + '/' + keyMonthDateYear + '/' + location).update({
-            endTime: Date.now()
+            inSession: false
         }).then((data) => {
-            console.log("Successfully updating " + location + "/endTime for patient " + phoneNumber)
-
             firebase.database().ref('/PatientVisitsByDates/' + phoneNumber + '/' + keyMonthDateYear + '/' + location).once('value', function (snapshot) {
+                let durationEpoch = snapshot.val().diffTime;
 
-                let startTimeLocal = 0;
-                let endTimeLocal = 0;
+                let seconds = Math.floor((durationEpoch / 1000) % 60),
+                minutes = Math.floor((durationEpoch / (1000 * 60)) % 60),
+                hours = Math.floor((durationEpoch / (1000 * 60 * 60)) % 24);
 
-                startTimeLocal = snapshot.val().startTime;
-                endTimeLocal = snapshot.val().endTime;
+                hours = (hours < 10) ? "0" + hours : hours;
+                minutes = (minutes < 10) ? "0" + minutes : minutes;
+                seconds = (seconds < 10) ? "0" + seconds : seconds;
 
-                let durationEpoch = endTimeLocal - startTimeLocal;
-
-                snapshot.ref.update({
-                    diffTime: durationEpoch
-                }).then((data => {
-
-                    let seconds = Math.floor((durationEpoch / 1000) % 60),
-                    minutes = Math.floor((durationEpoch / (1000 * 60)) % 60),
-                    hours = Math.floor((durationEpoch / (1000 * 60 * 60)) % 24);
-
-                    hours = (hours < 10) ? "0" + hours : hours;
-                    minutes = (minutes < 10) ? "0" + minutes : minutes;
-                    seconds = (seconds < 10) ? "0" + seconds : seconds;
-
-                    Actions.notice({text: "You spent " + hours + " hours, " + minutes 
-                        + " minutes, " + seconds + " seconds." + "\n" + message})
-
-                })).catch((error) => {
-                    console.log("error updating " + location + "/diffTime for patient " + phoneNumber);
-                    console.log("error = " + error);
-                })
+                Actions.notice({text: "You spent " + hours + " hours, " + minutes 
+                    + " minutes, " + seconds + " seconds." + "\n" + message})
+            }).catch((error) => {
+                console.log("error updating overallDuration for patient " + phoneNumber);
+                console.log("error = " + error);
             })
-        }).catch((error) => {
-            console.log("error updating overallDuration for patient " + phoneNumber);
-            console.log("error = " + error);
-        })
+
+            // When patient leaves the clinic, calculate the buffer time
+            if (location == 'OverallDuration') {
+                firebase.database().ref('/PatientVisitsByDates/' + phoneNumber + '/' + keyMonthDateYear).once('value', function(snapshot) {
+                    let timeSpentInRooms = 0;
+                    let timeSpentOverall = 0;
+                    snapshot.forEach((data) => {
+                        if (data.key != 'OverallDuration') {
+                            timeSpentInRooms += data.val().diffTime;
+                        }
+                        else {
+                            timeSpentOverall = data.val().diffTime;
+                        }
+                    });
+                    // Z is to trick the Firebase system so that the Transition Time item is always listed at the bottom
+                    snapshot.ref.child("ZTransition").update({
+                        diffTime: timeSpentOverall - timeSpentInRooms
+                    });
+                })
+            }
+        });
     }
 
     onSuccess(e) {
@@ -130,7 +133,7 @@ class QrScanner extends Component {
         let phoneNumber = user.email.split('@')[0];
 
         // get today's date
-        let now = (new Date()).addDays(1);
+        let now = new Date();
         let keyMonthDateYear = this.formattedDate(now);
 
         if (e.data == 'overall-start') {
@@ -172,9 +175,5 @@ class QrScanner extends Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-
-});
 
 export default QrScanner;

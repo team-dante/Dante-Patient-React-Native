@@ -3,12 +3,15 @@ import React, { Component } from 'react';
 import {StyleSheet, Image, ScrollView, Text } from 'react-native';
 import firebase from 'firebase';
 
-export default class ShowMap extends Component {
+class ShowMap extends Component {
+
     constructor(props) {
         super(props);
         // email = phoneNumber + @email.com
         this.state = { patientName: '', queueNum: '', queueNotFound: true };
+        this.realTimeInterval = 0;
     }
+
     componentWillMount() {
         // locate current user's phone num
         let user = firebase.auth().currentUser;
@@ -16,7 +19,6 @@ export default class ShowMap extends Component {
         // this keyword would not work under callback fxn
         var self = this;
 
-        
         firebase.database().ref('/WaitingQueue').on("value", function(snapshot){
             snapshot.forEach( (data) => {
                 if (data.key == phoneNum.toString()){
@@ -28,6 +30,27 @@ export default class ShowMap extends Component {
             })
         })
 
+        // get today's date
+        let now = new Date();
+        let keyMonthDateYear = this.formattedDate(now);
+
+        // if the patient is still inside a room, or the whole visit is not over, clock ticking
+        // even if patient closes the app and reopens again, clock will work correctly
+        this.realTimeInterval = setInterval(()=> {
+            firebase.database().ref('/PatientVisitsByDates/' + phoneNum + '/' + keyMonthDateYear)
+            .once('value', function (snapshot) {
+                snapshot.forEach((data) => {
+                    if (data.val().inSession == true) {
+                        let start = data.val().startTime;
+                        let now = Date.now();
+                        data.ref.update({
+                            endTime: now,
+                            diffTime: now - start
+                        })
+                    }
+                });
+            });
+        }, 1000);
 
         // search for the staff obj that has the same phoneNum as currentUser has
         firebase.database().ref(`/Patients`).orderByChild("patientPhoneNumber").equalTo(phoneNum)
@@ -41,9 +64,18 @@ export default class ShowMap extends Component {
                 // running console.log(patientName) here would cause crash
             });
     }
+
+    formattedDate(now) {
+        var month = now.getMonth() + 1;
+        var formattedMonth = month < 10 ? '0' + month : month;
+        var date = now.getDate();
+        var formattedDate = date < 10 ? '0' + date : date;
+        // outputs "2019-05-10"
+        return now.getFullYear() + '-' + formattedMonth + '-' + formattedDate;
+    }
+
     renderPositionText(){
         const { queueNum } = this.state;
-
         if (this.state.queueNotFound) {
             return (
                 <Text style={styles.topText}>You are not registered in the waiting list.</Text>
@@ -55,6 +87,11 @@ export default class ShowMap extends Component {
             )
         }
     }
+    
+    componentWillUnmount() {
+        clearInterval(this.realTimeInterval);
+    }
+
     render() {
         return (
             <ScrollView minimumZoomScale={1} maximumZoomScale={3} contentContainerStyle={styles.container}>
@@ -92,3 +129,5 @@ const styles = StyleSheet.create({
         overflow: 'hidden'
     },
 });
+
+export default ShowMap;

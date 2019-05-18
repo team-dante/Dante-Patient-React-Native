@@ -4,6 +4,8 @@ import firebase from 'firebase';
 
 class SectionListItem extends Component {
 
+    // @params(epoch time)
+    // return [hour, minutes, seconds]
     dateToStr(durationEpoch) {
         let seconds = Math.floor((durationEpoch / 1000) % 60),
             minutes = Math.floor((durationEpoch / (1000 * 60)) % 60),
@@ -11,8 +13,10 @@ class SectionListItem extends Component {
         hours = (hours < 10) ? "0" + hours : hours;
         minutes = (minutes < 10) ? "0" + minutes : minutes;
         seconds = (seconds < 10) ? "0" + seconds : seconds;
-        return hours + " hrs, " + minutes + " mins, " + seconds + " secs";
+        return [hours, minutes, seconds];
     }
+
+    // beautify location strings
     locBeautify(location) {
         if (location == 'OverallDuration')
             return <Text style={styles.textHeader}>Overall Visit</Text>
@@ -20,28 +24,50 @@ class SectionListItem extends Component {
             return <Text style={styles.textHeader}>Room A</Text>
         else if (location == 'RoomB')
             return <Text style={styles.textHeader}>Room B</Text>
+        else if (location == 'ZTransition')
+            return <Text style={styles.textHeader}>Transition Time</Text>
         else {
             return <Text style={styles.textHeader}>{location}</Text>
         }
     }
+
+    // beautify date to HH:MM (AM/PM) format
     dateBeautify(epochTime) {
-        // let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         let date = new Date(epochTime)
-        // let day = days[date.getDay()];
         let hours = ((date.getHours() + 11) % 12 + 1);
+        let minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
         let suffix = date.getHours() > 12 ? "PM" : "AM";
-        return hours + ":" + date.getMinutes() + " " + suffix
+        return hours + ":" + minutes + " " + suffix;
     }
+
+    // HH hrs MM mins SS secs spent
     getTimeSpent(data) {
         if (data.includes("NaN"))
             return <Text style={styles.cardContents}>Time Spent: None</Text>
         else {
-            return <Text style={styles.cardContents}>Time Spent: {data}</Text>
+            return (
+                <Text style={styles.cardContents}>
+                    <Text style={{fontSize: 28}}>{data[0]}</Text> hrs 
+                    <Text style={{fontSize: 28}}> {data[1]}</Text> mins 
+                    <Text style={{fontSize: 28}}> {data[2]}</Text> secs spent
+                </Text>
+            );
         }
     }
+
+    // format Start
+    getStartTime(data) {
+        if (data.includes("NaN"))
+            return <Text style={styles.textSubtitle}></Text>
+        else {
+            return <Text style={styles.textSubtitle}>Start: {data}</Text>
+        }
+    }
+    
+    // format End
     getEndTime(data) {
         if (data.includes("NaN"))
-            return <Text style={styles.textSubtitle}>End: None</Text>
+            return <Text style={styles.textSubtitle}></Text>
         else {
             return <Text style={styles.textSubtitle}>End: {data}</Text>
         }
@@ -55,7 +81,7 @@ class SectionListItem extends Component {
                         {this.locBeautify(this.props.item.location)}
                     </View>
                     <View style={styles.cardSubtitles}>
-                        <Text style={styles.textSubtitle}>Start: {this.dateBeautify(this.props.item.startTime)}</Text>
+                        <Text style={styles.textSubtitle}>{this.getStartTime(this.dateBeautify(this.props.item.startTime))}</Text>
                         {this.getEndTime(this.dateBeautify(this.props.item.endTime))}  
                     </View>                  
                 </View>
@@ -70,7 +96,7 @@ class SectionListItem extends Component {
 class SectionHeader extends Component {
     render() {
         return (
-            <View style={{ flex: 1, backgroundColor: 'white' }}>
+            <View style={{ flex: 1, backgroundColor: '#f9fcfd' }}>
                 <Text style={styles.sectionHeader}>{this.props.section.date}</Text>
             </View>
         );
@@ -160,7 +186,7 @@ class VisitHistory extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FFF',
+        backgroundColor: '#f9fcfd'
     },
     cardHeader: {
         flex:1,
@@ -215,15 +241,16 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     content: {
-        padding: 25
+        padding: 20,
+        color:  '#fcfcfc'
     },
     cardContents: {
-        fontSize: 18
+        fontSize: 16
     },
     sectionHeader: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#ADADAD',
+        color: '#a4a4a4',
         margin: 20,
         marginBottom: 10
     }
