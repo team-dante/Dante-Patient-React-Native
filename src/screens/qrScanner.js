@@ -42,7 +42,7 @@ class QrScanner extends Component {
             inSession: true
         }).then(() => {
             console.log("Successfully updating" + location + "for patient " + phoneNumber)
-            Actions.notice({text: message})
+            Actions.notice({ text: message })
         }).catch((error) => {
             console.log("error updating" + location + "for patient " + phoneNumber);
             console.log("error = " + error);
@@ -51,16 +51,29 @@ class QrScanner extends Component {
     // Update end time and time spent in a particular room (or for overall visit) when patient scans out
     // out of session, clock stops
     updateEndTimeAndDiffTime(keyMonthDateYear, phoneNumber, location, message) {
+
+        let self = this
+
+        let startQrScanned = false;
+        firebase.database().ref('/PatientVisitsByDates/' + phoneNumber + '/' + keyMonthDateYear + '/' + location).once('value', function (snapshot) {
+            if (snapshot.exists()) {
+                startQrScanned = true;
+            }
+            else {
+                self.invalidQrCode();
+            }
+        })
+
         // REMOVE users' phoneNumber from WaitingQueue if they finish the overall visit
         if (location == 'OverallDuration') {
             firebase.database().ref('/WaitingQueue').once('value', function (snapshot) {
                 let updateValFromHere = false;
                 snapshot.forEach((child) => {
                     console.log(child.key + ', ' + child.val())
-    
+
                     if (child.key == phoneNumber.toString())
                         updateValFromHere = true
-    
+
                     //child().update() won't work
                     if (updateValFromHere && child.val() != 0)
                         firebase.database().ref('/WaitingQueue').child(child.key).set(child.val() - 1);
@@ -73,47 +86,52 @@ class QrScanner extends Component {
         }
 
         // updating patient endTime for multiple visits (assuming no users visit each room once)
-        firebase.database().ref('/PatientVisitsByDates/' + phoneNumber + '/' + keyMonthDateYear + '/' + location).update({
-            inSession: false
-        }).then((data) => {
-            firebase.database().ref('/PatientVisitsByDates/' + phoneNumber + '/' + keyMonthDateYear + '/' + location).once('value', function (snapshot) {
-                let durationEpoch = snapshot.val().diffTime;
+        if (startQrScanned) {
+            firebase.database().ref('/PatientVisitsByDates/' + phoneNumber + '/' + keyMonthDateYear + '/' + location).update({
+                inSession: false
+            }).then((data) => {
+                firebase.database().ref('/PatientVisitsByDates/' + phoneNumber + '/' + keyMonthDateYear + '/' + location).once('value', function (snapshot) {
+                    let durationEpoch = snapshot.val().diffTime;
 
-                let seconds = Math.floor((durationEpoch / 1000) % 60),
-                minutes = Math.floor((durationEpoch / (1000 * 60)) % 60),
-                hours = Math.floor((durationEpoch / (1000 * 60 * 60)) % 24);
+                    let seconds = Math.floor((durationEpoch / 1000) % 60),
+                        minutes = Math.floor((durationEpoch / (1000 * 60)) % 60),
+                        hours = Math.floor((durationEpoch / (1000 * 60 * 60)) % 24);
 
-                hours = (hours < 10) ? "0" + hours : hours;
-                minutes = (minutes < 10) ? "0" + minutes : minutes;
-                seconds = (seconds < 10) ? "0" + seconds : seconds;
+                    hours = (hours < 10) ? "0" + hours : hours;
+                    minutes = (minutes < 10) ? "0" + minutes : minutes;
+                    seconds = (seconds < 10) ? "0" + seconds : seconds;
 
-                Actions.notice({text: "You spent " + hours + " hours, " + minutes 
-                    + " minutes, " + seconds + " seconds." + "\n" + message})
-            }).catch((error) => {
-                console.log("error updating overallDuration for patient " + phoneNumber);
-                console.log("error = " + error);
-            })
-
-            // When patient leaves the clinic, calculate the buffer time
-            if (location == 'OverallDuration') {
-                firebase.database().ref('/PatientVisitsByDates/' + phoneNumber + '/' + keyMonthDateYear).once('value', function(snapshot) {
-                    let timeSpentInRooms = 0;
-                    let timeSpentOverall = 0;
-                    snapshot.forEach((data) => {
-                        if (data.key != 'OverallDuration') {
-                            timeSpentInRooms += data.val().diffTime;
-                        }
-                        else {
-                            timeSpentOverall = data.val().diffTime;
-                        }
-                    });
-                    // Z is to trick the Firebase system so that the Transition Time item is always listed at the bottom
-                    snapshot.ref.child("ZTransition").update({
-                        diffTime: timeSpentOverall - timeSpentInRooms
-                    });
+                    Actions.notice({
+                        text: "You spent " + hours + " hours, " + minutes
+                            + " minutes, " + seconds + " seconds." + "\n" + message
+                    })
+                }).catch((error) => {
+                    console.log("error updating overallDuration for patient " + phoneNumber);
+                    console.log("error = " + error);
                 })
-            }
-        });
+
+                // When patient leaves the clinic, calculate the buffer time
+                if (location == 'OverallDuration') {
+                    firebase.database().ref('/PatientVisitsByDates/' + phoneNumber + '/' + keyMonthDateYear).once('value', function (snapshot) {
+                        let timeSpentInRooms = 0;
+                        let timeSpentOverall = 0;
+                        snapshot.forEach((data) => {
+                            if (data.key != 'OverallDuration') {
+                                timeSpentInRooms += data.val().diffTime;
+                            }
+                            else {
+                                timeSpentOverall = data.val().diffTime;
+                            }
+                        });
+                        // Z is to trick the Firebase system so that the Transition Time item is always listed at the bottom
+                        snapshot.ref.child("ZTransition").update({
+                            diffTime: timeSpentOverall - timeSpentInRooms
+                        });
+                    })
+                }
+            });
+        }
+
     }
 
     onSuccess(e) {
@@ -122,7 +140,7 @@ class QrScanner extends Component {
         console.log("phoneNumber = " + phoneNumber);
 
         // addDays for testing purposes
-        Date.prototype.addDays = function(days) {
+        Date.prototype.addDays = function (days) {
             var date = new Date(this.valueOf());
             date.setDate(date.getDate() + days);
             return date;
@@ -142,27 +160,31 @@ class QrScanner extends Component {
         else if (e.data == 'overall-end') {
             this.updateEndTimeAndDiffTime(keyMonthDateYear, phoneNumber, "OverallDuration", "You are checked out at the front door!")
         }
-        else if (e.data == 'roomA-start'){
+        else if (e.data == 'roomA-start') {
             this.updateStartTime(keyMonthDateYear, phoneNumber, "RoomA", "You are checked in at Room A!")
         }
-        else if (e.data == 'roomA-end'){
+        else if (e.data == 'roomA-end') {
             this.updateEndTimeAndDiffTime(keyMonthDateYear, phoneNumber, "RoomA", "You are checked out at Room A!")
         }
-        else if (e.data == 'roomB-start'){
+        else if (e.data == 'roomB-start') {
             this.updateStartTime(keyMonthDateYear, phoneNumber, "RoomB", "You are checked in at Room B!")
         }
-        else if (e.data == 'roomB-end'){
+        else if (e.data == 'roomB-end') {
             this.updateEndTimeAndDiffTime(keyMonthDateYear, phoneNumber, "RoomB", "You are checked out at Room B!")
         }
         else {
-            Alert.alert(
-                'Error',
-                'Unrecognized QR code',
-                [
-                    { text: 'Close', onPress: () => { Actions.map(); } }
-                ]
-            )
+            this.invalidQrCode();
         }
+    }
+
+    invalidQrCode() {
+        Alert.alert(
+            'Error',
+            'Unrecognized QR code',
+            [
+                { text: 'Close', onPress: () => { Actions.map(); } }
+            ]
+        )
     }
 
     render() {
