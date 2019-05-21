@@ -1,14 +1,15 @@
 'use strict';
 import React, { Component } from 'react';
-import {StyleSheet, Image, ScrollView, Text } from 'react-native';
+import {StyleSheet, Image, ScrollView, Text, Dimensions} from 'react-native';
 import firebase from 'firebase';
+import Canvas, {Image as CanvasImage, Path2D, ImageData} from 'react-native-canvas';
 
 class ShowMap extends Component {
 
     constructor(props) {
         super(props);
         // email = phoneNumber + @email.com
-        this.state = { patientName: '', queueNum: '', queueNotFound: true };
+        this.state = { patientName: '', queueNum: '', queueNotFound: true, data: [] };
         this.realTimeInterval = 0;
     }
 
@@ -74,7 +75,7 @@ class ShowMap extends Component {
         return now.getFullYear() + '-' + formattedMonth + '-' + formattedDate;
     }
 
-    renderPositionText(){
+    renderPositionText() {
         const { queueNum } = this.state;
         if (this.state.queueNotFound) {
             return (
@@ -92,14 +93,63 @@ class ShowMap extends Component {
         clearInterval(this.realTimeInterval);
     }
 
+    Shape(x, y, width, height, fillColor, text, textX, textY) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.fillColor = fillColor;
+        this.text = text;
+        this.textX = textX;
+        this.textY = textY;
+    }
+
+    handleCanvas = (canvas) => {
+        const context = canvas.getContext('2d');
+        canvas.height = Dimensions.get('window').height;
+        canvas.width = Dimensions.get('window').width;
+        context.fillStyle = '#fff';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.fill()
+
+        let shapeArr = [];
+        let rectWidth = 200;
+        let rectHeight = 200;
+
+        let verticalOffset = canvas.width - rectWidth - rectWidth;
+        let horizontalOffset = canvas.width - rectWidth;
+        let textOffset = 20;
+
+        shapeArr.push(new this.Shape(0, 0, rectWidth, rectHeight, '#4B77BE', 'Room A', 0, textOffset))
+        shapeArr.push(new this.Shape(horizontalOffset, 0, rectWidth, rectHeight, '#4B77BE', 'Room B', horizontalOffset, textOffset))
+        shapeArr.push(new this.Shape(0, rectHeight + verticalOffset , rectWidth, rectHeight, '#4B77BE', 'Room C', 0, rectHeight + verticalOffset + textOffset))
+        shapeArr.push(new this.Shape(horizontalOffset, rectHeight + verticalOffset, rectWidth, rectHeight, '#4B77BE', 'Room D', horizontalOffset, rectHeight + verticalOffset + textOffset))
+
+        for (let i in shapeArr) {
+            context.fillStyle = shapeArr[i].fillColor
+            context.fillRect(shapeArr[i].x, shapeArr[i].y, shapeArr[i].width, shapeArr[i].height)
+            context.font = "20px San Francisco";
+            context.fillStyle = "white";
+            context.fillText(shapeArr[i].text, shapeArr[i].textX, shapeArr[i].textY)
+        }
+
+        let self = this;
+
+        // find out where room A is 
+        firebase.database().ref('/DoctorLocation/').on('value', function(snapshot){
+            self.setState({ data : snapshot})
+        })
+      }
+
     render() {
         return (
             <ScrollView minimumZoomScale={1} maximumZoomScale={3} contentContainerStyle={styles.container}>
                 { this.renderPositionText() }
-                <Image source={require("../assets/radOncMap.png")} 
+                {/* <Image source={require("../assets/radOncMap.png")} 
                 style={styles.image}
                 resizeMode="contain">
-                </Image>
+                </Image> */}
+                <Canvas ref={this.handleCanvas} />
             </ScrollView>
         );
     }
@@ -108,7 +158,7 @@ class ShowMap extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#ffffff'
+        backgroundColor: "#fff",
     },
     image: {
         flex:1, 
