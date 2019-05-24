@@ -151,15 +151,17 @@ class ShowMap extends Component {
             snapshot.forEach((eachDoctor) => {
                 doctorJson.push(eachDoctor.val())
             })
-
+            let randomizedPosition = [[50, 130], [85, 90], [110, 50]]
             // reset all small circles
-            for (let i in shapeArr){
-                context.fillStyle = roomColors[i]
-                context.beginPath()
-                context.arc(shapeArr[i].x + 100, shapeArr[i].y + 100, 15, 0, 2 * Math.PI);
-                context.closePath();
-                // only arc needs to call function fill()
-                context.fill()
+            for (let i in shapeArr) {
+                for (let j in randomizedPosition){
+                        context.fillStyle = shapeArr[i].fillColor;
+                        context.beginPath()
+                        context.arc(shapeArr[i].x + randomizedPosition[j][0], shapeArr[i].y + randomizedPosition[j][1], 15, 0, 2 * Math.PI);
+                        context.closePath();
+                        // only arc needs to call function fill()
+                        context.fill()
+                }
             }
 
             // render each dot onto the map
@@ -168,10 +170,13 @@ class ShowMap extends Component {
                     if (doctorJson[eachDoctor]["room"] == shapeArr[i].text) {
                         context.fillStyle = doctorJson[eachDoctor]["docColor"];
                         context.beginPath()
-                        context.arc(shapeArr[i].x + 100, shapeArr[i].y + 100, 15, 0, 2 * Math.PI);
+                        context.arc(shapeArr[i].x + randomizedPosition[0][0], shapeArr[i].y + randomizedPosition[0][1], 15, 0, 2 * Math.PI);
                         context.closePath();
                         // only arc needs to call function fill()
                         context.fill()
+
+                        let firstElement = randomizedPosition.shift()
+                        randomizedPosition.push(firstElement)
                     }
                 }
             }
