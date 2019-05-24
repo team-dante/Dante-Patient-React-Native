@@ -193,6 +193,7 @@ class ShowMap extends Component {
                 context.fill()
             }
 
+            // render each dot onto the map
             for (let eachDoctor in doctorJson) {
                 if (doctorJson[eachDoctor]["room"] == "Room A") {
                     console.log(doctorJson[eachDoctor]["docName"] + " is in in room A")
