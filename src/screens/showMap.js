@@ -9,7 +9,9 @@ class ShowMap extends Component {
     constructor(props) {
         super(props);
         // email = phoneNumber + @email.com
-        this.state = { patientName: '', queueNum: '', queueNotFound: true, locationData: [] };
+        this.state = {
+            patientName: '', queueNum: '', queueNotFound: true,
+        };
         this.realTimeInterval = 0;
     }
 
@@ -65,11 +67,6 @@ class ShowMap extends Component {
                 // running console.log(patientName) here would cause crash
             });
 
-        console.log("im in componentwillmount")
-        // extract doctor's location
-        firebase.database().ref('/DoctorLocation/').on('value', function (snapshot) {
-            self.setState({ locationData: snapshot.val() })
-        })
     }
 
     formattedDate(now) {
@@ -123,7 +120,7 @@ class ShowMap extends Component {
     }
 
     handleCanvas = (canvas) => {
-        // create the entire canvas with the width of the device and the height of the device 
+        // render the entire canvas with the width of the device and the height of the device 
         // fill with white color
         const context = canvas.getContext('2d');
         canvas.height = Dimensions.get('window').height;
@@ -131,6 +128,7 @@ class ShowMap extends Component {
         context.fillStyle = '#3DCEBF';
         context.fillRect(0, 0, canvas.width, canvas.height);
 
+        // render 4 rooms
         let shapeArr = [];
 
         let rectWidth = 200;
@@ -155,7 +153,7 @@ class ShowMap extends Component {
             context.fillText(shapeArr[i].text, shapeArr[i].textX, shapeArr[i].textY)
         }
 
-        // showing doctors' small circles
+        // render doctors' small circles
         let paddingNoteCircle = 30;
         let paddingRoomTextCircle = 20;
         let noteCircleVerticalOffset = canvas.width + paddingNoteCircle;
@@ -178,29 +176,80 @@ class ShowMap extends Component {
             context.fillText(doctorArr[i].name, doctorArr[i].textX, doctorArr[i].textY)
         }
 
-        let self = this;
+        // extract doctor's location
+        firebase.database().ref('/DoctorLocation/').on('value', function (snapshot) {
+            let doctorJson = []
+            snapshot.forEach((eachDoctor) => {
+                doctorJson.push(eachDoctor.val())
+            })
 
-    }
-
-    addDoctorLocation() {
-
-        console.log(this.state.locationData)
-
-        let jsonData = this.state.locationData;
-        let obj_lst = [];
-
-        for (let eachDoctor in jsonData) {
-            obj_lst = [];
-            let inner_dict = {
-                doctorName: jsonData[eachDoctor]["doctorName"],
-                dotColor: jsonData[eachDoctor]["dotColor"],
-                currentRoom: jsonData[eachDoctor]["room"]
+            // reset all small circles
+            for (let i in shapeArr){
+                context.fillStyle = "#4B77BE"
+                context.beginPath()
+                context.arc(shapeArr[i].x + 100, shapeArr[i].y + 100, 15, 0, 2 * Math.PI);
+                context.closePath();
+                // only arc needs to call function fill()
+                context.fill()
             }
-            obj_lst.push(inner_dict)
-        }
 
-        console.log(obj_lst);
+            for (let eachDoctor in doctorJson) {
+                if (doctorJson[eachDoctor]["room"] == "Room A") {
+                    console.log(doctorJson[eachDoctor]["docName"] + " is in in room A")
+                    for (let i in shapeArr) {
+                        if (shapeArr[i].text == "Room A") {
+                            context.fillStyle = doctorJson[eachDoctor]["docColor"];
+                            context.beginPath()
+                            context.arc(shapeArr[i].x + 100, shapeArr[i].y + 100, 15, 0, 2 * Math.PI);
+                            context.closePath();
+                            // only arc needs to call function fill()
+                            context.fill()
+                        }
+                    }
+                }
+                if (doctorJson[eachDoctor]["room"] == "Room B") {
+                    console.log(doctorJson[eachDoctor]["docName"] + " is in in room B")
+                    for (let i in shapeArr) {
+                        if (shapeArr[i].text == "Room B") {
+                            context.fillStyle = doctorJson[eachDoctor]["docColor"];
+                            context.beginPath()
+                            context.arc(shapeArr[i].x + 100, shapeArr[i].y + 100, 15, 0, 2 * Math.PI);
+                            context.closePath();
+                            // only arc needs to call function fill()
+                            context.fill()
+                        }
+                    }
+                }
+                if (doctorJson[eachDoctor]["room"] == "Room C") {
+                    console.log(doctorJson[eachDoctor]["docName"] + " is in in room C")
+                    for (let i in shapeArr) {
+                        if (shapeArr[i].text == "Room C") {
+                            context.fillStyle = doctorJson[eachDoctor]["docColor"];
+                            context.beginPath()
+                            context.arc(shapeArr[i].x + 100, shapeArr[i].y + 100, 15, 0, 2 * Math.PI);
+                            context.closePath();
+                            // only arc needs to call function fill()
+                            context.fill()
+                        }
+                    }
+                }
+                if (doctorJson[eachDoctor]["room"] == "Room D") {
+                    console.log(doctorJson[eachDoctor]["docName"] + " is in in room D")
+                    for (let i in shapeArr) {
+                        if (shapeArr[i].text == "Room D") {
+                            context.fillStyle = doctorJson[eachDoctor]["docColor"];
+                            context.beginPath()
+                            context.arc(shapeArr[i].x + 100, shapeArr[i].y + 100, 15, 0, 2 * Math.PI);
+                            context.closePath();
+                            // only arc needs to call function fill()
+                            context.fill()
+                        }
+                    }
+                }
+            }
+        })
     }
+
 
     render() {
         return (
@@ -211,7 +260,6 @@ class ShowMap extends Component {
                 resizeMode="contain">
                 </Image> */}
                 <Canvas ref={this.handleCanvas} />
-                <Canvas ref={this.addDoctorLocation.bind(this)} />
             </ScrollView>
         );
     }
