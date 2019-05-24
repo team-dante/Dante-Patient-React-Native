@@ -162,6 +162,7 @@ class ShowMap extends Component {
                 context.fill()
             }
 
+            // render each dot onto the map
             for (let eachDoctor in doctorJson) {
                 for (let i in shapeArr) {
                     if (doctorJson[eachDoctor]["room"] == shapeArr[i].text) {
