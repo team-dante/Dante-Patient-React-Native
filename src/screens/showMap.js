@@ -176,8 +176,6 @@ class ShowMap extends Component {
                 }
             }
         });
-
-        
     }
     handleCanvas2 = (canvas) => {
         const context = canvas.getContext('2d');
