@@ -1,8 +1,9 @@
 'use strict';
 import React, { Component } from 'react';
-import { StyleSheet, Image, ScrollView, Text, Dimensions } from 'react-native';
+import { StyleSheet, Image, ScrollView, Text, View, Dimensions } from 'react-native';
 import firebase from 'firebase';
 import Canvas, { Image as CanvasImage, Path2D, ImageData } from 'react-native-canvas';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 class ShowMap extends Component {
 
@@ -123,57 +124,25 @@ class ShowMap extends Component {
         // render the entire canvas with the width of the device and the height of the device 
         // fill with white color
         const context = canvas.getContext('2d');
-        canvas.height = Dimensions.get('window').height;
+        canvas.height = hp('50%');
         canvas.width = Dimensions.get('window').width;
-        context.fillStyle = '#3DCEBF';
+        context.fillStyle = '#f1f1f1';
         context.fillRect(0, 0, canvas.width, canvas.height);
 
         // render 4 rooms
         let shapeArr = [];
-
-        let rectWidth = 200;
-        let rectHeight = 200;
-
-        let verticalOffset = canvas.width - rectWidth - rectWidth;
-        let horizontalOffset = canvas.width - rectWidth;
-        let textOffset = 20;
-
-        let paddingRoomText = 10;
-
-        shapeArr.push(new this.Shape(0, 0, rectWidth, rectHeight, '#4B77BE', 'Room A', paddingRoomText, textOffset))
-        shapeArr.push(new this.Shape(horizontalOffset, 0, rectWidth, rectHeight, '#4B77BE', 'Room B', horizontalOffset + paddingRoomText, textOffset))
-        shapeArr.push(new this.Shape(0, rectHeight + verticalOffset, rectWidth, rectHeight, '#4B77BE', 'Room C', paddingRoomText, rectHeight + verticalOffset + textOffset))
-        shapeArr.push(new this.Shape(horizontalOffset, rectHeight + verticalOffset, rectWidth, rectHeight, '#4B77BE', 'Room D', horizontalOffset + paddingRoomText, rectHeight + verticalOffset + textOffset))
+        let roomColors = ['#6F92BE', '#004080', '#C9C4AC', '#01004A']
+        shapeArr.push(new this.Shape(0, 0, wp('55%'), hp('20%'), roomColors[0], 'Room A', wp('3%'), hp('3%')))
+        shapeArr.push(new this.Shape(wp('62%'), 0, wp('38%'), hp('23%'), roomColors[1], 'Room B', wp('64%'), hp('3%')))
+        shapeArr.push(new this.Shape(0, hp('25%'), wp('55%'), hp('25%'), roomColors[2], 'Room C', wp('3%'), hp('28%')))
+        shapeArr.push(new this.Shape(wp('62%'), hp('23%'), wp('38%'), hp('27%'), roomColors[3], 'Room D', wp('64%'), hp('26%')))
 
         for (let i in shapeArr) {
             context.fillStyle = shapeArr[i].fillColor
             context.fillRect(shapeArr[i].x, shapeArr[i].y, shapeArr[i].width, shapeArr[i].height)
-            context.font = "20px San Francisco";
+            context.font = '20px Helvetica';
             context.fillStyle = "white";
             context.fillText(shapeArr[i].text, shapeArr[i].textX, shapeArr[i].textY)
-        }
-
-        // render doctors' small circles
-        let paddingNoteCircle = 30;
-        let paddingRoomTextCircle = 20;
-        let noteCircleVerticalOffset = canvas.width + paddingNoteCircle;
-        let doctorArr = [];
-        doctorArr.push(new this.Doctor(paddingNoteCircle, noteCircleVerticalOffset, 15, 0, 2 * Math.PI,
-            "Dr. Roa", paddingNoteCircle + paddingRoomTextCircle, noteCircleVerticalOffset + 5, "yellow"));
-        doctorArr.push(new this.Doctor(paddingNoteCircle, noteCircleVerticalOffset + paddingNoteCircle + 5, 15, 0, 2 * Math.PI,
-            "Dr. Kuo", paddingNoteCircle + paddingRoomTextCircle,
-            noteCircleVerticalOffset + paddingNoteCircle + 10, "red"));
-
-        for (let i in doctorArr) {
-            context.fillStyle = doctorArr[i].color;
-            context.beginPath()
-            context.arc(doctorArr[i].x, doctorArr[i].y, doctorArr[i].radius, doctorArr[i].sAngle, doctorArr[i].eAngle, false);
-            context.closePath();
-            // only arc needs to call function fill()
-            context.fill()
-
-            context.fillStyle = "white";
-            context.fillText(doctorArr[i].name, doctorArr[i].textX, doctorArr[i].textY)
         }
 
         // extract doctor's location
@@ -185,7 +154,7 @@ class ShowMap extends Component {
 
             // reset all small circles
             for (let i in shapeArr){
-                context.fillStyle = "#4B77BE"
+                context.fillStyle = roomColors[i]
                 context.beginPath()
                 context.arc(shapeArr[i].x + 100, shapeArr[i].y + 100, 15, 0, 2 * Math.PI);
                 context.closePath();
@@ -194,72 +163,61 @@ class ShowMap extends Component {
             }
 
             for (let eachDoctor in doctorJson) {
-                if (doctorJson[eachDoctor]["room"] == "Room A") {
-                    console.log(doctorJson[eachDoctor]["docName"] + " is in in room A")
-                    for (let i in shapeArr) {
-                        if (shapeArr[i].text == "Room A") {
-                            context.fillStyle = doctorJson[eachDoctor]["docColor"];
-                            context.beginPath()
-                            context.arc(shapeArr[i].x + 100, shapeArr[i].y + 100, 15, 0, 2 * Math.PI);
-                            context.closePath();
-                            // only arc needs to call function fill()
-                            context.fill()
-                        }
-                    }
-                }
-                if (doctorJson[eachDoctor]["room"] == "Room B") {
-                    console.log(doctorJson[eachDoctor]["docName"] + " is in in room B")
-                    for (let i in shapeArr) {
-                        if (shapeArr[i].text == "Room B") {
-                            context.fillStyle = doctorJson[eachDoctor]["docColor"];
-                            context.beginPath()
-                            context.arc(shapeArr[i].x + 100, shapeArr[i].y + 100, 15, 0, 2 * Math.PI);
-                            context.closePath();
-                            // only arc needs to call function fill()
-                            context.fill()
-                        }
-                    }
-                }
-                if (doctorJson[eachDoctor]["room"] == "Room C") {
-                    console.log(doctorJson[eachDoctor]["docName"] + " is in in room C")
-                    for (let i in shapeArr) {
-                        if (shapeArr[i].text == "Room C") {
-                            context.fillStyle = doctorJson[eachDoctor]["docColor"];
-                            context.beginPath()
-                            context.arc(shapeArr[i].x + 100, shapeArr[i].y + 100, 15, 0, 2 * Math.PI);
-                            context.closePath();
-                            // only arc needs to call function fill()
-                            context.fill()
-                        }
-                    }
-                }
-                if (doctorJson[eachDoctor]["room"] == "Room D") {
-                    console.log(doctorJson[eachDoctor]["docName"] + " is in in room D")
-                    for (let i in shapeArr) {
-                        if (shapeArr[i].text == "Room D") {
-                            context.fillStyle = doctorJson[eachDoctor]["docColor"];
-                            context.beginPath()
-                            context.arc(shapeArr[i].x + 100, shapeArr[i].y + 100, 15, 0, 2 * Math.PI);
-                            context.closePath();
-                            // only arc needs to call function fill()
-                            context.fill()
-                        }
+                for (let i in shapeArr) {
+                    if (doctorJson[eachDoctor]["room"] == shapeArr[i].text) {
+                        context.fillStyle = doctorJson[eachDoctor]["docColor"];
+                        context.beginPath()
+                        context.arc(shapeArr[i].x + 100, shapeArr[i].y + 100, 15, 0, 2 * Math.PI);
+                        context.closePath();
+                        // only arc needs to call function fill()
+                        context.fill()
                     }
                 }
             }
-        })
-    }
+        });
 
+        
+    }
+    handleCanvas2 = (canvas) => {
+        const context = canvas.getContext('2d');
+        canvas.height = hp('20%');
+        canvas.width = Dimensions.get('window').width;
+        context.fillStyle = '#fafafa';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+        let doctorArr = [];
+        doctorArr.push(new this.Doctor(wp('6%'), hp('3.8%'), 12, 0, 2*Math.PI, "Dr. Kuo", wp('12%'), hp('4.6%'), 'red'));
+        doctorArr.push(new this.Doctor(wp('6%'), hp('8.2%'), 12, 0, 2*Math.PI, "Dr. Roa", wp('12%'), hp('9.2%'), 'yellow'));
+
+        for (let i in doctorArr) {
+            context.fillStyle = doctorArr[i].color;
+            context.beginPath()
+            context.arc(doctorArr[i].x, doctorArr[i].y, doctorArr[i].radius, doctorArr[i].sAngle, doctorArr[i].eAngle, false);
+            context.closePath();
+            // only arc needs to call function fill()
+            context.fill()
+            context.fillStyle = 'black';
+            context.font = '20px Helvetica';
+            context.fillText(doctorArr[i].name, doctorArr[i].textX, doctorArr[i].textY)
+        }
+    }
 
     render() {
         return (
             <ScrollView minimumZoomScale={1} maximumZoomScale={3} contentContainerStyle={styles.container}>
-                {this.renderPositionText()}
+                <View style={styles.queue}>
+                    {this.renderPositionText()}
+                </View>
                 {/* <Image source={require("../assets/radOncMap.png")} 
                 style={styles.image}
                 resizeMode="contain">
                 </Image> */}
-                <Canvas ref={this.handleCanvas} />
+                <View>
+                    <Canvas ref={this.handleCanvas} />
+                </View>
+                <View>
+                    <Canvas ref={this.handleCanvas2} />
+                </View>
             </ScrollView>
         );
     }
@@ -268,25 +226,37 @@ class ShowMap extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#3DCEBF",
+        backgroundColor: '#F2F2F2'
     },
     image: {
         flex: 1,
         height: undefined,
         width: undefined
     },
-    topText: {
-        color: '#ffffff',
-        textAlign: 'center',
-        margin: 20,
-        paddingVertical: 20,
-        paddingHorizontal: 5,
-        fontSize: 23,
+    queue: {
+        color: '#3DCEBF',
+        backgroundColor: '#fcfcfc',
+        borderRadius: 20,
+        borderColor: '#3DCEBF',
         borderWidth: 1,
-        borderRadius: 10,
-        backgroundColor: "#3DCEBF",
-        borderColor: '#ffffff',
-        overflow: 'hidden'
+        paddingTop: 10,
+        margin: wp('6%'),
+        padding: wp('4.5%'),        
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
+        shadowOpacity: 0.36,
+        shadowRadius: 3,
+        elevation: 7
+    },
+    topText: {
+        color: '#3DCEBF',
+        textAlign: 'center',
+        fontSize: wp('5%'),
+        letterSpacing: 0.5,
+        fontWeight: '600'
     },
 });
 

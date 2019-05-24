@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Alert, Image, Dimensions, View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { Alert, Image, Dimensions, View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
 import TouchID from 'react-native-touch-id';
 import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
 
-class PatientLogin extends React.Component {
+class PatientLogin extends Component {
     constructor(props) {
         super(props);
         // email = phoneNumber + @emai.com
