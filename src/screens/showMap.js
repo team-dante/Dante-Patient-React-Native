@@ -154,14 +154,11 @@ class ShowMap extends Component {
             let randomizedPosition = [[50, 130], [85, 90], [110, 50]]
             // reset all small circles
             for (let i in shapeArr) {
-                for (let j in randomizedPosition){
-                        context.fillStyle = shapeArr[i].fillColor;
-                        context.beginPath()
-                        context.arc(shapeArr[i].x + randomizedPosition[j][0], shapeArr[i].y + randomizedPosition[j][1], 15, 0, 2 * Math.PI);
-                        context.closePath();
-                        // only arc needs to call function fill()
-                        context.fill()
-                }
+                context.fillStyle = shapeArr[i].fillColor
+                context.fillRect(shapeArr[i].x, shapeArr[i].y, shapeArr[i].width, shapeArr[i].height)
+                context.font = '20px Helvetica';
+                context.fillStyle = "white";
+                context.fillText(shapeArr[i].text, shapeArr[i].textX, shapeArr[i].textY)
             }
 
             // render each dot onto the map
