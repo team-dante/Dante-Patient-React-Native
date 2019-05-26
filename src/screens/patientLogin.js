@@ -3,6 +3,7 @@ import { Alert, Image, Dimensions, View, Text, TextInput, TouchableOpacity, Styl
 import TouchID from 'react-native-touch-id';
 import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 class PatientLogin extends Component {
     constructor(props) {
@@ -53,7 +54,6 @@ class PatientLogin extends Component {
 
         email += "@email.com";
         password += "ABCDEFG";
-
         console.log('email = ' + email);
         console.log('password = ' + password);
 
@@ -101,7 +101,7 @@ class PatientLogin extends Component {
             return (
                 <TouchableOpacity style={styles.buttonContainer}
                     onPress={this.onButtonPress.bind(this)}>
-                    <Text style={styles.buttonText}>Login</Text>
+                    <Text style={styles.buttonText}>SIGN IN</Text>
                 </TouchableOpacity>
             )
         }
@@ -110,36 +110,50 @@ class PatientLogin extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Image
-                    style={{ width: 110, height: 110, borderRadius: 20 }}
-                    source={require('../../appIcon/dante-patient.png')} />
-                <Text style={styles.header}>Dante Patient</Text>
-                <Text style={styles.text}>Your Phone Number</Text>
-                <TextInput
-                    style={styles.input}
-                    secureTextEntry={false}
-                    autoCapitalize="none"
-                    onChangeText={email => { this.setState({ email }) }}
-                    value={this.state.email} />
-                <Text style={styles.text}>PIN</Text>
-                <TextInput
-                    style={styles.input}
-                    secureTextEntry={true}
-                    autoCapitalize="none"
-                    onChangeText={password => this.setState({ password })}
-                    value={this.state.password} />
-                {this.renderButton()}
-                <Text
-                    style={[styles.text, { fontSize: 14, alignItems: 'center' }]}>
-                    Face ID/Touch ID will be auto-triggered once you have signed in
-                </Text>
-                <View style={styles.footer}>
-                    <Text style={[styles.text, { alignSelf: 'center' }]}>New User?</Text>
-                    <TouchableOpacity style={styles.buttonContainer}
+                <View style={styles.headingBackground}></View>
+                <View style={styles.header}>
+                    <View style={styles.thumbnailContainer}>
+                        <Image
+                        style={{ width: 100, height: 100, borderRadius: 20 }}
+                        source={require('../../appIcon/dante-staff.png')} />
+                    </View>
+                    <View style={styles.headerContent}>
+                        <Text style={styles.headerText}>Dante</Text>
+                        <Text style={styles.headerText}>Patient</Text>
+                    </View>
+                </View>
+                <View style={styles.card}>
+                    <Text style={styles.cardTitle}>Welcome Back</Text>
+
+                    <Text style={styles.fieldTitle}>Phone Number</Text>
+                    <TextInput
+                        style={styles.input}
+                        secureTextEntry={false}
+                        autoCapitalize="none"
+                        onChangeText={email => { this.setState({ email }) }}
+                        value={this.state.email} />
+
+                    <Text style={styles.fieldTitle}>PIN</Text>
+                    <TextInput
+                        style={styles.input}
+                        secureTextEntry={true}
+                        autoCapitalize="none"
+                        onChangeText={password => this.setState({ password })}
+                        value={this.state.password} />
+                    {this.renderButton()}
+                    <Text
+                        style={styles.captions}>
+                        Face ID/Touch ID will be auto-triggered once you have signed in
+                    </Text>
+                    <View style={styles.divider}></View>
+                    <View style={styles.footer}>
+                        <Text style={styles.footerText}>New Patient?</Text>
+                        <TouchableOpacity style={styles.buttonContainer}
                         // onPress will auto trigger if not including { () => { .... } }
-                        onPress={() => { Actions.signUp(); }}>
-                        <Text style={styles.buttonText}>Activate Your Account</Text>
-                    </TouchableOpacity>
+                            onPress={() => { Actions.signUp(); }}>
+                            <Text style={styles.buttonText}>ACTIVATE ACCOUNT</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
         );
@@ -147,56 +161,124 @@ class PatientLogin extends Component {
 }
 
 const styles = StyleSheet.create({
-    header: {
-        paddingVertical: 40,
-        fontSize: 30,
-        fontFamily: 'Futura',
-        fontWeight: 'bold',
-        textShadowColor: '#c4c4c4',
-        textShadowOffset: { width: 1, height: 0 },
-        textShadowRadius: 2
-    },
     container: {
         flex: 1,
-        alignItems: 'center',
-        paddingTop: 80,
-        backgroundColor: '#ffffff',
+        backgroundColor: '#f9f9f9'
     },
-    text: {
-        alignSelf: 'flex-start',
-        paddingLeft: 40,
-        paddingRight: 40,
-        fontSize: 16,
-        textShadowColor: '#c4c4c4',
-        textShadowOffset: { width: 0.5, height: 0 },
-        textShadowRadius: 1,
+    headingBackground: {
+        top: 0,
+        height: hp('35%'),
+        width: wp('100%'),
+        backgroundColor: '#53ACE6',
+        position: 'absolute'
+    },
+    header: {
+        marginTop: hp('7.5%'),
+        flexDirection: 'row',
+        paddingLeft: wp('14%'),
+        paddingRight: wp('12%'),
+    },
+    thumbnailContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: wp('6%')
+    },
+    headerContent: {
+        flexDirection: 'column',
+        justifyContent: 'space-around'
+    },
+    headerText: {
+        fontSize: wp('8%'),
+        fontFamily: 'Poppins-Bold',
+        color: '#fcfcfc',
+    },
+    card: {
+        marginLeft: wp('8%'),
+        marginRight: wp('8%'),
+        marginTop: hp('4%'),
+        padding: wp('7%'),
+        borderRadius: 20,
+        height: hp('70%'),
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
+        shadowOpacity: 0.36,
+        shadowRadius: 6.68,
+        elevation: 11,
+        backgroundColor: '#fff'
+    },
+    cardTitle: {
+        color: '#3d3d3d',
+        fontSize: wp('6%'),
+        fontFamily: 'Poppins-Bold',
+        marginBottom: hp('3.6%'),
+        letterSpacing: 0.5
+    },  
+    fieldTitle: {
+        color: '#53ACE6',
+        fontSize: wp('4.5%'),
+        fontFamily: 'Rubik-Medium'
     },
     input: {
-        width: Dimensions.get('window').width - 80,
-        height: 46,
-        borderColor: "#96A0AF",
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        marginBottom: 20,
-        fontSize: 18
+        height: hp('5.2%'),
+        borderColor: "#53ACE6",
+        borderWidth: 1,
+        borderRadius: 50,
+        marginTop: hp('1.3%'),
+        marginLeft: -wp('2%'),
+        marginRight: -wp('2%'),
+        marginBottom: hp('3.2%'),
+        paddingLeft: wp('4%'),
+        fontSize: wp('4.5%'),
+        backgroundColor: '#f9f9f9',
+        shadowColor: "#3d3d3d",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.36,
+        shadowRadius: 1,
+        elevation: 11,
+        color: '#3d3d3d'
     },
     buttonContainer: {
-        backgroundColor: "#0074D9",
-        paddingVertical: 12,
-        width: 300,
-        borderRadius: 4,
-        margin: 10,
+        marginTop: hp('1.8%'),
+        backgroundColor: "#53ACE6",
+        paddingVertical: hp('1%'),
+        height: hp('5.5%'),
+        borderRadius: 40,
+        justifyContent: 'center',
+        alignSelf: 'stretch'
     },
     buttonText: {
         color: "#FFF",
         textAlign: "center",
         fontWeight: 'bold',
-        fontSize: 18
+        fontSize: wp('5%'),
+        fontFamily: 'Rubik-Medium'
+    },
+    captions: {
+        alignSelf: 'center',
+        color: '#767777',
+        fontSize: wp('3.5%'),
+        marginTop: hp('1.5%'),
+        fontFamily: 'Rubik-Regular'
+    },
+    divider: {
+        borderTopColor: '#ececec',
+        borderTopWidth: 1.5,
+        marginTop: hp('3%')
     },
     footer: {
-        height: 120,
-        position: 'absolute',
-        bottom: 20,
-        borderColor: '#96A0AF'
+        marginTop: hp('2%')
+    },
+    footerText: {
+        fontSize: wp('4%'),
+        color: '#3d3d3d',
+        alignSelf: 'center',
+        fontFamily: 'Poppins-Regular'
     }
 });
 

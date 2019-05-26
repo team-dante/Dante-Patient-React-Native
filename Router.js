@@ -33,7 +33,8 @@ const RouterComponent = () => {
                 <Scene key="auth" type={ActionConst.RESET}>
                     <Scene hideNavBar key="login" component={PatientLogin}
                         title="Please Login" initial />
-                    <Scene key="signUp" component={PatientSignUp} title="Sign Up" />
+                    <Scene key="signUp" component={PatientSignUp} title="Sign Up" backTitle="Back"
+                        backButtonTextStyle={styles.navBtnText} backButtonTintColor='white'/>
                 </Scene>
                 {/* ActionConst.RESET disables the back arrow */}
                 <Scene key="tabbar" tabs tabBarStyle={styles.tabBar} type={ActionConst.RESET} >

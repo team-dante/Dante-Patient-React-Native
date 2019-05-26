@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Dimensions, View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, ActivityIndicator } from 'react-native';
 import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 class PatientSignUp extends Component {
     constructor(props) {
@@ -101,7 +102,7 @@ class PatientSignUp extends Component {
             return (
                 <TouchableOpacity style={styles.buttonContainer}
                     onPress={this.activateAccount.bind(this)}>
-                    <Text style={styles.buttonText}>Activate my account</Text>
+                    <Text style={styles.buttonText}>ACTIVATE</Text>
                 </TouchableOpacity>
             )
         }
@@ -110,7 +111,7 @@ class PatientSignUp extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.text}>Please enter your phone number</Text>
+                <Text style={styles.fieldTitle}>Please enter your phone number</Text>
                 <TextInput
                     style={styles.input}
                     secureTextEntry={false}
@@ -128,37 +129,52 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#ffffff',
+        backgroundColor: '#f9f9f9'
     },
-    text: {
-        alignSelf: 'flex-start',
-        paddingLeft: 40,
-        paddingRight: 40,
-        fontSize: 16,
-        textShadowColor: '#c4c4c4',
-        textShadowOffset: { width: 0.5, height: 0 },
-        textShadowRadius: 1,
+    fieldTitle: {
+        color: '#53ACE6',
+        fontSize: wp('4.5%'),
+        fontFamily: 'Rubik-Medium'
     },
     input: {
-        width: Dimensions.get('window').width - 80,
-        height: 46,
-        borderColor: "#96A0AF",
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        marginBottom: 20,
-        fontSize: 18
+        width: wp('80%'),
+        height: hp('5.2%'),
+        borderColor: "#53ACE6",
+        borderWidth: 1,
+        borderRadius: 50,
+        marginTop: hp('1.3%'),
+        marginLeft: -wp('2%'),
+        marginRight: -wp('2%'),
+        marginBottom: hp('3.2%'),
+        paddingLeft: wp('4%'),
+        fontSize: wp('4.5%'),
+        backgroundColor: '#f9f9f9',
+        shadowColor: "#3d3d3d",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.36,
+        shadowRadius: 1,
+        elevation: 11,
+        color: '#3d3d3d'
     },
-    buttonContainer : {
-        backgroundColor: "#0074D9",
-        paddingVertical: 12,
-        width: Dimensions.get('window').width - 80,
-        borderRadius: 8,
-        margin: 10,
+    buttonContainer: {
+        marginTop: hp('1.8%'),
+        width: wp('78%'),
+        backgroundColor: "#53ACE6",
+        paddingVertical: hp('1%'),
+        height: hp('5.5%'),
+        borderRadius: 40,
+        justifyContent: 'center',
+        alignSelf: 'center'
     },
     buttonText: {
         color: "#FFF",
         textAlign: "center",
-        height: 20,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        fontSize: wp('5%'),
+        fontFamily: 'Rubik-Medium'
     }
 });
 
