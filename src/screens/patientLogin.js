@@ -115,7 +115,7 @@ class PatientLogin extends Component {
                     <View style={styles.thumbnailContainer}>
                         <Image
                         style={{ width: 100, height: 100, borderRadius: 20 }}
-                        source={require('../../appIcon/dante-staff.png')} />
+                        source={require('../../appIcon/dante-patient.png')} />
                     </View>
                     <View style={styles.headerContent}>
                         <Text style={styles.headerText}>Dante</Text>
