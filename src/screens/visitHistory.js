@@ -186,7 +186,7 @@ class VisitHistory extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f9fcfd'
+        backgroundColor: '#f2f6f7'
     },
     cardHeader: {
         flex:1,
@@ -206,7 +206,8 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         flex: 1,
         justifyContent: 'flex-end',
-        marginRight: 10
+        marginRight: 10,
+        fontFamily: 'Rubik-Regular'
     },
     sectionListItemView: {
         flex: 1,
@@ -230,7 +231,8 @@ const styles = StyleSheet.create({
         marginRight: 10,
         marginTop: 13,
         paddingBottom: 5,
-        color: 'white'
+        color: 'white',
+        fontFamily: 'Poppins-Bold'
     },
     textSubtitle: {
         fontSize: 16,
@@ -242,10 +244,11 @@ const styles = StyleSheet.create({
     },
     content: {
         padding: 20,
-        color:  '#fcfcfc'
+        color: '#f1f1f1'
     },
     cardContents: {
-        fontSize: 16
+        fontSize: 16,
+        fontFamily: 'Rubik-Regular'
     },
     sectionHeader: {
         fontSize: 16,

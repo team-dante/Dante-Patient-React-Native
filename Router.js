@@ -43,8 +43,7 @@ const RouterComponent = () => {
                         icon={TabIcon}
                         onRight={() => { Actions.qrScanner() }}
                         rightTitle={'Scan QR'}
-                        rightButtonTextStyle={{color: 'white'}}
-
+                        rightButtonTextStyle={styles.navBtnText}
                     />
                     <Scene key="history" component={VisitHistory}
                         title="Visits History"
@@ -52,7 +51,7 @@ const RouterComponent = () => {
                         icon={TabIcon}
                         onRight={() => { Actions.qrScanner() }}
                         rightTitle={'Scan QR'}
-                        rightButtonTextStyle={{color: 'white'}}
+                        rightButtonTextStyle={styles.navBtnText}
                     />
                     <Scene key="PatientProfile" component={PatientProfile}
                         title="Profile"
@@ -60,16 +59,16 @@ const RouterComponent = () => {
                         icon={TabIcon}
                         onRight={() => { Actions.qrScanner() }}
                         rightTitle={'Scan QR'}
-                        rightButtonTextStyle={{color: 'white'}}
+                        rightButtonTextStyle={styles.navBtnText}
                     />
                 </Scene>
                 <Scene key="feedback" type={ActionConst.RESET} >
                     <Scene key="feedback" component={Feedback} back={true} backTitle={'Back'} 
-                        backButtonTextStyle={{color: 'white'}} backButtonTintColor='white' title="Feedback"/>
+                        backButtonTextStyle={styles.navBtnText} backButtonTintColor='white' title="Feedback"/>
                 </Scene>
                 <Scene key="qrScanner" >
                     <Scene key="qrScanner" component={QrScanner} title="QR Scanner" back={true} backTitle={'Back'} 
-                        backButtonTextStyle={{color: 'white'}} backButtonTintColor='white'
+                        backButtonTextStyle={styles.navBtnText} backButtonTintColor='white'
                     />
                 </Scene>
                 <Scene key="notice" type={ActionConst.RESET}>
@@ -92,7 +91,14 @@ const styles = StyleSheet.create({
     },
     navTitle: {
         color: 'white', // changing navbar title color
+        fontFamily: 'Rubik-Medium',
+        fontSize: 18,
+        letterSpacing: 0.5
     },
+    navBtnText: {
+        color: 'white',
+        fontFamily: 'Rubik-Regular'
+    }
 });
 
 export default RouterComponent;

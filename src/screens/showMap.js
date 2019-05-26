@@ -88,7 +88,8 @@ class ShowMap extends Component {
         }
         else {
             return (
-                <Text style={styles.topText}>Number of people ahead of you: {queueNum}</Text>
+                <Text style={styles.topText}>Number of people ahead of you: 
+                <Text style={{fontSize: 24}}>{queueNum}</Text></Text>
             )
         }
     }
@@ -198,7 +199,7 @@ class ShowMap extends Component {
             // only arc needs to call function fill()
             context.fill()
             context.fillStyle = 'black';
-            context.font = '20px Helvetica';
+            context.font = '18px Helvetica';
             context.fillText(doctorArr[i].name, doctorArr[i].textX, doctorArr[i].textY)
         }
     }
@@ -240,9 +241,8 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         borderColor: '#3DCEBF',
         borderWidth: 1,
-        paddingTop: 10,
         margin: wp('6%'),
-        padding: wp('4.5%'),        
+        padding: wp('4.0%'),        
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -250,14 +250,14 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.36,
         shadowRadius: 3,
-        elevation: 7
+        elevation: 7,
     },
     topText: {
         color: '#3DCEBF',
         textAlign: 'center',
         fontSize: wp('5%'),
-        letterSpacing: 0.5,
-        fontWeight: '600'
+        letterSpacing: 0.2,
+        fontFamily: 'Rubik-Medium'
     },
 });
 
