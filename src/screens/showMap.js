@@ -89,7 +89,7 @@ class ShowMap extends Component {
         else {
             return (
                 <Text style={styles.topText}>Number of people ahead of you: 
-                <Text style={{fontSize: 24}}>{queueNum}</Text></Text>
+                <Text style={{fontSize: wp('5%')}}>{queueNum}</Text></Text>
             )
         }
     }
@@ -152,7 +152,7 @@ class ShowMap extends Component {
             snapshot.forEach((eachDoctor) => {
                 doctorJson.push(eachDoctor.val())
             })
-            let randomizedPosition = [[50, 130], [85, 90], [110, 50]]
+            let randomizedPosition = [[wp('12%'), wp('15%')], [wp('18%'), wp('25%')], [wp('22%'), wp('30%')]]
             // reset all small circles
             for (let i in shapeArr) {
                 context.fillStyle = shapeArr[i].fillColor
@@ -168,7 +168,7 @@ class ShowMap extends Component {
                     if (doctorJson[eachDoctor]["room"] == shapeArr[i].text) {
                         context.fillStyle = doctorJson[eachDoctor]["docColor"];
                         context.beginPath()
-                        context.arc(shapeArr[i].x + randomizedPosition[0][0], shapeArr[i].y + randomizedPosition[0][1], 15, 0, 2 * Math.PI);
+                        context.arc(shapeArr[i].x + randomizedPosition[0][0], shapeArr[i].y + randomizedPosition[0][1], wp('3%'), 0, 2 * Math.PI);
                         context.closePath();
                         // only arc needs to call function fill()
                         context.fill()
@@ -188,8 +188,8 @@ class ShowMap extends Component {
         context.fillRect(0, 0, canvas.width, canvas.height);
 
         let doctorArr = [];
-        doctorArr.push(new this.Doctor(wp('6%'), hp('3.8%'), 12, 0, 2*Math.PI, "Dr. Kuo", wp('12%'), hp('4.6%'), 'red'));
-        doctorArr.push(new this.Doctor(wp('6%'), hp('8.2%'), 12, 0, 2*Math.PI, "Dr. Roa", wp('12%'), hp('9.2%'), 'yellow'));
+        doctorArr.push(new this.Doctor(wp('6%'), hp('3.8%'), wp('3%'), 0, 2*Math.PI, "Dr. Kuo", wp('12%'), hp('4.6%'), 'red'));
+        doctorArr.push(new this.Doctor(wp('6%'), hp('8.2%'), wp('3%'), 0, 2*Math.PI, "Dr. Roa", wp('12%'), hp('9.2%'), 'yellow'));
 
         for (let i in doctorArr) {
             context.fillStyle = doctorArr[i].color;
