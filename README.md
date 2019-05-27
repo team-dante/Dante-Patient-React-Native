@@ -97,14 +97,19 @@ A React-Native app facilitates real-time location tracking of physicians (as wel
 ---
 
 ### Digital Wireframes and Mockups
-
-<img src="https://i.imgur.com/Gu9YS8D.png" width="200"/>
-<img src="https://i.imgur.com/UWDtpq1.png" width="200"/>
-<img src="https://i.imgur.com/di0irQl.png" width="200"/>
-<img src="https://i.imgur.com/xINQ7aL.png" width="200"/>
-<img src="https://i.imgur.com/ZbcgvpR.png" width="200"/>
-<img src="https://i.imgur.com/J8YlQnX.png" width="200"/>
-<img src="https://i.imgur.com/zHZrFYe.png" width="200"/>
-<img src="https://i.imgur.com/iRrdNOq.png" width="200"/>
-<img src="https://i.imgur.com/5InzeqA.png" width="200"/>
-<img src="https://i.imgur.com/WbvbeNQ.png" width="200"/>
+<p float="left">
+<img src="https://i.imgur.com/Gu9YS8D.png" width="250"/>
+<img src="https://i.imgur.com/UWDtpq1.png" width="250"/>
+<img src="https://i.imgur.com/di0irQl.png" width="250"/>
+</p>
+<p float="left">
+<img src="https://i.imgur.com/xINQ7aL.png" width="250"/>
+<img src="https://i.imgur.com/ZbcgvpR.png" width="250"/>
+<img src="https://i.imgur.com/J8YlQnX.png" width="250"/>
+</p>
+<p float="left">
+<img src="https://i.imgur.com/zHZrFYe.png" width="250"/>
+<img src="https://i.imgur.com/iRrdNOq.png" width="250"/>
+<img src="https://i.imgur.com/5InzeqA.png" width="250"/>
+</p>
+<img src="https://i.imgur.com/WbvbeNQ.png" width="250"/>
