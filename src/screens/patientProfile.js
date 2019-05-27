@@ -1,4 +1,3 @@
-'use strict';
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Alert, Dimensions } from 'react-native';
 import firebase from 'firebase';
@@ -6,11 +5,13 @@ import { Actions } from 'react-native-router-flux';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 class PatientProfile extends Component {
+
     constructor(props) {
         super(props);
         // email = phoneNumber + @email.com
         this.state = { patientName: '' };
     }
+
     componentDidMount() {
         // locate current user's phone num
         let user = firebase.auth().currentUser;
@@ -25,7 +26,6 @@ class PatientProfile extends Component {
                 snapshot.forEach(function (data) {
                     firstNameVal = data.val().firstName;
                 });
-                console.log("line 27=" + firstNameVal)
                 self.setState({ patientName: firstNameVal });
                 // running console.log(patientName) here would cause crash
             });
@@ -34,15 +34,14 @@ class PatientProfile extends Component {
     logOut() {
         Alert.alert(
             'Warning',
-            'Signing out will disable Face/Touch ID for future login. You will have to type credentials manually to sign in.',
+            'Signing out will disable Face/Touch ID for future login. \
+                You will have to type credentials manually to sign in.',
             [
                 {
                     text: "Sign me out", onPress: () => {
                         firebase.auth().signOut()
                             .then(() => { console.log("sign out successfully."); })
-                            .catch((error) => {
-                                console.log(error);
-                            })
+                            .catch((error) => { console.log(error); })
                         Actions.auth();
                     }
                 },
@@ -80,18 +79,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#f9f9f9'
     },
     topText: {
-        fontSize: 18,
+        fontSize: wp('5.5%'),
         margin: 5,
         alignSelf: 'flex-start',
         paddingLeft: wp('8.5%'),
         paddingVertical: hp('1.5%'),
-        fontFamily: 'Poppins-Bold',
+        fontFamily: 'Poppins-Light',
     },
     card: {
-        alignItems: 'center',
-        width: wp('80%'),
-        height: hp('25%'),
-        borderRadius: 20,
+        width: wp('86%'),
+        borderRadius: 25,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -101,12 +98,14 @@ const styles = StyleSheet.create({
         shadowRadius: 6.68,
         elevation: 11,
         backgroundColor: '#fff',
-        marginBottom: hp('2%'),
+        marginBottom: hp('3%'),
         borderColor: "#53ACE6",
+        borderWidth: 1.5,
+        padding: wp('6%')
     },
     boldText: {
         paddingTop: wp('1.5%'),
-        fontSize: wp('6%'),
+        fontSize: wp('5.5%'),
         fontFamily: 'Poppins-Bold',
         marginBottom: hp('2.6%'),
     },
@@ -123,6 +122,7 @@ const styles = StyleSheet.create({
         paddingVertical: hp('1%'),
         height: hp('5.5%'),
         borderRadius: 40,
+        alignSelf: 'center',
         justifyContent: 'center',
     },
     buttonText: {
