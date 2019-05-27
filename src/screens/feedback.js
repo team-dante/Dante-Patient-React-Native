@@ -3,49 +3,63 @@ import { Alert, View, Text, StyleSheet, Dimensions, TextInput, TouchableOpacity,
 import firebase from 'firebase'
 import { Actions } from 'react-native-router-flux';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import StarRating from 'react-native-star-rating';
 
 export default class Feedback extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { rating: '', comments: '' };
+        this.state = { rating: '', comments: '', starCount1: 0, starCount2: 0 };
+    }
+
+    onStarRatingPress1(rating1) {
+        this.setState({
+            starCount1: rating1
+        });
+    }
+    onStarRatingPress2(rating2) {
+        this.setState({
+            starCount2: rating2
+        });
     }
 
     render() {
         return (
-            <View style={styles.container}>
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
-                    <View style={styles.container}>
-                        <Text styles={styles.topText}>1. On a scale of 1 to 5, what do you rate this visit?</Text>
-                        <TextInput
-                            style={styles.ratingInput}
-                            placeholder="Please enter your rating..."
-                            placeholderTextColor="grey"
-                            onChangeText={rating => { this.setState({ rating }) }}
-                            value={this.state.rating} />
-                        <Text styles={styles.topText}>2. Any comments that we can improve?</Text>
-                        <TextInput
-                            style={styles.textarea}
-                            multiline={true}
-                            numberOfLines={10}
-                            placeholder="Please enter your comments..."
-                            placeholderTextColor="grey"
-                            onChangeText={(value) => this.setState({ comments: value })}
-                            value={this.state.comments}
-                        />
-                    </View>
-                </TouchableWithoutFeedback>
-                <TouchableOpacity style={styles.buttonContainer} onPress={() => {
-                    Alert.alert(
-                        'Confirm',
-                        'Thank you for your feedback.',
-                        [
-                            { text: 'Close', onPress: () => { Actions.map(); } }
-                        ]
-                    )
-                }}>
-                    <Text style={styles.buttonText} >Submit</Text>
-                </TouchableOpacity>
+            <View>
+                <View style={styles.firstCard}>
+                    <Text style={styles.questionNum}>Question 1.</Text>
+                    <Text style={styles.questionText}>On a scale of 1 to 5, how would you rate your visit today?</Text>
+                    <StarRating
+                        rating={this.state.starCount1}
+                        selectedStar={(rating1) => this.onStarRatingPress1(rating1)}
+                    />
+                </View>
+                <View style={styles.secondCard}>
+                    <Text style={styles.questionNum}>Question 2.</Text>
+                    <Text style={styles.questionText}>On a scale of 1 to 5, how would rate our staff’s working attittude?</Text>
+                    <StarRating
+                        rating={this.state.starCount2}
+                        selectedStar={(rating2) => this.onStarRatingPress2(rating2)}
+                    />
+                </View>
+                <View style={styles.thirdCard}>
+                    <Text style={styles.questionNum}>Question 3.</Text>
+                    <Text style={styles.questionText}>Any comments for us to improve?</Text>
+                    <TextInput
+                        style={styles.textarea}
+                        multiline={true}
+                        numberOfLines={10}
+                        onChangeText={(value) => this.setState({ comments: value })}
+                        value={this.state.comments}
+                    />
+                </View>
+                <View style={styles.footer}>
+                    <TouchableOpacity style={styles.buttonContainer}
+                        onPress={() => { Actions.map() }}>
+                        <Text style={styles.buttonText}>Finish</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         );
     }
@@ -54,44 +68,71 @@ export default class Feedback extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#ffffff'
+        backgroundColor: '#E5E5E5',
     },
-    topText: {
-        fontSize: 18,
-        margin: 5,
+    firstCard: {
+        height: hp('23%'),
+        backgroundColor: '#FFFFFF',
+        marginVertical: hp('2%'),
+        padding: hp('3%')
+    },
+    secondCard: {
+        height: hp('23%'),
+        backgroundColor: '#FFFFFF',
+        marginVertical: hp('2%'),
+        padding: hp('3%')
+    },
+    thirdCard: {
+        height: hp('23%'),
+        backgroundColor: '#FFFFFF',
+        marginVertical: hp('2%'),
+        padding: hp('3%')
+    },
+    questionNum: {
+        fontSize: wp('5%'),
+        fontFamily: 'Rubik-Medium',
+        padding: hp('0.5%')
+    },
+    questionText: {
+        fontSize: wp('3.5%'),
+        fontFamily: 'Rubik-Regular',
+        padding: hp('1%')
     },
     buttonContainer: {
-        backgroundColor: "#0074D9",
-        paddingVertical: 12,
-        width: 300,
-        borderRadius: 4,
-        margin: 10,
-        position: "absolute",
-        top: 570
+        width: wp('50%'),
+        marginTop: hp('1.8%'),
+        backgroundColor: "#53ACE6",
+        paddingVertical: hp('1%'),
+        height: hp('5.5%'),
+        borderRadius: 25,
+        justifyContent: 'center',
     },
     buttonText: {
         color: "#FFF",
         textAlign: "center",
         fontWeight: 'bold',
-        fontSize: 18
+        fontSize: wp('5%'),
+        fontFamily: 'Rubik-Medium'
     },
     textarea: {
-        height: 150,
-        width: 250,
-        borderRadius: 4,
-        backgroundColor: "#f1f1f1",
-        marginVertical: 10,
-        borderWidth: 0.2,
-        paddingVertical: 10,
+        height: hp('10%'),
+        borderColor: '#53ACE6',
+        borderRadius: 20,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
+        shadowOpacity: 0.36,
+        shadowRadius: 6.68,
+        elevation: 11,
+        backgroundColor: '#fff',
+        marginBottom: hp('2%'),
+        borderColor: "#53ACE6",
+        paddingLeft: hp('1%')
     },
-    ratingInput: {
-        width: 250,
-        borderWidth: 0.2,
-        paddingVertical: 10,
-        borderRadius: 4,
-        backgroundColor: "#f1f1f1",
-        marginVertical: 10,
-    },
+    footer: {
+        flex: 1,
+        alignItems: 'center',
+    }
 }); 
