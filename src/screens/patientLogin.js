@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Alert, Image, Dimensions, View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import { Alert, Image, Dimensions, View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Keyboard } from 'react-native';
 import TouchID from 'react-native-touch-id';
 import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 class PatientLogin extends Component {
     constructor(props) {
@@ -108,14 +108,21 @@ class PatientLogin extends Component {
     }
 
     render() {
+        const shouldSetResponse = () => true;
+        const onRelease = () => (
+            Keyboard.dismiss()
+        );
         return (
-            <View style={styles.container}>
+            <View
+                onResponderRelease={onRelease}
+                onStartShouldSetResponder={shouldSetResponse}
+                style={{ height: hp('100%') }} style={styles.container}>
                 <View style={styles.headingBackground}></View>
                 <View style={styles.header}>
                     <View style={styles.thumbnailContainer}>
                         <Image
-                        style={{ width: 100, height: 100, borderRadius: 20 }}
-                        source={require('../../appIcon/dante-patient.png')} />
+                            style={{ width: 100, height: 100, borderRadius: 20 }}
+                            source={require('../../appIcon/dante-patient.png')} />
                     </View>
                     <View style={styles.headerContent}>
                         <Text style={styles.headerText}>Dante</Text>
@@ -130,6 +137,7 @@ class PatientLogin extends Component {
                         style={styles.input}
                         secureTextEntry={false}
                         autoCapitalize="none"
+                        keyboardType='numeric'
                         onChangeText={email => { this.setState({ email }) }}
                         value={this.state.email} />
 
@@ -138,6 +146,7 @@ class PatientLogin extends Component {
                         style={styles.input}
                         secureTextEntry={true}
                         autoCapitalize="none"
+                        keyboardType='numeric'
                         onChangeText={password => this.setState({ password })}
                         value={this.state.password} />
                     {this.renderButton()}
@@ -149,7 +158,7 @@ class PatientLogin extends Component {
                     <View style={styles.footer}>
                         <Text style={styles.footerText}>New Patient?</Text>
                         <TouchableOpacity style={styles.buttonContainer}
-                        // onPress will auto trigger if not including { () => { .... } }
+                            // onPress will auto trigger if not including { () => { .... } }
                             onPress={() => { Actions.signUp(); }}>
                             <Text style={styles.buttonText}>ACTIVATE ACCOUNT</Text>
                         </TouchableOpacity>
@@ -215,7 +224,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-Bold',
         marginBottom: hp('3.6%'),
         letterSpacing: 0.5
-    },  
+    },
     fieldTitle: {
         color: '#53ACE6',
         fontSize: wp('4.5%'),

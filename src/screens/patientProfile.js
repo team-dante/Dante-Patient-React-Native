@@ -34,8 +34,7 @@ class PatientProfile extends Component {
     logOut() {
         Alert.alert(
             'Warning',
-            'Signing out will disable Face/Touch ID for future login. \
-                You will have to type credentials manually to sign in.',
+            'Signing out will disable Face/Touch ID for future login. \n\nYou will have to type credentials manually to sign in.',
             [
                 {
                     text: "Sign me out", onPress: () => {
@@ -80,7 +79,7 @@ const styles = StyleSheet.create({
     },
     topText: {
         fontSize: wp('5.5%'),
-        margin: 5,
+        margin: hp('1%'),
         alignSelf: 'flex-start',
         paddingLeft: wp('8.5%'),
         paddingVertical: hp('1.5%'),

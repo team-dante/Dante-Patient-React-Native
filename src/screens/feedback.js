@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Keyboard } from 'react-native'
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Platform, SafeAreaView, Keyboard } from 'react-native'
 import firebase from 'firebase'
 import { Actions } from 'react-native-router-flux';
 import { TouchableWithoutFeedback, ScrollView } from 'react-native-gesture-handler';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import StarRating from 'react-native-star-rating';
+import { KeyboardAvoidingView } from 'react-native';
 
 export default class Feedback extends Component {
 
@@ -25,48 +26,63 @@ export default class Feedback extends Component {
     }
 
     render() {
+        const shouldSetResponse = () => true;
+        const onRelease = () => (
+            Keyboard.dismiss()
+        );
+        
         return (
-            <ScrollView>
-                <View style={styles.card}>
-                    <Text style={styles.questionNum}>Question 1.</Text>
-                    <Text style={styles.questionText}>On a scale of 1 to 5, how would you rate your visit today?</Text>
-                    <View style={styles.startRating}>
-                        <StarRating
-                            fullStarColor={'#53ACE6'}
-                            rating={this.state.starCount1}
-                            selectedStar={(rating1) => this.onStarRatingPress1(rating1)}
-                        />
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : null}
+                style={{ flex: 1 }}
+            >
+                <SafeAreaView style={styles.container}>
+                    <View onResponderRelease={onRelease}
+                        onStartShouldSetResponder={shouldSetResponse}
+                        style={{ height: hp('100%') }}
+                        style={styles.inner}>
+                        <View style={styles.card}>
+                            <Text style={styles.questionNum}>Question 1.</Text>
+                            <Text style={styles.questionText}>On a scale of 1 to 5, how would you rate your visit today?</Text>
+                            <View style={styles.startRating}>
+                                <StarRating
+                                    fullStarColor={'#53ACE6'}
+                                    rating={this.state.starCount1}
+                                    selectedStar={(rating1) => this.onStarRatingPress1(rating1)}
+                                />
+                            </View>
+                        </View>
+                        <View style={styles.card}>
+                            <Text style={styles.questionNum}>Question 2.</Text>
+                            <Text style={styles.questionText}>On a scale of 1 to 5, how would rate our staff’s working attittude?</Text>
+                            <View style={styles.startRating}>
+                                <StarRating
+                                    fullStarColor={'#53ACE6'}
+                                    rating={this.state.starCount2}
+                                    selectedStar={(rating2) => this.onStarRatingPress2(rating2)}
+                                />
+                            </View>
+                        </View>
+                        <View style={styles.card}>
+                            <Text style={styles.questionNum}>Question 3.</Text>
+                            <Text style={styles.questionText}>Any comments for us to improve?</Text>
+                            <TextInput
+                                style={styles.textarea}
+                                multiline={true}
+                                numberOfLines={10}
+                                onChangeText={(value) => this.setState({ comments: value })}
+                                value={this.state.comments}
+                            />
+                        </View>
+                        <View style={styles.footer}>
+                            <TouchableOpacity style={styles.buttonContainer}
+                                onPress={() => { Actions.map() }}>
+                                <Text style={styles.buttonText}>Finish</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </View>
-                <View style={styles.card}>
-                    <Text style={styles.questionNum}>Question 2.</Text>
-                    <Text style={styles.questionText}>On a scale of 1 to 5, how would rate our staff’s working attittude?</Text>
-                    <View style={styles.startRating}>
-                        <StarRating
-                            fullStarColor={'#53ACE6'}
-                            rating={this.state.starCount2}
-                            selectedStar={(rating2) => this.onStarRatingPress2(rating2)}
-                        />
-                    </View>
-                </View>
-                <View style={styles.card}>
-                    <Text style={styles.questionNum}>Question 3.</Text>
-                    <Text style={styles.questionText}>Any comments for us to improve?</Text>
-                    <TextInput
-                        style={styles.textarea}
-                        multiline={true}
-                        numberOfLines={10}
-                        onChangeText={(value) => this.setState({ comments: value })}
-                        value={this.state.comments}
-                    />
-                </View>
-                <View style={styles.footer}>
-                    <TouchableOpacity style={styles.buttonContainer}
-                        onPress={() => { Actions.map() }}>
-                        <Text style={styles.buttonText}>Finish</Text>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
+                </SafeAreaView>
+            </KeyboardAvoidingView >
         );
     }
 }
@@ -75,6 +91,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#E5E5E5',
+    },
+    inner: {
+        padding: 24,
+        flex: 1,
+        justifyContent: "flex-end",
     },
     card: {
         height: hp('23%'),
