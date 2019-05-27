@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#E5E5E5',
     },
     inner: {
-        padding: 24,
+        paddingBottom: hp('10%'),
         flex: 1,
         justifyContent: "flex-end",
     },

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Alert, Image, Dimensions, View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Keyboard } from 'react-native';
+import { Alert, Image, Dimensions, View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Keyboard, SafeAreaView, Platform } from 'react-native';
 import TouchID from 'react-native-touch-id';
 import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { KeyboardAvoidingView } from 'react-native';
 
 class PatientLogin extends Component {
     constructor(props) {
@@ -113,58 +114,65 @@ class PatientLogin extends Component {
             Keyboard.dismiss()
         );
         return (
-            <View
-                onResponderRelease={onRelease}
-                onStartShouldSetResponder={shouldSetResponse}
-                style={{ height: hp('100%') }} style={styles.container}>
-                <View style={styles.headingBackground}></View>
-                <View style={styles.header}>
-                    <View style={styles.thumbnailContainer}>
-                        <Image
-                            style={{ width: 100, height: 100, borderRadius: 20 }}
-                            source={require('../../appIcon/dante-patient.png')} />
-                    </View>
-                    <View style={styles.headerContent}>
-                        <Text style={styles.headerText}>Dante</Text>
-                        <Text style={styles.headerText}>Patient</Text>
-                    </View>
-                </View>
-                <View style={styles.card}>
-                    <Text style={styles.cardTitle}>Welcome Back</Text>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : null}
+                style={{ flex: 1 }}
+            >
+                <SafeAreaView style={styles.container}>
+                    <View
+                        onResponderRelease={onRelease}
+                        onStartShouldSetResponder={shouldSetResponse}
+                        style={{ height: hp('100%') }} style={styles.inner}>
+                        <View style={styles.headingBackground}></View>
+                        <View style={styles.header}>
+                            <View style={styles.thumbnailContainer}>
+                                <Image
+                                    style={{ width: 100, height: 100, borderRadius: 20 }}
+                                    source={require('../../appIcon/dante-patient.png')} />
+                            </View>
+                            <View style={styles.headerContent}>
+                                <Text style={styles.headerText}>Dante</Text>
+                                <Text style={styles.headerText}>Patient</Text>
+                            </View>
+                        </View>
+                        <View style={styles.card}>
+                            <Text style={styles.cardTitle}>Welcome Back</Text>
 
-                    <Text style={styles.fieldTitle}>Phone Number</Text>
-                    <TextInput
-                        style={styles.input}
-                        secureTextEntry={false}
-                        autoCapitalize="none"
-                        keyboardType='numeric'
-                        onChangeText={email => { this.setState({ email }) }}
-                        value={this.state.email} />
+                            <Text style={styles.fieldTitle}>Phone Number</Text>
+                            <TextInput
+                                style={styles.input}
+                                secureTextEntry={false}
+                                autoCapitalize="none"
+                                keyboardType='numeric'
+                                onChangeText={email => { this.setState({ email }) }}
+                                value={this.state.email} />
 
-                    <Text style={styles.fieldTitle}>PIN</Text>
-                    <TextInput
-                        style={styles.input}
-                        secureTextEntry={true}
-                        autoCapitalize="none"
-                        keyboardType='numeric'
-                        onChangeText={password => this.setState({ password })}
-                        value={this.state.password} />
-                    {this.renderButton()}
-                    <Text
-                        style={styles.captions}>
-                        Face ID/Touch ID will be auto-triggered once you have signed in
-                    </Text>
-                    <View style={styles.divider}></View>
-                    <View style={styles.footer}>
-                        <Text style={styles.footerText}>New Patient?</Text>
-                        <TouchableOpacity style={styles.buttonContainer}
-                            // onPress will auto trigger if not including { () => { .... } }
-                            onPress={() => { Actions.signUp(); }}>
-                            <Text style={styles.buttonText}>ACTIVATE ACCOUNT</Text>
-                        </TouchableOpacity>
+                            <Text style={styles.fieldTitle}>PIN</Text>
+                            <TextInput
+                                style={styles.input}
+                                secureTextEntry={true}
+                                autoCapitalize="none"
+                                keyboardType='numeric'
+                                onChangeText={password => this.setState({ password })}
+                                value={this.state.password} />
+                            {this.renderButton()}
+                            <Text
+                                style={styles.captions}>
+                                Face ID/Touch ID will be auto-triggered once you have signed in
+                            </Text>
+                            <View style={styles.divider}></View>
+                            <View style={styles.footer}>
+                                <Text style={styles.footerText}>New Patient?</Text>
+                                <TouchableOpacity style={styles.buttonContainer}
+                                    // onPress will auto trigger if not including { () => { .... } }
+                                    onPress={() => { Actions.signUp(); }}>
+                                    <Text style={styles.buttonText}>ACTIVATE ACCOUNT</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                     </View>
-                </View>
-            </View>
+                </SafeAreaView>
+            </KeyboardAvoidingView >
         );
     }
 }
@@ -173,6 +181,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f9f9f9'
+    },
+    inner: {
+        paddingBottom: hp('1%'),
+        flex: 1,
+        justifyContent: "flex-end",
     },
     headingBackground: {
         top: 0,
