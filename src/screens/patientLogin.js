@@ -114,16 +114,17 @@ class PatientLogin extends Component {
             Keyboard.dismiss()
         );
         return (
+
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : null}
                 style={{ flex: 1 }}
             >
                 <SafeAreaView style={styles.container}>
+                    <View style={styles.headingBackground}></View>
                     <View
                         onResponderRelease={onRelease}
                         onStartShouldSetResponder={shouldSetResponse}
                         style={{ height: hp('100%') }} style={styles.inner}>
-                        <View style={styles.headingBackground}></View>
                         <View style={styles.header}>
                             <View style={styles.thumbnailContainer}>
                                 <Image
