@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Alert, Image, Dimensions, View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Keyboard, SafeAreaView, Platform } from 'react-native';
+import { Alert, Image, View, Text, TextInput, 
+        TouchableOpacity, StyleSheet, ActivityIndicator, 
+        Keyboard, SafeAreaView, Platform } from 'react-native';
 import TouchID from 'react-native-touch-id';
 import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
@@ -114,11 +116,9 @@ class PatientLogin extends Component {
             Keyboard.dismiss()
         );
         return (
-
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : null}
-                style={{ flex: 1 }}
-            >
+                style={{ flex: 1 }} >
                 <SafeAreaView style={styles.container}>
                     <View style={styles.headingBackground}></View>
                     <View
@@ -173,7 +173,7 @@ class PatientLogin extends Component {
                         </View>
                     </View>
                 </SafeAreaView>
-            </KeyboardAvoidingView >
+            </KeyboardAvoidingView>
         );
     }
 }
