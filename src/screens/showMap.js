@@ -132,16 +132,26 @@ class ShowMap extends Component {
 
         // render 4 rooms
         let shapeArr = [];
-        let roomColors = ['#6F92BE', '#004080', '#C9C4AC', '#01004A']
-        shapeArr.push(new this.Shape(0, 0, wp('55%'), hp('20%'), roomColors[0], 'Room A', wp('3%'), hp('3%')))
-        shapeArr.push(new this.Shape(wp('62%'), 0, wp('38%'), hp('23%'), roomColors[1], 'Room B', wp('64%'), hp('3%')))
-        shapeArr.push(new this.Shape(0, hp('25%'), wp('55%'), hp('25%'), roomColors[2], 'Room C', wp('3%'), hp('28%')))
-        shapeArr.push(new this.Shape(wp('62%'), hp('23%'), wp('38%'), hp('27%'), roomColors[3], 'Room D', wp('64%'), hp('26%')))
+        let roomColors = ['#4B77BE', '#48929B', '#317589', '#1F4788', '#89C4F4', '#4B77BE', '#19B5FE', '#5D8CAE', '#044F67']
+        shapeArr.push(new this.Shape(0, 0, wp('20%'), wp('30%'), roomColors[0], '', wp('1.5%'), wp('5%')))
+        shapeArr.push(new this.Shape(wp('20%'), 0, wp('30%'), wp('30%'), roomColors[1], 'Room B', wp('21.5%'), wp('5%')))
+        shapeArr.push(new this.Shape(wp('50%'), 0, wp('15%'), wp('30%'), roomColors[2], '', wp('51.5%'), wp('5%')))
+        shapeArr.push(new this.Shape(wp('65%'), 0, wp('35%'), wp('40%'), roomColors[3], 'Room C', wp('66.5%'), wp('5%')))
+        shapeArr.push(new this.Shape(wp('65%'), wp('40%'), wp('35%'), wp('40%'), roomColors[4], 'Room D', wp('66.5%'), wp('45%')))
+        shapeArr.push(new this.Shape(wp('65%'), wp('80%'), wp('35%'), wp('28%'), roomColors[5], 'Room E', wp('66.5%'), wp('85%')))
+        
+        shapeArr.push(new this.Shape(0, wp('90%'), wp('60%'), wp('18%'), roomColors[6], 'Room F', wp('0.5%'), wp('95%')))
+        shapeArr.push(new this.Shape(0, wp('40%'), wp('15%'), wp('50%'), roomColors[7], '', wp('0.5%'), wp('45%')))
+
+        // render room A (render shorter height rect and then render larger height rect)
+        shapeArr.push(new this.Shape(wp('35%'), wp('40%'), wp('20%'), wp('35%'), roomColors[8], '', wp('35.5%'), wp('45%')))
+        shapeArr.push(new this.Shape(wp('25%'), wp('40%'), wp('10%'), wp('40%'), roomColors[8], 'Room A', wp('25.5%'), wp('45%')))
+        
 
         for (let i in shapeArr) {
             context.fillStyle = shapeArr[i].fillColor
             context.fillRect(shapeArr[i].x, shapeArr[i].y, shapeArr[i].width, shapeArr[i].height)
-            context.font = '20px Helvetica';
+            context.font = '17px Helvetica';
             context.fillStyle = "white";
             context.fillText(shapeArr[i].text, shapeArr[i].textX, shapeArr[i].textY)
         }
@@ -152,7 +162,7 @@ class ShowMap extends Component {
             snapshot.forEach((eachDoctor) => {
                 doctorJson.push(eachDoctor.val())
             })
-            let randomizedPosition = [[wp('12%'), wp('15%')], [wp('18%'), wp('25%')], [wp('22%'), wp('30%')]]
+            let randomizedPosition = [[wp('12%'), wp('15%')], [wp('18%'), wp('22%')], [wp('22%'), wp('22%')]]
             // reset all small circles
             for (let i in shapeArr) {
                 context.fillStyle = shapeArr[i].fillColor
