@@ -134,24 +134,24 @@ class ShowMap extends Component {
         let shapeArr = [];
         let roomColors = ['#4B77BE', '#48929B', '#317589', '#1F4788', '#89C4F4', '#4B77BE', '#19B5FE', '#5D8CAE', '#044F67']
         shapeArr.push(new this.Shape(0, 0, wp('20%'), wp('30%'), roomColors[0], '', wp('1.5%'), wp('5%')))
-        shapeArr.push(new this.Shape(wp('20%'), 0, wp('30%'), wp('30%'), roomColors[1], 'Room B', wp('21.5%'), wp('5%')))
+        shapeArr.push(new this.Shape(wp('20%'), 0, wp('30%'), wp('30%'), roomColors[1], 'Exam Room', wp('21.5%'), wp('5%')))
         shapeArr.push(new this.Shape(wp('50%'), 0, wp('15%'), wp('30%'), roomColors[2], '', wp('51.5%'), wp('5%')))
-        shapeArr.push(new this.Shape(wp('65%'), 0, wp('35%'), wp('40%'), roomColors[3], 'Room C', wp('66.5%'), wp('5%')))
-        shapeArr.push(new this.Shape(wp('65%'), wp('40%'), wp('35%'), wp('40%'), roomColors[4], 'Room D', wp('66.5%'), wp('45%')))
-        shapeArr.push(new this.Shape(wp('65%'), wp('80%'), wp('35%'), wp('28%'), roomColors[5], 'Room E', wp('66.5%'), wp('85%')))
+        shapeArr.push(new this.Shape(wp('65%'), 0, wp('35%'), wp('40%'), roomColors[3], 'Treatment Room 1', wp('66.5%'), wp('5%')))
+        shapeArr.push(new this.Shape(wp('65%'), wp('40%'), wp('35%'), wp('40%'), roomColors[4], 'Treatment Room 2', wp('66.5%'), wp('45%')))
+        shapeArr.push(new this.Shape(wp('65%'), wp('80%'), wp('35%'), wp('28%'), roomColors[5], 'CT Room', wp('66.5%'), wp('85%')))
         
-        shapeArr.push(new this.Shape(0, wp('90%'), wp('60%'), wp('18%'), roomColors[6], 'Room F', wp('0.5%'), wp('95%')))
+        shapeArr.push(new this.Shape(0, wp('90%'), wp('60%'), wp('18%'), roomColors[6], '', wp('0.5%'), wp('95%')))
         shapeArr.push(new this.Shape(0, wp('40%'), wp('15%'), wp('50%'), roomColors[7], '', wp('0.5%'), wp('45%')))
 
         // render room A (render shorter height rect and then render larger height rect)
         shapeArr.push(new this.Shape(wp('35%'), wp('40%'), wp('20%'), wp('35%'), roomColors[8], '', wp('35.5%'), wp('45%')))
-        shapeArr.push(new this.Shape(wp('25%'), wp('40%'), wp('10%'), wp('40%'), roomColors[8], 'Room A', wp('25.5%'), wp('45%')))
+        shapeArr.push(new this.Shape(wp('25%'), wp('40%'), wp('10%'), wp('40%'), roomColors[8], 'Waiting Room', wp('25.5%'), wp('45%')))
         
 
         for (let i in shapeArr) {
             context.fillStyle = shapeArr[i].fillColor
             context.fillRect(shapeArr[i].x, shapeArr[i].y, shapeArr[i].width, shapeArr[i].height)
-            context.font = '17px Helvetica';
+            context.font = '16px Helvetica';
             context.fillStyle = "white";
             context.fillText(shapeArr[i].text, shapeArr[i].textX, shapeArr[i].textY)
         }
@@ -190,6 +190,7 @@ class ShowMap extends Component {
             }
         });
     }
+
     handleCanvas2 = (canvas) => {
         const context = canvas.getContext('2d');
         canvas.height = hp('20%');

@@ -20,10 +20,16 @@ class SectionListItem extends Component {
     locBeautify(location) {
         if (location == 'OverallDuration')
             return <Text style={styles.textHeader}>Overall Visit</Text>
-        else if (location == 'RoomA')
-            return <Text style={styles.textHeader}>Room A</Text>
-        else if (location == 'RoomB')
-            return <Text style={styles.textHeader}>Room B</Text>
+        else if (location == 'Waiting Room')
+            return <Text style={styles.textHeader}>Waiting Room</Text>
+        else if (location == 'Exam Room')
+            return <Text style={styles.textHeader}>Exam Room</Text>
+        else if (location == 'Treatment Room 1')
+            return <Text style={styles.textHeader}>Treatment Room 1</Text>
+        else if (location == 'Treatment Room 2')
+            return <Text style={styles.textHeader}>Treatment Room 2</Text>
+        else if (location == 'CT Room')
+            return <Text style={styles.textHeader}>CT Room</Text>
         else if (location == 'ZTransition')
             return <Text style={styles.textHeader}>Transition Time</Text>
         else {
@@ -47,9 +53,9 @@ class SectionListItem extends Component {
         else {
             return (
                 <Text style={styles.cardContents}>
-                    <Text style={{fontSize: 28}}>{data[0]}</Text> hrs 
-                    <Text style={{fontSize: 28}}> {data[1]}</Text> mins 
-                    <Text style={{fontSize: 28}}> {data[2]}</Text> secs spent
+                    <Text style={{ fontSize: 28 }}>{data[0]}</Text> hrs
+                    <Text style={{ fontSize: 28 }}> {data[1]}</Text> mins
+                    <Text style={{ fontSize: 28 }}> {data[2]}</Text> secs spent
                 </Text>
             );
         }
@@ -63,7 +69,7 @@ class SectionListItem extends Component {
             return <Text style={styles.textSubtitle}>Start: {data}</Text>
         }
     }
-    
+
     // format End
     getEndTime(data) {
         if (data.includes("NaN"))
@@ -82,8 +88,8 @@ class SectionListItem extends Component {
                     </View>
                     <View style={styles.cardSubtitles}>
                         <Text style={styles.textSubtitle}>{this.getStartTime(this.dateBeautify(this.props.item.startTime))}</Text>
-                        {this.getEndTime(this.dateBeautify(this.props.item.endTime))}  
-                    </View>                  
+                        {this.getEndTime(this.dateBeautify(this.props.item.endTime))}
+                    </View>
                 </View>
                 <View style={styles.content}>
                     {this.getTimeSpent(this.dateToStr(this.props.item.diffTime))}
@@ -189,19 +195,19 @@ const styles = StyleSheet.create({
         backgroundColor: '#f2f6f7'
     },
     cardHeader: {
-        flex:1,
+        flex: 1,
         paddingTop: 5,
         backgroundColor: '#3DCEBF',
         justifyContent: 'flex-start',
         flexDirection: 'row',
         borderColor: '#ddd',
         borderTopLeftRadius: 10,
-	    borderTopRightRadius: 10,
+        borderTopRightRadius: 10,
         flexWrap: 'wrap'
     },
     textHeaderWrapper: {
         flex: 1
-    },  
+    },
     cardSubtitles: {
         flexDirection: 'column',
         flex: 1,

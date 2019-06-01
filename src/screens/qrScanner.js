@@ -22,17 +22,19 @@ class QrScanner extends Component {
     // Update start time when patient scans in
     updateStartTime(keyMonthDateYear, phoneNumber, location, message) {
         // ADD users' phoneNumber to the WaitingQueue
-        firebase.database().ref('/WaitingQueue').once('value', function (snapshot) {
-            let queueNumber = snapshot.numChildren();
-            let duplicatedFound = false;
-            snapshot.forEach((child) => {
-                if (child.key == phoneNumber.toString())
-                    duplicatedFound = true;
+        if (location == 'Waiting Room') {
+            firebase.database().ref('/WaitingQueue').once('value', function (snapshot) {
+                let queueNumber = snapshot.numChildren();
+                let duplicatedFound = false;
+                snapshot.forEach((child) => {
+                    if (child.key == phoneNumber.toString())
+                        duplicatedFound = true;
+                })
+                if (!duplicatedFound)
+                    firebase.database().ref('/WaitingQueue').child(phoneNumber).set(queueNumber);
             })
-            if (!duplicatedFound)
-                firebase.database().ref('/WaitingQueue').child(phoneNumber).set(queueNumber);
-        })
-        console.log("ADD users' phoneNumber to the WaitingQueue");
+            console.log("ADD users' phoneNumber to the WaitingQueue");
+        }
 
         // updating patient startTime for multiple visits (assuming no users visit each room once)
         // in session, clock ticking
@@ -64,8 +66,8 @@ class QrScanner extends Component {
             }
         })
 
-        // REMOVE users' phoneNumber from WaitingQueue if they finish the overall visit
-        if (location == 'OverallDuration') {
+        // REMOVE users' phoneNumber from WaitingQueue if they leave the waiting room
+        if (location == 'Waiting Room') {
             firebase.database().ref('/WaitingQueue').once('value', function (snapshot) {
                 let updateValFromHere = false;
                 snapshot.forEach((child) => {
@@ -160,17 +162,35 @@ class QrScanner extends Component {
         else if (e.data == 'overall-end') {
             this.updateEndTimeAndDiffTime(keyMonthDateYear, phoneNumber, "OverallDuration", "You are checked out at the front door!")
         }
-        else if (e.data == 'roomA-start') {
-            this.updateStartTime(keyMonthDateYear, phoneNumber, "RoomA", "You are checked in at Room A!")
+        else if (e.data == 'wr-start') {
+            this.updateStartTime(keyMonthDateYear, phoneNumber, "Waiting Room", "You are checked in at Waiting Room!")
         }
-        else if (e.data == 'roomA-end') {
-            this.updateEndTimeAndDiffTime(keyMonthDateYear, phoneNumber, "RoomA", "You are checked out at Room A!")
+        else if (e.data == 'wr-end') {
+            this.updateEndTimeAndDiffTime(keyMonthDateYear, phoneNumber, "Waiting Room", "You are checked out at Waiting Room!")
         }
-        else if (e.data == 'roomB-start') {
-            this.updateStartTime(keyMonthDateYear, phoneNumber, "RoomB", "You are checked in at Room B!")
+        else if (e.data == 'er-start') {
+            this.updateStartTime(keyMonthDateYear, phoneNumber, "Exam Room", "You are checked in at Exam Room!")
         }
-        else if (e.data == 'roomB-end') {
-            this.updateEndTimeAndDiffTime(keyMonthDateYear, phoneNumber, "RoomB", "You are checked out at Room B!")
+        else if (e.data == 'er-end') {
+            this.updateEndTimeAndDiffTime(keyMonthDateYear, phoneNumber, "Exam Room", "You are checked out at Exam Room!")
+        }
+        else if (e.data == 'tr1-start') {
+            this.updateStartTime(keyMonthDateYear, phoneNumber, "Treatment Room 1", "You are checked in at Treatment Room 1!")
+        }
+        else if (e.data == 'tr1-end') {
+            this.updateEndTimeAndDiffTime(keyMonthDateYear, phoneNumber, "Treatment Room 1", "You are checked out at Treatment Room 1!")
+        }
+        else if (e.data == 'tr2-start') {
+            this.updateStartTime(keyMonthDateYear, phoneNumber, "Treatment Room 2", "You are checked in at Treatment Room 2!")
+        }
+        else if (e.data == 'tr2-end') {
+            this.updateEndTimeAndDiffTime(keyMonthDateYear, phoneNumber, "Treatment Room 2", "You are checked out at Treatment Room 2!")
+        }
+        else if (e.data == 'ct-start') {
+            this.updateStartTime(keyMonthDateYear, phoneNumber, "CT Room", "You are checked in at CT Room!")
+        }
+        else if (e.data == 'ct-end') {
+            this.updateEndTimeAndDiffTime(keyMonthDateYear, phoneNumber, "CT Room", "You are checked out at CT Room!")
         }
         else {
             this.invalidQrCode();
