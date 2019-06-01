@@ -167,7 +167,7 @@ class ShowMap extends Component {
             for (let i in shapeArr) {
                 context.fillStyle = shapeArr[i].fillColor
                 context.fillRect(shapeArr[i].x, shapeArr[i].y, shapeArr[i].width, shapeArr[i].height)
-                context.font = '20px Helvetica';
+                context.font = '16px Helvetica';
                 context.fillStyle = "white";
                 context.fillText(shapeArr[i].text, shapeArr[i].textX, shapeArr[i].textY)
             }

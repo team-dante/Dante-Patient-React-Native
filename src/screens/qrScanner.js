@@ -56,16 +56,6 @@ class QrScanner extends Component {
 
         let self = this
 
-        let startQrScanned = false;
-        firebase.database().ref('/PatientVisitsByDates/' + phoneNumber + '/' + keyMonthDateYear + '/' + location).once('value', function (snapshot) {
-            if (snapshot.exists()) {
-                startQrScanned = true;
-            }
-            else {
-                self.invalidQrCode();
-            }
-        })
-
         // REMOVE users' phoneNumber from WaitingQueue if they leave the waiting room
         if (location == 'Waiting Room') {
             firebase.database().ref('/WaitingQueue').once('value', function (snapshot) {
@@ -88,51 +78,49 @@ class QrScanner extends Component {
         }
 
         // updating patient endTime for multiple visits (assuming no users visit each room once)
-        if (startQrScanned) {
-            firebase.database().ref('/PatientVisitsByDates/' + phoneNumber + '/' + keyMonthDateYear + '/' + location).update({
-                inSession: false
-            }).then((data) => {
-                firebase.database().ref('/PatientVisitsByDates/' + phoneNumber + '/' + keyMonthDateYear + '/' + location).once('value', function (snapshot) {
-                    let durationEpoch = snapshot.val().diffTime;
+        firebase.database().ref('/PatientVisitsByDates/' + phoneNumber + '/' + keyMonthDateYear + '/' + location).update({
+            inSession: false
+        }).then((data) => {
+            firebase.database().ref('/PatientVisitsByDates/' + phoneNumber + '/' + keyMonthDateYear + '/' + location).once('value', function (snapshot) {
+                let durationEpoch = snapshot.val().diffTime;
 
-                    let seconds = Math.floor((durationEpoch / 1000) % 60),
-                        minutes = Math.floor((durationEpoch / (1000 * 60)) % 60),
-                        hours = Math.floor((durationEpoch / (1000 * 60 * 60)) % 24);
+                let seconds = Math.floor((durationEpoch / 1000) % 60),
+                    minutes = Math.floor((durationEpoch / (1000 * 60)) % 60),
+                    hours = Math.floor((durationEpoch / (1000 * 60 * 60)) % 24);
 
-                    hours = (hours < 10) ? "0" + hours : hours;
-                    minutes = (minutes < 10) ? "0" + minutes : minutes;
-                    seconds = (seconds < 10) ? "0" + seconds : seconds;
+                hours = (hours < 10) ? "0" + hours : hours;
+                minutes = (minutes < 10) ? "0" + minutes : minutes;
+                seconds = (seconds < 10) ? "0" + seconds : seconds;
 
-                    Actions.notice({
-                        text: "You spent " + hours + " hours, " + minutes
-                            + " minutes, " + seconds + " seconds." + "\n\n" + message
-                    })
-                }).catch((error) => {
-                    console.log("error updating overallDuration for patient " + phoneNumber);
-                    console.log("error = " + error);
+                Actions.notice({
+                    text: "You spent " + hours + " hours, " + minutes
+                        + " minutes, " + seconds + " seconds." + "\n\n" + message
                 })
+            }).catch((error) => {
+                console.log("error updating overallDuration for patient " + phoneNumber);
+                console.log("error = " + error);
+            })
 
-                // When patient leaves the clinic, calculate the buffer time
-                if (location == 'OverallDuration') {
-                    firebase.database().ref('/PatientVisitsByDates/' + phoneNumber + '/' + keyMonthDateYear).once('value', function (snapshot) {
-                        let timeSpentInRooms = 0;
-                        let timeSpentOverall = 0;
-                        snapshot.forEach((data) => {
-                            if (data.key != 'OverallDuration') {
-                                timeSpentInRooms += data.val().diffTime;
-                            }
-                            else {
-                                timeSpentOverall = data.val().diffTime;
-                            }
-                        });
-                        // Z is to trick the Firebase system so that the Transition Time item is always listed at the bottom
-                        snapshot.ref.child("ZTransition").update({
-                            diffTime: timeSpentOverall - timeSpentInRooms
-                        });
-                    })
-                }
-            });
-        }
+            // When patient leaves the clinic, calculate the buffer time
+            if (location == 'OverallDuration') {
+                firebase.database().ref('/PatientVisitsByDates/' + phoneNumber + '/' + keyMonthDateYear).once('value', function (snapshot) {
+                    let timeSpentInRooms = 0;
+                    let timeSpentOverall = 0;
+                    snapshot.forEach((data) => {
+                        if (data.key != 'OverallDuration') {
+                            timeSpentInRooms += data.val().diffTime;
+                        }
+                        else {
+                            timeSpentOverall = data.val().diffTime;
+                        }
+                    });
+                    // Z is to trick the Firebase system so that the Transition Time item is always listed at the bottom
+                    snapshot.ref.child("ZTransition").update({
+                        diffTime: timeSpentOverall - timeSpentInRooms
+                    });
+                })
+            }
+        });
 
     }
 
