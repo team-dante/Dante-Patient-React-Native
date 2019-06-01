@@ -162,7 +162,7 @@ class ShowMap extends Component {
             snapshot.forEach((eachDoctor) => {
                 doctorJson.push(eachDoctor.val())
             })
-            let randomizedPosition = [[wp('12%'), wp('15%')], [wp('18%'), wp('22%')], [wp('22%'), wp('22%')]]
+            let randomizedPosition = [[wp('10%'), hp('7%')], [wp('18%'), hp('10%')], [wp('22%'), wp('8%')]]
             // reset all small circles
             for (let i in shapeArr) {
                 context.fillStyle = shapeArr[i].fillColor
