@@ -125,7 +125,7 @@ class ShowMap extends Component {
         // render the entire canvas with the width of the device and the height of the device 
         // fill with white color
         const context = canvas.getContext('2d');
-        canvas.height = hp('50%');
+        canvas.height = hp('54%');
         canvas.width = Dimensions.get('window').width;
         context.fillStyle = '#f1f1f1';
         context.fillRect(0, 0, canvas.width, canvas.height);
@@ -133,25 +133,25 @@ class ShowMap extends Component {
         // render 4 rooms
         let shapeArr = [];
         let roomColors = ['#4B77BE', '#48929B', '#317589', '#1F4788', '#89C4F4', '#4B77BE', '#19B5FE', '#5D8CAE', '#044F67']
-        shapeArr.push(new this.Shape(0, 0, wp('20%'), wp('30%'), roomColors[0], '', wp('1.5%'), wp('5%')))
-        shapeArr.push(new this.Shape(wp('20%'), 0, wp('30%'), wp('30%'), roomColors[1], 'Exam Room', wp('21.5%'), wp('5%')))
-        shapeArr.push(new this.Shape(wp('50%'), 0, wp('15%'), wp('30%'), roomColors[2], '', wp('51.5%'), wp('5%')))
-        shapeArr.push(new this.Shape(wp('65%'), 0, wp('35%'), wp('40%'), roomColors[3], 'Treatment Room 1', wp('66.5%'), wp('5%')))
-        shapeArr.push(new this.Shape(wp('65%'), wp('40%'), wp('35%'), wp('40%'), roomColors[4], 'Treatment Room 2', wp('66.5%'), wp('45%')))
-        shapeArr.push(new this.Shape(wp('65%'), wp('80%'), wp('35%'), wp('28%'), roomColors[5], 'CT Room', wp('66.5%'), wp('85%')))
+        shapeArr.push(new this.Shape(0, 0, wp('20%'), hp('16%'), roomColors[0], '', wp('1.5%'), hp('2%')))
+        shapeArr.push(new this.Shape(wp('20%'), 0, wp('30%'), hp('16%'), roomColors[1], 'Exam Rm', wp('21.5%'), hp('2%')))
+        shapeArr.push(new this.Shape(wp('50%'), 0, wp('15%'), hp('16%'), roomColors[2], '', wp('51.5%'), hp('2%')))
+        shapeArr.push(new this.Shape(wp('65%'), 0, wp('35%'), hp('20%'), roomColors[3], 'Treatment 1', wp('66.5%'), hp('2%')))
+        shapeArr.push(new this.Shape(wp('65%'), hp('20%'), wp('35%'), hp('20%'), roomColors[4], 'Treatment 2', wp('66.5%'), hp('22%')))
+        shapeArr.push(new this.Shape(wp('65%'), hp('40%'), wp('35%'), hp('14%'), roomColors[5], 'CT Rm', wp('66.5%'), hp('42%')))
         
-        shapeArr.push(new this.Shape(0, wp('90%'), wp('60%'), wp('18%'), roomColors[6], '', wp('0.5%'), wp('95%')))
-        shapeArr.push(new this.Shape(0, wp('40%'), wp('15%'), wp('50%'), roomColors[7], '', wp('0.5%'), wp('45%')))
+        shapeArr.push(new this.Shape(0, hp('45%'), wp('55%'), hp('9%'), roomColors[6], 'Storage Rm', wp('0.5%'), hp('47%')))
+        shapeArr.push(new this.Shape(0, hp('20%'), wp('15%'), hp('25%'), roomColors[7], '', wp('0.5%'), hp('22%')))
 
         // render room A (render shorter height rect and then render larger height rect)
-        shapeArr.push(new this.Shape(wp('35%'), wp('40%'), wp('20%'), wp('35%'), roomColors[8], '', wp('35.5%'), wp('45%')))
-        shapeArr.push(new this.Shape(wp('25%'), wp('40%'), wp('10%'), wp('40%'), roomColors[8], 'Waiting Room', wp('25.5%'), wp('45%')))
+        shapeArr.push(new this.Shape(wp('32%'), hp('20%'), wp('23%'), hp('18%'), roomColors[8], '', wp('33.5%'), hp('22%')))
+        shapeArr.push(new this.Shape(wp('22%'), hp('20%'), wp('13%'), hp('21%'), roomColors[8], 'Waiting Rm', wp('23.5%'), hp('22%')))
         
 
         for (let i in shapeArr) {
             context.fillStyle = shapeArr[i].fillColor
             context.fillRect(shapeArr[i].x, shapeArr[i].y, shapeArr[i].width, shapeArr[i].height)
-            context.font = '16px Helvetica';
+            context.font = '1em Helvetica';
             context.fillStyle = "white";
             context.fillText(shapeArr[i].text, shapeArr[i].textX, shapeArr[i].textY)
         }
@@ -167,7 +167,7 @@ class ShowMap extends Component {
             for (let i in shapeArr) {
                 context.fillStyle = shapeArr[i].fillColor
                 context.fillRect(shapeArr[i].x, shapeArr[i].y, shapeArr[i].width, shapeArr[i].height)
-                context.font = '16px Helvetica';
+                context.font = '1em Helvetica';
                 context.fillStyle = "white";
                 context.fillText(shapeArr[i].text, shapeArr[i].textX, shapeArr[i].textY)
             }
