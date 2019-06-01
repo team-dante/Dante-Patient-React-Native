@@ -133,19 +133,19 @@ class ShowMap extends Component {
         // render 4 rooms
         let shapeArr = [];
         let roomColors = ['#4B77BE', '#48929B', '#317589', '#1F4788', '#89C4F4', '#4B77BE', '#19B5FE', '#5D8CAE', '#044F67']
-        shapeArr.push(new this.Shape(0, 0, wp('20%'), hp('16%'), roomColors[0], '', wp('1.5%'), hp('2%')))
-        shapeArr.push(new this.Shape(wp('20%'), 0, wp('30%'), hp('16%'), roomColors[1], 'Exam Rm', wp('21.5%'), hp('2%')))
-        shapeArr.push(new this.Shape(wp('50%'), 0, wp('15%'), hp('16%'), roomColors[2], '', wp('51.5%'), hp('2%')))
-        shapeArr.push(new this.Shape(wp('65%'), 0, wp('35%'), hp('20%'), roomColors[3], 'Treatment 1', wp('66.5%'), hp('2%')))
-        shapeArr.push(new this.Shape(wp('65%'), hp('20%'), wp('35%'), hp('20%'), roomColors[4], 'Treatment 2', wp('66.5%'), hp('22%')))
-        shapeArr.push(new this.Shape(wp('65%'), hp('40%'), wp('35%'), hp('14%'), roomColors[5], 'CT Rm', wp('66.5%'), hp('42%')))
+        shapeArr.push(new this.Shape(0, 0, wp('20%'), hp('16%'), roomColors[0], '', wp('1.5%'), hp('2.5%')))
+        shapeArr.push(new this.Shape(wp('20%'), 0, wp('30%'), hp('16%'), roomColors[1], 'Exam Rm', wp('21.5%'), hp('2.5%')))
+        shapeArr.push(new this.Shape(wp('50%'), 0, wp('15%'), hp('16%'), roomColors[2], '', wp('51.5%'), hp('2.5%')))
+        shapeArr.push(new this.Shape(wp('65%'), 0, wp('35%'), hp('20%'), roomColors[3], 'Treatment 1', wp('66.5%'), hp('2.5%')))
+        shapeArr.push(new this.Shape(wp('65%'), hp('20%'), wp('35%'), hp('20%'), roomColors[4], 'Treatment 2', wp('66.5%'), hp('22.5%')))
+        shapeArr.push(new this.Shape(wp('65%'), hp('40%'), wp('35%'), hp('14%'), roomColors[5], 'CT Rm', wp('66.5%'), hp('42.5%')))
         
-        shapeArr.push(new this.Shape(0, hp('45%'), wp('55%'), hp('9%'), roomColors[6], 'Storage Rm', wp('0.5%'), hp('47%')))
-        shapeArr.push(new this.Shape(0, hp('20%'), wp('15%'), hp('25%'), roomColors[7], '', wp('0.5%'), hp('22%')))
+        shapeArr.push(new this.Shape(0, hp('45%'), wp('55%'), hp('9%'), roomColors[6], 'Storage Rm', wp('0.5%'), hp('47.5%')))
+        shapeArr.push(new this.Shape(0, hp('20%'), wp('15%'), hp('25%'), roomColors[7], '', wp('0.5%'), hp('22.5%')))
 
         // render room A (render shorter height rect and then render larger height rect)
-        shapeArr.push(new this.Shape(wp('32%'), hp('20%'), wp('23%'), hp('18%'), roomColors[8], '', wp('33.5%'), hp('22%')))
-        shapeArr.push(new this.Shape(wp('22%'), hp('20%'), wp('13%'), hp('21%'), roomColors[8], 'Waiting Rm', wp('23.5%'), hp('22%')))
+        shapeArr.push(new this.Shape(wp('32%'), hp('20%'), wp('23%'), hp('18%'), roomColors[8], '', wp('33.5%'), hp('22.5%')))
+        shapeArr.push(new this.Shape(wp('22%'), hp('20%'), wp('13%'), hp('21%'), roomColors[8], 'Waiting Rm', wp('23.5%'), hp('22.5%')))
         
 
         for (let i in shapeArr) {
