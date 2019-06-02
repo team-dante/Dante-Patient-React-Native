@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Image, ScrollView, Text, View, Dimensions } from 'react-native';
 import firebase from 'firebase';
 import Canvas, { Image as CanvasImage, Path2D, ImageData } from 'react-native-canvas';
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 class ShowMap extends Component {
 
@@ -24,14 +24,19 @@ class ShowMap extends Component {
         var self = this;
 
         firebase.database().ref('/WaitingQueue').on("value", function (snapshot) {
+            let phoneNumExtract = '';
+            let found = false;
             snapshot.forEach((data) => {
-                if (data.key == phoneNum.toString()) {
+                phoneNumExtract = data.key.split('-')[1]
+                if (phoneNumExtract == phoneNum.toString()) {
+                    found = true;
                     console.log(data.key + ': ' + data.val())
                     self.setState({ queueNum: data.val(), queueNotFound: false })
-                    if (data.val() == -1)
-                        self.setState({ queueNotFound: true })
                 }
             })
+            if (!found) {
+                self.setState({ queueNotFound: true })
+            }
         })
 
         // get today's date
@@ -88,8 +93,8 @@ class ShowMap extends Component {
         }
         else {
             return (
-                <Text style={styles.topText}>Number of people ahead of you: 
-                <Text style={{fontSize: wp('5%')}}>{queueNum}</Text></Text>
+                <Text style={styles.topText}>Number of people ahead of you:
+                <Text style={{ fontSize: wp('5%') }}>{queueNum}</Text></Text>
             )
         }
     }
@@ -139,14 +144,14 @@ class ShowMap extends Component {
         shapeArr.push(new this.Shape(wp('65%'), 0, wp('35%'), hp('20%'), roomColors[3], 'Treatment 1', wp('66.5%'), hp('2.5%')))
         shapeArr.push(new this.Shape(wp('65%'), hp('20%'), wp('35%'), hp('20%'), roomColors[4], 'Treatment 2', wp('66.5%'), hp('22.5%')))
         shapeArr.push(new this.Shape(wp('65%'), hp('40%'), wp('35%'), hp('14%'), roomColors[5], 'CT Rm', wp('66.5%'), hp('42.5%')))
-        
+
         shapeArr.push(new this.Shape(0, hp('45%'), wp('55%'), hp('9%'), roomColors[6], 'Storage Rm', wp('0.5%'), hp('47.5%')))
         shapeArr.push(new this.Shape(0, hp('20%'), wp('15%'), hp('25%'), roomColors[7], '', wp('0.5%'), hp('22.5%')))
 
         // render room A (render shorter height rect and then render larger height rect)
         shapeArr.push(new this.Shape(wp('32%'), hp('20%'), wp('23%'), hp('18%'), roomColors[8], '', wp('33.5%'), hp('22.5%')))
         shapeArr.push(new this.Shape(wp('22%'), hp('20%'), wp('13%'), hp('21%'), roomColors[8], 'Waiting Rm', wp('23.5%'), hp('22.5%')))
-        
+
 
         for (let i in shapeArr) {
             context.fillStyle = shapeArr[i].fillColor
@@ -199,8 +204,8 @@ class ShowMap extends Component {
         context.fillRect(0, 0, canvas.width, canvas.height);
 
         let doctorArr = [];
-        doctorArr.push(new this.Doctor(wp('6%'), hp('3.8%'), wp('3%'), 0, 2*Math.PI, "Dr. Kuo", wp('12%'), hp('4.6%'), 'red'));
-        doctorArr.push(new this.Doctor(wp('6%'), hp('8.2%'), wp('3%'), 0, 2*Math.PI, "Dr. Roa", wp('12%'), hp('9.2%'), 'yellow'));
+        doctorArr.push(new this.Doctor(wp('6%'), hp('3.8%'), wp('3%'), 0, 2 * Math.PI, "Dr. Kuo", wp('12%'), hp('4.6%'), 'red'));
+        doctorArr.push(new this.Doctor(wp('6%'), hp('8.2%'), wp('3%'), 0, 2 * Math.PI, "Dr. Roa", wp('12%'), hp('9.2%'), 'yellow'));
 
         for (let i in doctorArr) {
             context.fillStyle = doctorArr[i].color;
@@ -253,7 +258,7 @@ const styles = StyleSheet.create({
         borderColor: '#3DCEBF',
         borderWidth: 1,
         margin: wp('6%'),
-        padding: wp('4.0%'),        
+        padding: wp('4.0%'),
         shadowColor: "#000",
         shadowOffset: {
             width: 0,

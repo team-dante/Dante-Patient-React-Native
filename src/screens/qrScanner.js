@@ -25,13 +25,7 @@ class QrScanner extends Component {
         if (location == 'Waiting Room') {
             firebase.database().ref('/WaitingQueue').once('value', function (snapshot) {
                 let queueNumber = snapshot.numChildren();
-                let duplicatedFound = false;
-                snapshot.forEach((child) => {
-                    if (child.key == phoneNumber.toString())
-                        duplicatedFound = true;
-                })
-                if (!duplicatedFound)
-                    firebase.database().ref('/WaitingQueue').child(phoneNumber).set(queueNumber);
+                firebase.database().ref('/WaitingQueue').child(Date.now() + '-' + phoneNumber).set(queueNumber);
             })
             console.log("ADD users' phoneNumber to the WaitingQueue");
         }
@@ -60,21 +54,26 @@ class QrScanner extends Component {
         if (location == 'Waiting Room') {
             firebase.database().ref('/WaitingQueue').once('value', function (snapshot) {
                 let updateValFromHere = false;
+                let phoneNumExtract = '';
                 snapshot.forEach((child) => {
                     console.log(child.key + ', ' + child.val())
-
-                    if (child.key == phoneNumber.toString())
+                    phoneNumExtract = child.key.split('-')[1]
+                    let stop = false;
+                    if (phoneNumExtract == phoneNumber.toString()){
                         updateValFromHere = true
+                        firebase.database().ref('/WaitingQueue').child(child.key).set(-1).then(
+                            () => {
+                                firebase.database().ref('/WaitingQueue').child(child.key).remove();
+                            }
+                        )
+                    }
 
                     //child().update() won't work
                     if (updateValFromHere && child.val() != 0)
                         firebase.database().ref('/WaitingQueue').child(child.key).set(child.val() - 1);
                 })
+                console.log("REMOVE users' phoneNumber to the WaitingQueue");
             })
-            // one way to trick the system. update value to -1, firebase triggers when child.key updates to -1, which calls setState when -1 is updated
-            firebase.database().ref('/WaitingQueue').child(phoneNumber).set(-1);
-            firebase.database().ref('/WaitingQueue').child(phoneNumber).remove();
-            console.log("REMOVE users' phoneNumber to the WaitingQueue");
         }
 
         // updating patient endTime for multiple visits (assuming no users visit each room once)
