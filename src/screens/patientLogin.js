@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { Alert, Image, View, Text, TextInput, 
         TouchableOpacity, StyleSheet, ActivityIndicator, 
-        Keyboard, SafeAreaView, Platform } from 'react-native';
+        Keyboard, SafeAreaView, Platform, KeyboardAvoidingView } from 'react-native';
 import TouchID from 'react-native-touch-id';
 import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { KeyboardAvoidingView } from 'react-native';
 
 class PatientLogin extends Component {
     constructor(props) {

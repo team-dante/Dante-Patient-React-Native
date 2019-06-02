@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Dimensions, View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, ActivityIndicator } from 'react-native';
+import { Dimensions, View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, ActivityIndicator, Keyboard, SafeAreaView, Platform, KeyboardAvoidingView } from 'react-native';
 import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 class PatientSignUp extends Component {
     constructor(props) {
@@ -34,45 +34,45 @@ class PatientSignUp extends Component {
                     // PatientPin = 4 digit PIN + "ABCDEFG"
                     patientPin += "ABCDEFG"
                     firebase.auth().createUserWithEmailAndPassword(email, patientPin)
-                    .then( () => {
-                        console.log("success in SIGN UP")
-                        // sign in if creating a new account succesfully
-                        firebase.auth().signInWithEmailAndPassword(email, patientPin)
-                        .then( (user) => {
-                            console.log("success in SIGN IN");
-                            console.log(user)
-                            this_var.setState({
-                                loading: false
-                            });
-                            Actions.map();
+                        .then(() => {
+                            console.log("success in SIGN UP")
+                            // sign in if creating a new account succesfully
+                            firebase.auth().signInWithEmailAndPassword(email, patientPin)
+                                .then((user) => {
+                                    console.log("success in SIGN IN");
+                                    console.log(user)
+                                    this_var.setState({
+                                        loading: false
+                                    });
+                                    Actions.map();
+                                })
+                                .catch((error) => {
+                                    console.log("failure in SIGN IN");
+
+                                    let errorCode = error.code;
+                                    let errorMessage = error.message;
+
+                                    console.log("errorCode = " + errorCode);
+                                    console.log("errorMessage = " + errorMessage);
+
+                                    this_var.setState({ error: errorMessage, loading: false });
+                                })
                         })
-                        .catch( (error) => {
-                            console.log("failure in SIGN IN");
+                        .catch((errorParam) => {
+                            console.log("failure in SIGN UP")
+                            console.log(errorParam);
 
-                            let errorCode = error.code;
-                            let errorMessage = error.message;
-                    
-                            console.log("errorCode = " + errorCode);
-                            console.log("errorMessage = " + errorMessage);
-                    
-                            this_var.setState({ error: errorMessage, loading: false });
+                            // errorParam is an object, but errorParam.message is a string. error only accepts string
+                            this_var.setState({ error: errorParam.message, loading: false });
+
+                            Alert.alert(
+                                'Error',
+                                'Your phone number cannot be activated. Please contact the staff.',
+                                [
+                                    { text: 'Return to Login Page', onPress: () => Actions.auth() }
+                                ]
+                            )
                         })
-                    })
-                    .catch( (errorParam) => {
-                        console.log("failure in SIGN UP")
-                        console.log(errorParam);
-
-                        // errorParam is an object, but errorParam.message is a string. error only accepts string
-                        this_var.setState({ error: errorParam.message, loading: false });
-
-                        Alert.alert(
-                            'Error',
-                            'Your phone number cannot be activated. Please contact the staff.',
-                            [
-                                {text: 'Return to Login Page', onPress: () => Actions.auth() }
-                            ]
-                        )
-                    })
                 }
                 else {
                     console.log("There is no account associated with '" + patientPhoneNumber + "'.")
@@ -80,7 +80,7 @@ class PatientSignUp extends Component {
                         'Error',
                         'Your phone number cannot be found in our database. Please contact the staff.',
                         [
-                            {text: 'Return to Login Page', onPress: () => Actions.auth() }
+                            { text: 'Return to Login Page', onPress: () => Actions.auth() }
                         ]
                     )
                 }
@@ -109,17 +109,32 @@ class PatientSignUp extends Component {
     }
 
     render() {
+        const shouldSetResponse = () => true;
+        const onRelease = () => (
+            Keyboard.dismiss()
+        );
         return (
-            <View style={styles.container}>
-                <Text style={styles.fieldTitle}>Please enter your phone number</Text>
-                <TextInput
-                    style={styles.input}
-                    secureTextEntry={false}
-                    autoCapitalize="none"
-                    onChangeText={patientPhoneNumber => this.setState({ patientPhoneNumber })}
-                    value={this.state.patientPhoneNumber} />
-                {this.renderButton()}
-            </View>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : null}
+                style={{ flex: 1 }} >
+                <SafeAreaView style={styles.container}>
+                    <View
+                        onResponderRelease={onRelease}
+                        onStartShouldSetResponder={shouldSetResponse}
+                        style={{ height: hp('100%') }} style={styles.inner}>
+                        <View style={styles.container}>
+                            <Text style={styles.fieldTitle}>Please enter your phone number</Text>
+                            <TextInput
+                                style={styles.input}
+                                secureTextEntry={false}
+                                autoCapitalize="none"
+                                onChangeText={patientPhoneNumber => this.setState({ patientPhoneNumber })}
+                                value={this.state.patientPhoneNumber} />
+                            {this.renderButton()}
+                        </View>
+                    </View>
+                </SafeAreaView>
+            </KeyboardAvoidingView>
         );
     }
 }
@@ -130,6 +145,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#f9f9f9'
+    },
+    inner: {
+        paddingBottom: hp('1%'),
+        flex: 1,
+        justifyContent: "flex-end",
     },
     fieldTitle: {
         color: '#53ACE6',
