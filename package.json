@@ -8,6 +8,7 @@
     "ios": "react-native run-ios --simulator \"iPhone Xs Max\""
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.4.2",
     "firebase": "^5.10.0",
     "react": "16.8.3",
     "react-native": "0.59.4",

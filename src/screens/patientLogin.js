@@ -6,6 +6,7 @@ import TouchID from 'react-native-touch-id';
 import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import AsyncStorage from '@react-native-community/async-storage';
 
 class PatientLogin extends Component {
     constructor(props) {
@@ -18,12 +19,40 @@ class PatientLogin extends Component {
     componentWillMount() {
         console.log("im in componentWillMount");
 
-        let firstTrigger = true;
+        var self = this;
 
-        // this will check if the user is logged in or not
+        // FaceID/TouchID initially true
+        this.setIDTrigger('true');
+
+        // this will check if the user is logged in or not; 
+        // if logged in, and if getIDTrigger is true, trigger FaceID/TouchID
+        // if not logged in, do not trigger FaceID/TouchID
         firebase.auth().onAuthStateChanged((user) => {
             console.log("firebase.auth().onAuthStateChanged is called...");
-            if (user && firstTrigger) {
+            if (user) {
+                self.getIDTrigger();
+            }
+            else {
+                self.setIDTrigger('false');
+            }
+        });
+    }
+
+    // set firstTrigger to 'true' or 'false'
+    // CAUCTION: async storage will only work with strings
+    async setIDTrigger(value) {
+        try {
+         await AsyncStorage.setItem('@firstTrigger', value)
+        } catch (e) {
+          console.log("cannot save key")
+        }
+    }
+
+    // if firstTrigger is true, then call TouchID/FaceID to complete auth
+    async getIDTrigger() {
+        try {
+            const value = await AsyncStorage.getItem('@firstTrigger')
+            if (value == 'true') {
                 const optionalConfigObject = {
                     fallbackLabel: 'Show Passcode',
                     unifiedErrors: false,
@@ -41,13 +70,10 @@ class PatientLogin extends Component {
                         console.log('Authentication Failed');
                         console.log("error = " + error);
                     });
+                }
+            } catch(e) {
+                console.log("cannot get @firstTrigger")
             }
-            else {
-                firstTrigger = false;
-                console.log("firstTrigger=" + firstTrigger);
-                console.log("user is not logged in");
-            }
-        });
     }
 
     onButtonPress() {
@@ -71,6 +97,8 @@ class PatientLogin extends Component {
             email: '', password: '', error: '', loading: false
         });
         Actions.map();
+        // once logged in successfully (typed or FaceID/TouchID), set firstTrigger to false
+        this.setIDTrigger('false');
     }
 
     onLoginFailure(errorParam) {
