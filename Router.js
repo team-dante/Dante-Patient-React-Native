@@ -37,7 +37,7 @@ const RouterComponent = () => {
                         backButtonTextStyle={styles.navBtnText} backButtonTintColor='white'/>
                 </Scene>
                 {/* ActionConst.RESET disables the back arrow */}
-                <Scene key="tabbar" tabs tabBarStyle={styles.tabBar} type={ActionConst.RESET} >
+                <Scene key="tabbar" tabs tabBarStyle={styles.tabBar} type={ActionConst.RESET} panHandlers={null}>
                     <Scene key="map" component={ShowMap}
                         title="Oncology Map"
                         iconName="map-marker-alt"
