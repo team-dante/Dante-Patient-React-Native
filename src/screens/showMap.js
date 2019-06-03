@@ -198,7 +198,7 @@ class ShowMap extends Component {
 
     handleCanvas2 = (canvas) => {
         const context = canvas.getContext('2d');
-        canvas.height = hp('20%');
+        canvas.height = hp('18%');
         canvas.width = Dimensions.get('window').width;
         context.fillStyle = '#fafafa';
         context.fillRect(0, 0, canvas.width, canvas.height);
