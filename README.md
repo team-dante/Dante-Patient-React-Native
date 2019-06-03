@@ -76,8 +76,6 @@ A React-Native app facilitates real-time location tracking of physicians (as wel
 
 **Authentication**
 
-<img src="https://i.imgur.com/ilwehZQ.png" width="700"/>
-<hr>
 <img src="https://i.imgur.com/f8DcUbw.png" width="700"/>
 <hr>
 <img src="https://i.imgur.com/t0Qzekj.png" width="700"/>
