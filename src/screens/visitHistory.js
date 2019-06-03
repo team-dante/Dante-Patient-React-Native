@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, SectionList } from 'react-native';
 import firebase from 'firebase';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import SegmentedControlTab from "react-native-segmented-control-tab";
+import Charts from './charts';
 
 class SectionListItem extends Component {
 
@@ -113,7 +116,9 @@ class VisitHistory extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: [],
+            data: [], // data for visit history
+            data_graph: [], // data to plot in pie chart
+            selectedTabIndex: 0
         };
     }
 
@@ -126,13 +131,10 @@ class VisitHistory extends Component {
         console.log("phoneNumber = " + phoneNumber);
 
         var self = this;
-        let now = new Date();
-        let today = this.formattedDate(now);
-        this.setState({ dateToday: today });
 
         firebase.database().ref('/PatientVisitsByDates/' + phoneNumber).on(
             'value', function (snapshot) {
-                self.setState({ data: self.convertToSectionList(snapshot.val()) })
+                self.setState({ data: self.convertToSectionList(snapshot.val()), data_graph: self.convertToGraphList(snapshot.val()) })
             })
     }
 
@@ -151,11 +153,34 @@ class VisitHistory extends Component {
                 obj_lst.push(inner_dict)
             }
             let outer_dict = { data: obj_lst, date: i }
-            sectionList.push(outer_dict)
+            sectionList.unshift(outer_dict)
         }
         return sectionList
     }
 
+    // [{date: <some Date>, room_lst: [], data_points: []}]
+    convertToGraphList(data) {
+        let diff_lst = []
+
+        for (i in data) {
+            let lst = []
+            let rooms = []
+            let overall = 3600;
+            //  CAUTION: Need some mechanisms to ensure we retrieve the overall visit duration first
+            for (j in data[i]) {
+                if (j != 'OverallDuration') {
+                    rooms.push(j) // keep track of the rooms; later for matching colors
+                    lst.push((data[i][j]["diffTime"] / overall * 100).toFixed(2)) // computer the % of time spent in each room relative to the whole
+                } else {
+                    overall = data[i][j]["diffTime"]
+                }
+            }
+            diff_lst.unshift({date: i, room_lst: rooms, data_points: lst})
+        }
+        return diff_lst
+    }
+
+    // return "YYYY-MM-DD"
     formattedDate(now) {
         var month = now.getMonth() + 1;
         var formattedMonth = month < 10 ? '0' + month : month;
@@ -165,9 +190,15 @@ class VisitHistory extends Component {
         return now.getFullYear() + '-' + formattedMonth + '-' + formattedDate;
     }
 
-    render() {
-        return (
-            <View style={styles.container}>
+   // when segmentedControl tab is changed, set state the index of the tab
+    handleIndexChange = (index) => {
+        this.setState({selectedTabIndex: index});
+    };
+
+    // if segmentedControl tab index is 0, render the table; otherwise render the graph
+    renderViewMode() {
+        if (this.state.selectedTabIndex == 0) {
+            return (
                 <SectionList
                     renderItem={({ item, index }) => {
                         return (
@@ -181,9 +212,31 @@ class VisitHistory extends Component {
                         );
                     }}
                     sections={this.state.data}
-                    keyExtractor={(item, index) => { item.startTime }}
-                >
+                        keyExtractor={(item, index) => { item.startTime }}
+                    >
                 </SectionList>
+            );
+        } else {
+            return (
+                <Charts graphData={this.state.data_graph}/>
+            );
+        }
+
+    }
+
+    render() {
+        return (
+            <View style={styles.container}>
+                <View style={styles.top}>
+                    <SegmentedControlTab
+                        values={["Table", "Graph"]}
+                        selectedIndex={this.state.selectedTabIndex}
+                        onTabPress={this.handleIndexChange}
+                        activeTabStyle={{backgroundColor: '#53ACE6'}}
+                        borderRadius={10}
+                    />
+                </View>
+                {this.renderViewMode()}
             </View>
         );
     }
@@ -262,6 +315,9 @@ const styles = StyleSheet.create({
         color: '#a4a4a4',
         margin: 20,
         marginBottom: 10
+    },
+    top: {
+        padding: hp('2.2%')
     }
 });
 
