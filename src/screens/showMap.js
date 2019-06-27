@@ -5,6 +5,7 @@ import firebase from 'firebase';
 import Canvas, { Image as CanvasImage, Path2D, ImageData } from 'react-native-canvas';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
+
 class ShowMap extends Component {
 
     constructor(props) {
@@ -220,22 +221,30 @@ class ShowMap extends Component {
         }
     }
 
+    handleCanvasMap(canvas) {
+        // const context = canvas.getContext('2d');
+        // canvas.height = hp('18%');
+        // canvas.width = Dimensions.get('window').width;
+
+
+    }
+
     render() {
         return (
-            <ScrollView minimumZoomScale={1} maximumZoomScale={3} contentContainerStyle={styles.container}>
+            <ScrollView minimumZoomScale={1} maximumZoomScale={3} bouncesZoom={false} contentContainerStyle={styles.container} scrollEnabled={false}> 
                 <View style={styles.queue}>
                     {this.renderPositionText()}
                 </View>
-                {/* <Image source={require("../assets/radOncMap.png")} 
+                <Image source={require("../assets/Component.png")} 
                 style={styles.image}
                 resizeMode="contain">
-                </Image> */}
-                <View>
+                </Image>
+                {/* <View>
                     <Canvas ref={this.handleCanvas} />
                 </View>
                 <View>
                     <Canvas ref={this.handleCanvas2} />
-                </View>
+                </View> */}
             </ScrollView>
         );
     }
@@ -244,12 +253,12 @@ class ShowMap extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F2F2F2'
+        backgroundColor: '#ffffff'
     },
     image: {
         flex: 1,
+        width: Dimensions.get('window').width,
         height: undefined,
-        width: undefined
     },
     queue: {
         color: '#3DCEBF',
