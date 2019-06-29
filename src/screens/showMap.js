@@ -224,11 +224,11 @@ class ShowMap extends Component {
     handleCanvasMap = canvas => {
         const context = canvas.getContext('2d');
         canvas.height = hp('50%');
-        canvas.width = Dimensions.get('window').width;
+        canvas.width = Dimensions.get('window').width - wp('4%');
         context.fillStyle = "white";
 
         var background = new CanvasImage(canvas);
-        background.src = "https://i.imgur.com/O0Ksgsa.png";
+        background.src = "https://i.imgur.com/1FpcLGF.png";
         background.addEventListener('load', () => {
             console.log("success")
             context.drawImage(background, 0, 0, canvas.width, canvas.height);
@@ -245,7 +245,7 @@ class ShowMap extends Component {
                 style={styles.image}
                 resizeMode="contain">
                 </Image> */}
-                <View>
+                <View style={{paddingHorizontal: wp('2%')}}>
                     <Canvas ref={this.handleCanvasMap} />
                 </View>
                 {/* <View>
