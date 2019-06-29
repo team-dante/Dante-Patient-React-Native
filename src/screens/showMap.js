@@ -221,13 +221,19 @@ class ShowMap extends Component {
         }
     }
 
-    handleCanvasMap(canvas) {
-        // const context = canvas.getContext('2d');
-        // canvas.height = hp('18%');
-        // canvas.width = Dimensions.get('window').width;
+    handleCanvasMap = canvas => {
+        const context = canvas.getContext('2d');
+        canvas.height = hp('50%');
+        canvas.width = Dimensions.get('window').width;
+        context.fillStyle = "white";
 
-
-    }
+        var background = new CanvasImage(canvas);
+        background.src = "https://i.imgur.com/O0Ksgsa.png";
+        background.addEventListener('load', () => {
+            console.log("success")
+            context.drawImage(background, 0, 0, canvas.width, canvas.height);
+        })   
+    };
 
     render() {
         return (
@@ -235,16 +241,19 @@ class ShowMap extends Component {
                 <View style={styles.queue}>
                     {this.renderPositionText()}
                 </View>
-                <Image source={require("../assets/Component.png")} 
+                {/* <Image source={require("../assets/Component.png")} 
                 style={styles.image}
                 resizeMode="contain">
-                </Image>
+                </Image> */}
+                <View>
+                    <Canvas ref={this.handleCanvasMap} />
+                </View>
                 {/* <View>
                     <Canvas ref={this.handleCanvas} />
-                </View>
+                </View> */}
                 <View>
                     <Canvas ref={this.handleCanvas2} />
-                </View> */}
+                </View>
             </ScrollView>
         );
     }
