@@ -104,136 +104,155 @@ class ShowMap extends Component {
         clearInterval(this.realTimeInterval);
     }
 
-    Shape(x, y, width, height, fillColor, text, textX, textY) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.fillColor = fillColor;
-        this.text = text;
-        this.textX = textX;
-        this.textY = textY;
-    }
+    // Shape(x, y, width, height, fillColor, text, textX, textY) {
+    //     this.x = x;
+    //     this.y = y;
+    //     this.width = width;
+    //     this.height = height;
+    //     this.fillColor = fillColor;
+    //     this.text = text;
+    //     this.textX = textX;
+    //     this.textY = textY;
+    // }
 
-    Doctor(x, y, radius, sAngle, eAngle, name, textX, textY, color) {
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
-        this.sAngle = sAngle;
-        this.eAngle = eAngle;
-        this.name = name;
-        this.textX = textX;
-        this.textY = textY;
-        this.color = color;
-    }
+    // Doctor(x, y, radius, sAngle, eAngle, name, textX, textY, color) {
+    //     this.x = x;
+    //     this.y = y;
+    //     this.radius = radius;
+    //     this.sAngle = sAngle;
+    //     this.eAngle = eAngle;
+    //     this.name = name;
+    //     this.textX = textX;
+    //     this.textY = textY;
+    //     this.color = color;
+    // }
 
-    handleCanvas = (canvas) => {
-        // render the entire canvas with the width of the device and the height of the device 
-        // fill with white color
-        const context = canvas.getContext('2d');
-        canvas.height = hp('54%');
-        canvas.width = Dimensions.get('window').width;
-        context.fillStyle = '#f1f1f1';
-        context.fillRect(0, 0, canvas.width, canvas.height);
+    // handleCanvas = (canvas) => {
+    //     // render the entire canvas with the width of the device and the height of the device 
+    //     // fill with white color
+    //     const context = canvas.getContext('2d');
+    //     canvas.height = hp('54%');
+    //     canvas.width = Dimensions.get('window').width;
+    //     context.fillStyle = '#f1f1f1';
+    //     context.fillRect(0, 0, canvas.width, canvas.height);
 
-        // render 4 rooms
-        let shapeArr = [];
-        let roomColors = ['#4B77BE', '#48929B', '#317589', '#1F4788', '#89C4F4', '#4B77BE', '#19B5FE', '#5D8CAE', '#044F67']
-        shapeArr.push(new this.Shape(0, 0, wp('20%'), hp('16%'), roomColors[0], '', wp('1.5%'), hp('2.5%')))
-        shapeArr.push(new this.Shape(wp('20%'), 0, wp('30%'), hp('16%'), roomColors[1], 'Exam Rm', wp('21.5%'), hp('2.5%')))
-        shapeArr.push(new this.Shape(wp('50%'), 0, wp('15%'), hp('16%'), roomColors[2], '', wp('51.5%'), hp('2.5%')))
-        shapeArr.push(new this.Shape(wp('65%'), 0, wp('35%'), hp('20%'), roomColors[3], 'Treatment 1', wp('66.5%'), hp('2.5%')))
-        shapeArr.push(new this.Shape(wp('65%'), hp('20%'), wp('35%'), hp('20%'), roomColors[4], 'Treatment 2', wp('66.5%'), hp('22.5%')))
-        shapeArr.push(new this.Shape(wp('65%'), hp('40%'), wp('35%'), hp('14%'), roomColors[5], 'CT Rm', wp('66.5%'), hp('42.5%')))
+    //     // render 4 rooms
+    //     let shapeArr = [];
+    //     let roomColors = ['#4B77BE', '#48929B', '#317589', '#1F4788', '#89C4F4', '#4B77BE', '#19B5FE', '#5D8CAE', '#044F67']
+    //     shapeArr.push(new this.Shape(0, 0, wp('20%'), hp('16%'), roomColors[0], '', wp('1.5%'), hp('2.5%')))
+    //     shapeArr.push(new this.Shape(wp('20%'), 0, wp('30%'), hp('16%'), roomColors[1], 'Exam Rm', wp('21.5%'), hp('2.5%')))
+    //     shapeArr.push(new this.Shape(wp('50%'), 0, wp('15%'), hp('16%'), roomColors[2], '', wp('51.5%'), hp('2.5%')))
+    //     shapeArr.push(new this.Shape(wp('65%'), 0, wp('35%'), hp('20%'), roomColors[3], 'Treatment 1', wp('66.5%'), hp('2.5%')))
+    //     shapeArr.push(new this.Shape(wp('65%'), hp('20%'), wp('35%'), hp('20%'), roomColors[4], 'Treatment 2', wp('66.5%'), hp('22.5%')))
+    //     shapeArr.push(new this.Shape(wp('65%'), hp('40%'), wp('35%'), hp('14%'), roomColors[5], 'CT Rm', wp('66.5%'), hp('42.5%')))
 
-        shapeArr.push(new this.Shape(0, hp('45%'), wp('55%'), hp('9%'), roomColors[6], 'Storage Rm', wp('0.5%'), hp('47.5%')))
-        shapeArr.push(new this.Shape(0, hp('20%'), wp('15%'), hp('25%'), roomColors[7], '', wp('0.5%'), hp('22.5%')))
+    //     shapeArr.push(new this.Shape(0, hp('45%'), wp('55%'), hp('9%'), roomColors[6], 'Storage Rm', wp('0.5%'), hp('47.5%')))
+    //     shapeArr.push(new this.Shape(0, hp('20%'), wp('15%'), hp('25%'), roomColors[7], '', wp('0.5%'), hp('22.5%')))
 
-        // render room A (render shorter height rect and then render larger height rect)
-        shapeArr.push(new this.Shape(wp('32%'), hp('20%'), wp('23%'), hp('18%'), roomColors[8], '', wp('33.5%'), hp('22.5%')))
-        shapeArr.push(new this.Shape(wp('22%'), hp('20%'), wp('13%'), hp('21%'), roomColors[8], 'Waiting Rm', wp('23.5%'), hp('22.5%')))
+    //     // render room A (render shorter height rect and then render larger height rect)
+    //     shapeArr.push(new this.Shape(wp('32%'), hp('20%'), wp('23%'), hp('18%'), roomColors[8], '', wp('33.5%'), hp('22.5%')))
+    //     shapeArr.push(new this.Shape(wp('22%'), hp('20%'), wp('13%'), hp('21%'), roomColors[8], 'Waiting Rm', wp('23.5%'), hp('22.5%')))
 
 
-        for (let i in shapeArr) {
-            context.fillStyle = shapeArr[i].fillColor
-            context.fillRect(shapeArr[i].x, shapeArr[i].y, shapeArr[i].width, shapeArr[i].height)
-            context.font = '1em Helvetica';
-            context.fillStyle = "white";
-            context.fillText(shapeArr[i].text, shapeArr[i].textX, shapeArr[i].textY)
-        }
+    //     for (let i in shapeArr) {
+    //         context.fillStyle = shapeArr[i].fillColor
+    //         context.fillRect(shapeArr[i].x, shapeArr[i].y, shapeArr[i].width, shapeArr[i].height)
+    //         context.font = '1em Helvetica';
+    //         context.fillStyle = "white";
+    //         context.fillText(shapeArr[i].text, shapeArr[i].textX, shapeArr[i].textY)
+    //     }
 
-        // extract doctor's location
-        firebase.database().ref('/DoctorLocation/').on('value', function (snapshot) {
-            let doctorJson = []
-            snapshot.forEach((eachDoctor) => {
-                doctorJson.push(eachDoctor.val())
-            })
-            let randomizedPosition = [[wp('10%'), hp('7%')], [wp('18%'), hp('10%')], [wp('22%'), wp('8%')]]
-            // reset all small circles
-            for (let i in shapeArr) {
-                context.fillStyle = shapeArr[i].fillColor
-                context.fillRect(shapeArr[i].x, shapeArr[i].y, shapeArr[i].width, shapeArr[i].height)
-                context.font = '1em Helvetica';
-                context.fillStyle = "white";
-                context.fillText(shapeArr[i].text, shapeArr[i].textX, shapeArr[i].textY)
-            }
+    //     // extract doctor's location
+    //     firebase.database().ref('/DoctorLocation/').on('value', function (snapshot) {
+    //         let doctorJson = []
+    //         snapshot.forEach((eachDoctor) => {
+    //             doctorJson.push(eachDoctor.val())
+    //         })
+    //         let randomizedPosition = [[wp('10%'), hp('7%')], [wp('18%'), hp('10%')], [wp('22%'), wp('8%')]]
+    //         // reset all small circles
+    //         for (let i in shapeArr) {
+    //             context.fillStyle = shapeArr[i].fillColor
+    //             context.fillRect(shapeArr[i].x, shapeArr[i].y, shapeArr[i].width, shapeArr[i].height)
+    //             context.font = '1em Helvetica';
+    //             context.fillStyle = "white";
+    //             context.fillText(shapeArr[i].text, shapeArr[i].textX, shapeArr[i].textY)
+    //         }
 
-            // render each dot onto the map
-            for (let eachDoctor in doctorJson) {
-                for (let i in shapeArr) {
-                    if (doctorJson[eachDoctor]["room"] == shapeArr[i].text) {
-                        context.fillStyle = doctorJson[eachDoctor]["docColor"];
-                        context.beginPath()
-                        context.arc(shapeArr[i].x + randomizedPosition[0][0], shapeArr[i].y + randomizedPosition[0][1], wp('3%'), 0, 2 * Math.PI);
-                        context.closePath();
-                        // only arc needs to call function fill()
-                        context.fill()
+    //         // render each dot onto the map
+    //         for (let eachDoctor in doctorJson) {
+    //             for (let i in shapeArr) {
+    //                 if (doctorJson[eachDoctor]["room"] == shapeArr[i].text) {
+    //                     context.fillStyle = doctorJson[eachDoctor]["docColor"];
+    //                     context.beginPath()
+    //                     context.arc(shapeArr[i].x + randomizedPosition[0][0], shapeArr[i].y + randomizedPosition[0][1], wp('3%'), 0, 2 * Math.PI);
+    //                     context.closePath();
+    //                     // only arc needs to call function fill()
+    //                     context.fill()
 
-                        let firstElement = randomizedPosition.shift()
-                        randomizedPosition.push(firstElement)
-                    }
-                }
-            }
-        });
-    }
+    //                     let firstElement = randomizedPosition.shift()
+    //                     randomizedPosition.push(firstElement)
+    //                 }
+    //             }
+    //         }
+    //     });
+    // }
 
-    handleCanvas2 = (canvas) => {
-        const context = canvas.getContext('2d');
-        canvas.height = hp('18%');
-        canvas.width = Dimensions.get('window').width;
-        context.fillStyle = '#fafafa';
-        context.fillRect(0, 0, canvas.width, canvas.height);
+    // handleCanvas2 = (canvas) => {
+    //     const context = canvas.getContext('2d');
+    //     canvas.height = hp('18%');
+    //     canvas.width = Dimensions.get('window').width;
+    //     context.fillStyle = '#fafafa';
+    //     context.fillRect(0, 0, canvas.width, canvas.height);
 
-        let doctorArr = [];
-        doctorArr.push(new this.Doctor(wp('6%'), hp('3.8%'), wp('3%'), 0, 2 * Math.PI, "Dr. Kuo", wp('12%'), hp('4.6%'), 'red'));
-        doctorArr.push(new this.Doctor(wp('6%'), hp('8.2%'), wp('3%'), 0, 2 * Math.PI, "Dr. Roa", wp('12%'), hp('9.2%'), 'yellow'));
+    //     let doctorArr = [];
+    //     doctorArr.push(new this.Doctor(wp('6%'), hp('3.8%'), wp('3%'), 0, 2 * Math.PI, "Dr. Kuo", wp('12%'), hp('4.6%'), '#BF5AF2'));
+    //     doctorArr.push(new this.Doctor(wp('6%'), hp('8.2%'), wp('3%'), 0, 2 * Math.PI, "Dr. Roa", wp('12%'), hp('9.2%'), '#30D158'));
 
-        for (let i in doctorArr) {
-            context.fillStyle = doctorArr[i].color;
-            context.beginPath()
-            context.arc(doctorArr[i].x, doctorArr[i].y, doctorArr[i].radius, doctorArr[i].sAngle, doctorArr[i].eAngle, false);
-            context.closePath();
-            // only arc needs to call function fill()
-            context.fill()
-            context.fillStyle = 'black';
-            context.font = '18px Helvetica';
-            context.fillText(doctorArr[i].name, doctorArr[i].textX, doctorArr[i].textY)
-        }
-    }
+    //     for (let i in doctorArr) {
+    //         context.fillStyle = doctorArr[i].color;
+    //         context.beginPath()
+    //         context.arc(doctorArr[i].x, doctorArr[i].y, doctorArr[i].radius, doctorArr[i].sAngle, doctorArr[i].eAngle, false);
+    //         context.closePath();
+    //         // only arc needs to call function fill()
+    //         context.fill()
+    //         context.fillStyle = 'black';
+    //         context.font = '18px Helvetica';
+    //         context.fillText(doctorArr[i].name, doctorArr[i].textX, doctorArr[i].textY)
+    //     }
+    // }
 
     handleCanvasMap = canvas => {
+        let mapDict = {
+            femaleWaitingRoom: [[wp('41%'), hp('20%')],[wp('44%'), hp('22%')]],
+            CTRoom: [[wp('3%'), hp('41%')], [wp('12%'), hp('40%')]],
+            exam1: [[wp('57%'), hp('31%')], [wp('59%'), hp('31%')]]
+        };
         const context = canvas.getContext('2d');
         canvas.height = hp('50%');
         canvas.width = Dimensions.get('window').width - wp('4%');
         context.fillStyle = "white";
 
-        var background = new CanvasImage(canvas);
+        let background = new CanvasImage(canvas);
         background.src = "https://i.imgur.com/1FpcLGF.png";
         background.addEventListener('load', () => {
             console.log("success")
             context.drawImage(background, 0, 0, canvas.width, canvas.height);
-        })   
+            this.drawPin(canvas, context, "https://i.imgur.com/sn2hdaf.png", mapDict.femaleWaitingRoom[0][0], mapDict.femaleWaitingRoom[0][1], wp('5%'), hp('5%'));
+            this.drawPin(canvas, context, "https://i.imgur.com/WZVGjfM.png", mapDict.femaleWaitingRoom[1][0], mapDict.femaleWaitingRoom[1][1], wp('5%'), hp('5%'));
+            this.drawPin(canvas, context, "https://i.imgur.com/sn2hdaf.png", mapDict.CTRoom[0][0], mapDict.CTRoom[0][1], wp('5%'), hp('5%'));
+            this.drawPin(canvas, context, "https://i.imgur.com/WZVGjfM.png", mapDict.CTRoom[1][0], mapDict.CTRoom[1][1], wp('5%'), hp('5%'));
+            this.drawPin(canvas, context, "https://i.imgur.com/sn2hdaf.png", mapDict.exam1[0][0], mapDict.exam1[0][1], wp('5%'), hp('5%'));
+            this.drawPin(canvas, context, "https://i.imgur.com/WZVGjfM.png", mapDict.exam1[1][0], mapDict.exam1[1][1], wp('5%'), hp('5%'));        
+        })    
     };
+
+    drawPin(canvas, context, url, x, y, w, h) {
+        let pin = new CanvasImage(canvas);
+        pin.src = url;
+        pin.addEventListener('load', () => {
+            context.drawImage(pin, x, y, w, h);
+        });
+    }
 
     render() {
         return (
