@@ -128,6 +128,7 @@ class ShowMap extends Component {
         let self = this;
         firebase.database().ref('/DoctorLocation/').on('value', function (snapshot) {
             context.clearRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(background, 0, 0, canvas.width, canvas.height); 
             snapshot.forEach( (eachDoctor) => {
                 let room = eachDoctor.val().room;
                 self.drawPin(canvas, context, doctorPinUrl[eachDoctor.key], mapDict[room][0][0], mapDict[room][0][1], wp('5%'), hp('5%'));
@@ -135,7 +136,6 @@ class ShowMap extends Component {
                 let firstElement = mapDict[room].shift();
                 mapDict[room].push(firstElement);
             });
-            context.drawImage(background, 0, 0, canvas.width, canvas.height); 
         });
     };
 
