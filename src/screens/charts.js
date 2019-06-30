@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList } from 'react-native'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { PieChart } from 'react-native-svg-charts';
 import { Text as SvgText } from 'react-native-svg';
+import Label from '../components/Label';
 
 // FlatListItem = one graph per visit day for patients
 class FlatListItem extends Component {
@@ -67,15 +68,6 @@ class FlatListItem extends Component {
     }
 }
 
-// Draw each room label; simplify code
-const RoomLabels = ({room, color}) => {
-    return (
-        <View style={[styles.labelCard, {borderLeftColor: color}]}>
-            <Text style={styles.roomLabel}>{room}</Text>
-        </View>  
-    );
-}
-
 // Charts is an extension of VisitHistory.js; if segmentedControl index = 1, then render this component
 class Charts extends Component {
     constructor(props) {
@@ -96,14 +88,14 @@ class Charts extends Component {
                 </FlatList>
                 <View style={styles.labelRow}>
                     <View style={styles.labelColumn}>
-                        <RoomLabels room={'Waiting Rm'} color={'#B8E653'}/>
-                        <RoomLabels room={'Treatment Rm 1'} color={'#53ACE6'}/>
-                        <RoomLabels room={'Treatment Rm 2'} color={'#E653B8'}/>
+                        <Label obj={'Waiting Rm'} color={'#B8E653'}/>
+                        <Label obj={'Treatment Rm 1'} color={'#53ACE6'}/>
+                        <Label obj={'Treatment Rm 2'} color={'#E653B8'}/>
                     </View>
                     <View style={styles.labelColumn}>
-                        <RoomLabels room={'Exam Rm'} color={'#E68153'}/>
-                        <RoomLabels room={'CT Rm'} color={'#536FE6'}/>
-                        <RoomLabels room={'Transition Time'} color={'#53E681'}/>
+                        <Label obj={'Exam Rm'} color={'#E68153'}/>
+                        <Label obj={'CT Rm'} color={'#536FE6'}/>
+                        <Label obj={'Transition Time'} color={'#53E681'}/>
                     </View>
                 </View>
             </View>
@@ -146,20 +138,6 @@ const styles = StyleSheet.create({
     labelColumn: {
         flexDirection: 'column',
         width: wp('50%')
-    },
-    labelCard: {
-        borderColor: '#fff',
-        borderBottomColor: '#dddddd',
-        borderTopColor: '#dddddd',
-        borderWidth: 0.5,
-        borderLeftWidth: wp('3%'),
-        borderLeftColor: '#0060a4',
-        fontFamily: 'Poppins-Regular',
-        paddingVertical: hp('1%')
-    },
-    roomLabel: {
-        fontSize: hp('1.6%'),
-        paddingLeft: wp('4%')
     }
 });
 

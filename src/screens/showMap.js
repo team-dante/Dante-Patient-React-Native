@@ -1,21 +1,11 @@
-'use strict';
 import React, { Component } from 'react';
-import { StyleSheet, Image, ScrollView, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, ScrollView, Text, View, Dimensions } from 'react-native';
 import firebase from 'firebase';
 import Canvas, { Image as CanvasImage, Path2D, ImageData } from 'react-native-canvas';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
-// Draw each room label; simplify code
-const DoctorLabels = ({doc, color}) => {
-    return (
-        <View style={[styles.labelCard, {borderLeftColor: color}]}>
-            <Text style={styles.docLabel}>{doc}</Text>
-        </View>  
-    );
-}
+import Label from '../components/Label';
 
 class ShowMap extends Component {
-
     constructor(props) {
         super(props);
         // email = phoneNumber + @email.com
@@ -112,7 +102,6 @@ class ShowMap extends Component {
         clearInterval(this.realTimeInterval);
     }
 
-
     handleCanvasMap = canvas => {
         let mapDict = {
             femaleWaitingRoom: [[wp('41%'), hp('20%')],[wp('44%'), hp('22%')]],
@@ -131,6 +120,7 @@ class ShowMap extends Component {
 
         let background = new CanvasImage(canvas);
         background.src = "https://i.imgur.com/1FpcLGF.png";
+        // load image when canvas opened
         background.addEventListener('load', () => {
             context.drawImage(background, 0, 0, canvas.width, canvas.height);
         });
@@ -163,18 +153,14 @@ class ShowMap extends Component {
                 <View style={styles.queue}>
                     {this.renderPositionText()}
                 </View>
-                {/* <Image source={require("../assets/Component.png")} 
-                style={styles.image}
-                resizeMode="contain">
-                </Image> */}
                 <View style={{paddingHorizontal: wp('2%')}}>
                     <Canvas ref={this.handleCanvasMap} />
                 </View>
                 <View style={styles.labelRow}>
                     <View style={styles.labelColumn}>
-                        <DoctorLabels doc={'Dr. Roa'} color={'#30d158'}/>
-                        <DoctorLabels doc={'Dr. Kuo'} color={'#bf58f2'}/>
-                        <DoctorLabels />
+                        <Label obj={'Dr. Roa'} color={'#30d158'}/>
+                        <Label obj={'Dr. Kuo'} color={'#bf58f2'}/>
+                        <Label />
                     </View>
                 </View>
             </ScrollView>
@@ -227,20 +213,6 @@ const styles = StyleSheet.create({
     labelColumn: {
         flexDirection: 'column',
         width: wp('80%')
-    },
-    labelCard: {
-        borderColor: '#fff',
-        borderBottomColor: '#dddddd',
-        borderTopColor: '#dddddd',
-        borderWidth: 0.5,
-        borderLeftWidth: wp('3%'),
-        borderLeftColor: '#0060a4',
-        fontFamily: 'Poppins-Regular',
-        paddingVertical: hp('1%')
-    },
-    docLabel: {
-        fontSize: hp('1.6%'),
-        paddingLeft: wp('4%')
     }
 });
 
