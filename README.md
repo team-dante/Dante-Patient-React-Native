@@ -29,7 +29,6 @@ A React-Native app facilitates real-time location tracking of physicians (as wel
 * Patients can see where doctors are located inside the radiation oncology
 * Patients can check-in / check-out when they enter/leave a room 
 * Patients can provide feedback about their experience during the visit.
-* Clinic staff can view feedback and visit duration for each patient.
 
 **Optional Nice-to-have Stories**
 
