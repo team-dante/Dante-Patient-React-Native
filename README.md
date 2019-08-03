@@ -11,8 +11,8 @@ A React-Native app facilitates real-time location tracking of physicians (as wel
 
 ### Getting Started
 1. Open the terminal, go to the directory where you would like to store this project.
-2. Type `git clone https://github.com/team-dante/dante-patient-master-branch.git`
-3. Navigate to project folder (`cd dante-patient-master-branch`)
+2. Type `git clone https://github.com/team-dante/Dante-Patient-React-Native.git`
+3. Navigate to project folder (`cd Dante-Patient-React-Native`)
 4. Make sure your computer has the newest version of Java JDK and Node.js
 	* For Windows users, have Android Studio and Android Emulator ready.
 	* For Mac users, have Xcode installed.
