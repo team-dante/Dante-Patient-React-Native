@@ -87,8 +87,6 @@ A React-Native app facilitates real-time location tracking of physicians (as wel
 <img src="https://i.imgur.com/3gSF1u4.png" width="250"/>
 </p>
 
-*<Wireframes & Data Schema Design>*
-
 ---
 
 ### Digital Wireframes and Mockups
