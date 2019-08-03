@@ -131,10 +131,12 @@ class ShowMap extends Component {
             context.drawImage(background, 0, 0, canvas.width, canvas.height); 
             snapshot.forEach( (eachDoctor) => {
                 let room = eachDoctor.val().room;
-                self.drawPin(canvas, context, doctorPinUrl[eachDoctor.key], mapDict[room][0][0], mapDict[room][0][1], wp('5%'), hp('5%'));
+                if (room == 'exam1' || room == 'CTRoom' || room == 'femaleWaitingRoom') {
+                    self.drawPin(canvas, context, doctorPinUrl[eachDoctor.key], mapDict[room][0][0], mapDict[room][0][1], wp('5%'), hp('5%'));
 
-                let firstElement = mapDict[room].shift();
-                mapDict[room].push(firstElement);
+                    let firstElement = mapDict[room].shift();
+                    mapDict[room].push(firstElement);
+                }
             });
         });
     };
