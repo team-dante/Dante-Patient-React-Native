@@ -7,7 +7,7 @@
 ## Overview
 
 ### Description
-A React-Native app facilitates real-time location tracking of physicians (as well as patients) in an radiation oncology clinic to improve patient waiting experience. It will help track the time that patients spent at each treament stage; the collection timestamps would be analyzed to see rooms of improvements of patient service. 
+A React-Native app facilitates real-time location tracking of physicians (as well as patients) in an radiation oncology clinic to improve patient visit experience. It will help track the time that patients have spent at each treament stage; the collection timestamps would be analyzed to see rooms of improvements of patient service. 
 
 ### Getting Started
 1. Open the terminal, go to the directory where you would like to store this project.
@@ -35,7 +35,7 @@ A React-Native app facilitates real-time location tracking of physicians (as wel
 
 * Display collected data in visual-appealing graphs
 * Patients can see the clock is ticking when they go inside a room.
-* The hospital staff can minimize the amount of external help they need to provide and rely mainly on the patients.
+* The hospital staff can minimize the amount of external help they need to provide for patients.
 * Paitents click as few buttons as possible.
 
 ### 2. Screen Archetypes
@@ -75,20 +75,19 @@ A React-Native app facilitates real-time location tracking of physicians (as wel
 ## Wireframes and Data Schema Design
 
 **Authentication**
-
-<img src="https://i.imgur.com/f8DcUbw.png" width="700"/>
-<hr>
-<img src="https://i.imgur.com/t0Qzekj.png" width="700"/>
-<hr>
+<p float="left">
+<img src="https://i.imgur.com/f8DcUbw.png" width="250"/>
+<img src="https://i.imgur.com/t0Qzekj.png" width="250"/>
+</p>
 <br>
 
 **App Flow Proposal**
+<p float="left">
+<img src="https://i.imgur.com/25I7zow.png" width="250"/>
+<img src="https://i.imgur.com/3gSF1u4.png" width="250"/>
+</p>
 
-<img src="https://i.imgur.com/25I7zow.png" width="700"/>
-<hr>
-<img src="https://i.imgur.com/3gSF1u4.png" width="700"/>
-
-*<Wireframes & Data Schema Design Created by Xinhao Liang>*
+*<Wireframes & Data Schema Design>*
 
 ---
 
@@ -118,6 +117,11 @@ Enhanced Map and Visit History
 <img src="https://i.imgur.com/oaLmRPY.png" width="250"/>
 <img src="https://i.imgur.com/efeNVng.jpg" width="250"/>
 </p>
+
+## Contributors
+
+- [Hung Phan](https://github.com/hp0101)
+- [Xinhao Liang](https://github.com/xinhao128)
 
 ## Lisense
 
