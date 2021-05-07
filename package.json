@@ -34,7 +34,7 @@
     "@babel/runtime": "^7.4.3",
     "babel-jest": "24.7.1",
     "braces": "^3.0.2",
-    "handlebars": "^4.1.2",
+    "handlebars": "^4.7.7",
     "jest": "24.7.1",
     "mem": "^5.1.1",
     "metro-react-native-babel-preset": "0.53.1",
