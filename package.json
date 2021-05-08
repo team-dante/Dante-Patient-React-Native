@@ -10,7 +10,7 @@
   "dependencies": {
     "@react-native-community/async-storage": "^1.4.2",
     "firebase": "^5.10.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "react": "16.8.3",
     "react-native": "^0.60.5",
     "react-native-camera": "^2.6.0",
