@@ -39,7 +39,7 @@
     "mem": "^5.1.1",
     "metro-react-native-babel-preset": "0.53.1",
     "react-test-renderer": "16.8.3",
-    "ws": "^7.1.1"
+    "ws": "^7.4.6"
   },
   "jest": {
     "preset": "react-native"
