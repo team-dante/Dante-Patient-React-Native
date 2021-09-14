@@ -27,7 +27,7 @@
     "react-native-touch-id": "^4.4.1",
     "react-native-vector-icons": "^6.4.2",
     "react-navigation": "^3.8.1",
-    "set-value": "^3.0.1"
+    "set-value": "^4.0.1"
   },
   "devDependencies": {
     "@babel/core": "7.4.3",
